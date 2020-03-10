@@ -19,8 +19,8 @@ from profiles import views as profile_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', profile_views.dashboard),
-    path('Tickets/', profile_views.tickets),
-    path('Projects/', profile_views.projects),
-    path('Tickets/Dashboard', profile_views.dashboard),
+    path('', profile_views.dashboard, name='home'),
+    path('Tickets/', profile_views.tickets, name='tickets'),
+    path('Projects/', profile_views.projects, name='projects'),
+    path('Tickets/Dashboard', profile_views.dashboard, name='dashboard'),
 ]
