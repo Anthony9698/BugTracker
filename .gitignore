@@ -85,7 +85,10 @@ env.bak/
 venv.bak/ 
 
 # mkdocs documentation 
-/site 
+/site
+
+# share wheel files
+/share
 
 # mypy 
 .mypy_cache/ 
