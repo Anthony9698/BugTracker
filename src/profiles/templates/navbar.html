@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top navigation-bar">
-    <a class="navbar-brand" href="{% url 'dashboard' %}">Bug Tracker</a>
+    <a id="bug-tracker" class="navbar-brand" href="{% url 'dashboard' %}">Bug Tracker</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -20,6 +20,17 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'projects' %}">Projects</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li id="right-menu-section" class="nav-item">
+                <a class="nav-link" href="#">Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Log off</a>
             </li>
         </ul>
         <!-- <form class="form-inline my-2 my-lg-0">

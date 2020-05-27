@@ -1,6 +1,7 @@
 .top-heading {
-    margin-left: 350px;
-    margin-right: 350px;
+    margin: 0 auto;
+    width: 80%;
+    height: 50%;
     border-bottom: 1px solid lightslategray;
 }
 
@@ -38,9 +39,21 @@
     margin-bottom: 20px;
 }
 
-
 .navigation-bar {
-    padding-left: 350px;
+    padding-left: 10%;
+}
+
+.navbar-nav .nav-item {
+    padding-top: 5px;
+    margin: 0 15px 0 0;
+}
+
+#right-menu-section .nav-item{
+    float: right;
+}
+
+#bug-tracker {
+    padding-right: 15px;
 }
 
 table {
