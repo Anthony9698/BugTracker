@@ -19,3 +19,10 @@ def projects(request):
     context = {}
     template = 'projects.html'
     return render(request, template, context)
+
+
+def new_ticket(request):
+    context = {}
+    template = 'new_ticket.html'
+    return render(request, template, context)
+    

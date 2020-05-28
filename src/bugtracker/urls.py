@@ -25,6 +25,8 @@ urlpatterns = [
     path('Tickets/', profile_views.tickets, name='tickets'),
     path('Projects/', profile_views.projects, name='projects'),
     path('Tickets/Dashboard', profile_views.dashboard, name='dashboard'),
+    path('Tickets/Create', profile_views.new_ticket, name='new_ticket'),
+
 ]
 
 if settings.DEBUG:

@@ -11,6 +11,11 @@
     margin-bottom: 20px;
 }
 
+.top-heading h2 {
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
 .dashboard-center-content {
     margin-top: 20px;
 }
@@ -108,5 +113,11 @@ table {
 .showing-prev-next-wrapper {
     display: flex;
     justify-content: space-between;
+}
+
+.new-ticket-form {
+    margin-top: 2%;
+    margin-left: 10%;
+    margin-right: 50%;
 }
 
