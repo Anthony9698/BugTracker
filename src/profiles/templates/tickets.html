@@ -1,5 +1,68 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>My Tickets</h1>
+<div class="top-heading">
+    <h1>My Tickets</h1>
+</div>
+
+<div class="ticket-center-content top-heading">
+    <h4><a href="#">Create New</a></h4>
+    <div class="entries-search-wrapper">
+        <label>Show 
+            <select name="tickets-table-length">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        entries
+        </label>
+        <label>Search
+            <input type="search" name="" id="">
+        </label>
+    </div>
+    <div class="table">
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Project</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+            </tr>
+        </table>
+    </div>
+    <div class="priority-selection-wrapper">
+        <div class="priority-selection">
+            <label>
+                Priority
+                <select>
+                    <option value="-Select-">-Select-</option>
+                </select>
+            </label>
+        </div>
+        <div class="status-selection">
+            <label>
+                Status
+                <select>
+                    <option value="-Select-">-Select-</option>
+                </select>
+            </label>
+        </div>
+    </div>
+
+    <div class="showing-prev-next-wrapper">
+        <label>
+            Showing 0 to 0 of entries
+        </label>
+        <div class="prev-next-buttons">
+            <button>Previous</button>
+            <button>Next</button>
+        </div>
+    </div>
+
+    <h4><a href="#">Search all ticket fields</a></h4>
+</div>
+
 {% endblock %}

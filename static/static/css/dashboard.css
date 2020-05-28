@@ -19,6 +19,10 @@
     margin-top: 40px;
 }
 
+.ticket-center-content {
+    margin-top: 10px;
+}
+
 .dashboard-center-content h4 {
     font-size: 18px;
     font-weight: 500;
@@ -30,6 +34,42 @@
     font-size: 18px;
     font-weight: 500;
     margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.entries-search-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.priority-selection-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.priority-selection {
+    margin-right: 2%;
+}
+
+.status-selection {
+    margin-left: 2%;
+}
+
+.priority-selection label {
+    display: flex;
+    flex-direction: column;
+}
+
+.status-selection label {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.ticket-center-content h4 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
@@ -63,5 +103,10 @@ table {
 
 .recently-updated {
     margin-bottom: 20px;
-
 }
+
+.showing-prev-next-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
