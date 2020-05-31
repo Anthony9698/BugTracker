@@ -75,13 +75,15 @@ WSGI_APPLICATION = 'bugtracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+SITE_ID = 1
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'bug_tracker',
-        'USER': 'postgres',
+        'USER': 'tony',
         'PASSWORD': 'cheese123',
-        'HOST': 'localhost'
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
