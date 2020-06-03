@@ -69,6 +69,8 @@ TEMPLATES = [
     },
 ]
 
+AUTH_USER_MODEL = 'profiles.UserProfile'
+
 WSGI_APPLICATION = 'bugtracker.wsgi.application'
 
 

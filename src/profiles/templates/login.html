@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="login-form-container">
+    <div class="login-form">
+        <form method="POST"> {% csrf_token %}
+            
+            <h2 class="text-center"><img src="{% static 'images/bug_tracker_logo_white.ico' %}" alt="logo"
+                width="50" height="50"/> Bug Tracker</h2>
+
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Email">
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Password">
+            </div>
+
+            {% block register-fields %}
+            <div class="form-group">
+                <button class="btn btn-primary stretch-button">Log in</button>
+            </div>
+
+            <!-- <div class="form-group text-center forgot-password">
+                <button class="btn btn-link">Forgot password?</button>
+            </div> -->
+
+            <div class="form-group">
+                <button class="btn btn-secondary stretch-button">Sign Up</button>
+            </div>
+
+            {% endblock %}
+    </div>
+</div>
+
+
+{% endblock %}
