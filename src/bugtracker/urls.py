@@ -21,11 +21,12 @@ from profiles import views as profile_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', profile_views.dashboard, name='home'),
-    path('Tickets/', profile_views.tickets, name='tickets'),
-    path('Projects/', profile_views.projects, name='projects'),
-    path('Tickets/Dashboard', profile_views.dashboard, name='dashboard'),
-    path('Tickets/Create', profile_views.new_ticket, name='new_ticket'),
+    path('register/', profile_views.register, name='register'),
+    path('', profile_views.login, name='login'),
+    path('tickets/', profile_views.tickets, name='tickets'),
+    path('projects/', profile_views.projects, name='projects'),
+    path('dashboard/', profile_views.dashboard, name='dashboard'),
+    path('tickets/create', profile_views.new_ticket, name='new_ticket'),
 
 ]
 

@@ -2,6 +2,19 @@ from django.shortcuts import render
 
 # Create your views here.
 
+def login(request):
+    context = {}
+    template = 'login.html'
+    context['template'] = template
+    return render(request, template, context)
+
+
+def register(request):
+    context = {}
+    template = 'register.html'
+    context['template'] = template
+    return render(request, template, context)
+
 
 def dashboard(request):
     context = {}

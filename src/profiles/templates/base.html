@@ -24,7 +24,10 @@
 
 <body>
 
-{% include 'navbar.html' %}
+<!--only show top navigation bar if this isnt the login page-->
+{% if template != 'login.html' and template != 'register.html' %}
+    {% include 'navbar.html' %}
+{% endif %}
 
 {% block content %}
 {% endblock %}

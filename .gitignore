@@ -112,5 +112,5 @@ Control.system-ca-bundle
 GitHub.sublime-settings
 
 # vscode
-../.vscode/
+.vscode/
 migrations/
