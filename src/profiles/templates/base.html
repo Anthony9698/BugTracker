@@ -24,13 +24,14 @@
 
 <body>
 
-<!--only show top navigation bar if this isnt the login page-->
-{% if template != 'login.html' and template != 'register.html' %}
-    {% include 'navbar.html' %}
-{% endif %}
+<div class='content-container'>
+    {% block navbar %}
+    {% endblock %}
 
-{% block content %}
-{% endblock %}
+    {% block content %}
+    {% endblock %}
+</div>
+
 
 <main role="main" class="container">
 

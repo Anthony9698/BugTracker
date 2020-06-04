@@ -20,13 +20,14 @@ from django.conf.urls.static import static
 from profiles import views as profile_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('register/', profile_views.register, name='register'),
-    path('', profile_views.login, name='login'),
-    path('tickets/', profile_views.tickets, name='tickets'),
-    path('projects/', profile_views.projects, name='projects'),
-    path('dashboard/', profile_views.dashboard, name='dashboard'),
-    path('tickets/create', profile_views.new_ticket, name='new_ticket'),
+    path('Admin/', admin.site.urls),
+    path('Register/', profile_views.register_page, name='register'),
+    path('Logout', profile_views.logout_user, name='logout'),
+    path('', profile_views.login_page, name='login'),
+    path('Tickets/', profile_views.tickets, name='tickets'),
+    path('Projects/', profile_views.projects, name='projects'),
+    path('Dashboard/', profile_views.dashboard, name='dashboard'),
+    path('Tickets/Create', profile_views.new_ticket, name='new_ticket'),
 
 ]
 

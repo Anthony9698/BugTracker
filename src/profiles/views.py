@@ -1,43 +1,36 @@
-from django.shortcuts import render
+from django.http import *
 from .models import UserProfile
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 
-def login(request):
-    context = {}
-    template = 'login.html'
-    context['template'] = template
-    return render(request, template, context)
+def login_page(request):
+    return render(request, 'login.html')
 
 
-def register(request):
-    context = {}
-    template = 'register.html'
-    context['template'] = template
-    return render(request, template, context)
+def logout_user(request):
+    print(1)
+
+
+def register_page(request):
+    return render(request, 'register.html')
 
 
 def dashboard(request):
-    context = {}
-    template = 'dashboard.html'
-    return render(request, template, context)
+    return render(request, 'dashboard.html')
 
 
 def tickets(request):
-    context = {}
-    template = 'tickets.html'
-    return render(request, template, context)
+    return render(request, 'tickets.html')
 
 
 def projects(request):
-    context = {}
-    template = 'projects.html'
-    return render(request, template, context)
+    return render(request, 'projects.html')
 
 
 def new_ticket(request):
-    context = {}
-    template = 'new_ticket.html'
-    return render(request, template, context)
+    return render(request, 'new_ticket.html')
     

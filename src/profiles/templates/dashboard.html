@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
+
+
 {% block content %}
 <div class="top-heading">
   <h1>My Dashboard</h1>
@@ -20,7 +25,4 @@
     <h2> Projects</h2>
     <h4><a href="#">View project list</a></h4>
 </div>
-
-
-
 {% endblock %}
