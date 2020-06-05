@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="login-form-container">
     <div class="login-form">
+
         <form method="POST"> {% csrf_token %}
             
             <h2 class="text-center"><img src="{% static 'images/bug_tracker_logo_white.ico' %}" alt="logo"
                 width="50" height="50"/> Bug Tracker</h2>
 
+            {% block register-fields %}
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="Email" name="email">
             </div>
@@ -18,7 +20,7 @@
                 <input type="password" class="form-control" placeholder="Password" name="password">
             </div>          
 
-            {% block register-fields %}
+        
             <div class="form-group">
                 <button class="btn btn-primary stretch-button" type="submit" name='login'>Log in</button>
             </div>
