@@ -1,26 +1,8 @@
 {% extends 'login.html' %}
 {% load crispy_forms_tags %}
-{% crispy form %}
-
 
 
 {% block register-fields %}
-    {% for field in registration_form %}
-        {{field}}
-
-        <!-- <p>
-            {{field.label_tag}}
-            {{field}}
-
-            {% if field.help_text %}
-                <small style="color:grey;">{{field.help_text}}</small>
-            {% endif %}
-
-            {% for error in field.errors %}
-                <p style="color:red;">{{error}}</p>
-            {% endfor %}
-        </p> -->
-    {% endfor %}
-    <button type="submit">Register</button>
-
+    {{registration_form|crispy}}
+    <button class="btn btn-success stretch-button" type="submit">Register</button>
 {% endblock %}

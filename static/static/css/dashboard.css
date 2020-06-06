@@ -134,9 +134,10 @@ table {
 
 .login-form-container {
     margin: auto;
-    width: 50%;
+    width: 500px;
     padding: 20px 20px 20px 20px;
     background-color: #2f4857;
+    border: solid 1px white;
 }
 
 body {
@@ -153,6 +154,15 @@ label {
 
 table {
     color: white;
+}
+
+.logo-container {
+    border-bottom: white solid 1px;
+    margin-bottom: 10px;
+}
+
+#error_1_id_password2 {
+    color: red;
 }
 
 
