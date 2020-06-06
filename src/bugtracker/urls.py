@@ -22,7 +22,7 @@ from profiles import views as profile_views
 urlpatterns = [
     path('Admin/', admin.site.urls),
     path('Register/', profile_views.register_page, name='register'),
-    path('Logout', profile_views.logout_user, name='logout'),
+    path('Logout/', profile_views.logout_request, name='logout'),
     path('', profile_views.login_page, name='login'),
     path('Tickets/', profile_views.tickets, name='tickets'),
     path('Projects/', profile_views.projects, name='projects'),

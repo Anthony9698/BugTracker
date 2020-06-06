@@ -2,23 +2,42 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block content %}
-<div class="login-form-container">
-    <div class="login-form">
+{% block content %} 
 
-        <form method="POST"> {% csrf_token %}
-            
+    <!-- add js here later to make a log out message that dissapears after x seconds -->
+    <!-- {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+
+        </ul>
+    {% endif %} -->
+
+    <div class="login-form-container">
+        <div class="login-form">
+
             <div class="logo-container">
                 <h2 class="text-center"><img src="{% static 'images/bug_tracker_logo_white.ico' %}" alt="logo"
                     width="50" height="50"/> Bug Tracker</h2>
             </div>
 
-            {% block register-fields %}
-                {{login_form|crispy}}
-                <button class="btn btn-success stretch-button" type="submit">Login</button>
+            {% block email-password-fields-1 %}  
+                <form method="POST"> {% csrf_token %}
+                        {{login_form|crispy}}
+                        <button class="btn btn-success stretch-button" type="submit">Login</button>
+                </form>
             {% endblock %}
+
+            {% block email-password-fields-2 %}
+                <div class="text-center">
+                    <button class="btn btn-link">Forgot your email or password?</button>
+                    <a class="btn btn-info stretch-button" 
+                        style="margin-top: 5px;"
+                        href="{% url 'register' %}">Sign Up
+                    </a>
+                </div>
+            {% endblock %}
+        </div>
     </div>
-</div>
-
-
 {% endblock %}

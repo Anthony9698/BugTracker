@@ -165,4 +165,9 @@ table {
     color: red;
 }
 
+.alert, .alert-block, .alert-danger, ul {
+    margin: 0;
+    padding-left: 15px;
+}
+
 

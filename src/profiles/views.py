@@ -36,15 +36,20 @@ def login_page(request):
     return render(request, 'login.html', context)
 
 
-def logout_user(request):
-    print(1)
+def logout_request(request):
+    logout(request)
+    messages.info(request, "Logged out successfully!")
+    return redirect("login")
 
 
 def register_page(request):
+    print(1)
     context = {}
     if request.POST:
+        print(2)
         form = RegistrationForm(request.POST)
         if form.is_valid():
+            print(3)
             form.save()
             email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password1')
@@ -52,6 +57,7 @@ def register_page(request):
             login(request, user_profile)
             return redirect('dashboard')
         else:
+            print(4)
             context['registration_form'] = form
     
     else: # GET REQUEST
