@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from profiles.forms import RegistrationForm, LoginForm
+from profiles.forms import RegistrationForm, LoginForm, ProjectForm
 from django.contrib.auth.forms import AuthenticationForm
 
 # Create your views here.
@@ -19,22 +19,15 @@ def login_page(request):
 
     # user is trying to log in
     if request.POST:
-        if request.POST.get("login"):
-            form = LoginForm(request.POST)
-            if form.is_valid():
-                email = request.POST['email']
-                password = request.POST['password']
-                user = authenticate(email=email, password=password)
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = request.POST['email']
+            password = request.POST['password']
+            user = authenticate(email=email, password=password)
 
-                if user:
-                    login(request, user)
-                    return redirect("dashboard")
-        elif request.POST.get("forgot_ep"):
-            return redirect("login")
-        
-        elif request.POST.get("sign_up"):
-            print(2)
-            return redirect("register")
+            if user:
+                login(request, user)
+                return redirect("dashboard")
 
     else:
         form = LoginForm()
@@ -84,4 +77,18 @@ def projects(request):
 
 def new_ticket(request):
     return render(request, 'new_ticket.html')
+
+
+def new_project(request):
+    form = ProjectForm(request.POST)
+    if form.is_valid():
+        project = form.save()
+        project.users.add(request.user)
+        return redirect("dashboard")
+
+    context = {
+        'new_project_form': form
+    }
+
+    return render(request, "new_project.html", context)
     

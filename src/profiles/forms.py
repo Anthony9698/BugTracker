@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from profiles.models import UserProfile
+from profiles.models import UserProfile, Project
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
+
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(max_length=60, help_text='Required. Add a valid email address.')
@@ -24,6 +25,12 @@ class LoginForm(forms.ModelForm):
         password = self.cleaned_data['password']
         if not authenticate(email=email, password=password):
             raise forms.ValidationError("Invalid email or password.")
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ('title', 'description')
 
 
     
