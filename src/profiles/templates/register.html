@@ -2,15 +2,15 @@
 {% load crispy_forms_tags %}
 
 
-{% block email-password-fields-1 %}
-    <form method="POST"> {% csrf_token %}
+{% block auth-fields %}  
+    <form method="POST"> 
+        {% csrf_token %}
         {{registration_form|crispy}}
-        <button class="btn btn-success stretch-button" type="submit">Register</button>
+        <button class="btn btn-success stretch-button" type="submit" name="register" value="register">Register</button>
     </form>
-{% endblock %}
 
-{% block email-password-fields-2 %}
     <div class="text-center">
         <a class="btn btn-link" href="{% url 'login' %}">Already have an account?</a>
     </div>
+    
 {% endblock %}

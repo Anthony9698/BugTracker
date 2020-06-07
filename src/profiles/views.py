@@ -19,15 +19,22 @@ def login_page(request):
 
     # user is trying to log in
     if request.POST:
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = request.POST['email']
-            password = request.POST['password']
-            user = authenticate(email=email, password=password)
+        if request.POST.get("login"):
+            form = LoginForm(request.POST)
+            if form.is_valid():
+                email = request.POST['email']
+                password = request.POST['password']
+                user = authenticate(email=email, password=password)
 
-            if user:
-                login(request, user)
-                return redirect("dashboard")
+                if user:
+                    login(request, user)
+                    return redirect("dashboard")
+        elif request.POST.get("forgot_ep"):
+            return redirect("login")
+        
+        elif request.POST.get("sign_up"):
+            print(2)
+            return redirect("register")
 
     else:
         form = LoginForm()
@@ -43,13 +50,10 @@ def logout_request(request):
 
 
 def register_page(request):
-    print(1)
     context = {}
     if request.POST:
-        print(2)
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            print(3)
             form.save()
             email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password1')
@@ -57,7 +61,6 @@ def register_page(request):
             login(request, user_profile)
             return redirect('dashboard')
         else:
-            print(4)
             context['registration_form'] = form
     
     else: # GET REQUEST

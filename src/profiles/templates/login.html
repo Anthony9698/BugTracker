@@ -22,21 +22,16 @@
                     width="50" height="50"/> Bug Tracker</h2>
             </div>
 
-            {% block email-password-fields-1 %}  
-                <form method="POST"> {% csrf_token %}
-                        {{login_form|crispy}}
-                        <button class="btn btn-success stretch-button" type="submit">Login</button>
+            {% block auth-fields %}  
+                <form method="POST"> 
+                    {% csrf_token %}
+                    {{login_form|crispy}}
+                    <div class="text-center">
+                        <button class="btn btn-success stretch-button" type="submit" name="login" value="login">Login</button>
+                        <button class="btn btn-link" name="forgot_ep" value="forgot_ep">Forgot your email or password?</button>
+                        <button class="btn btn-info stretch-button" style="margin-top: 5px;" name="sign_up" value="sign_up">Sign Up</button>
+                    </div>
                 </form>
-            {% endblock %}
-
-            {% block email-password-fields-2 %}
-                <div class="text-center">
-                    <button class="btn btn-link">Forgot your email or password?</button>
-                    <a class="btn btn-info stretch-button" 
-                        style="margin-top: 5px;"
-                        href="{% url 'register' %}">Sign Up
-                    </a>
-                </div>
             {% endblock %}
         </div>
     </div>
