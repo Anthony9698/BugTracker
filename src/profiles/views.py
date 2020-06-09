@@ -34,7 +34,7 @@ def login_page(request):
         form = LoginForm()
 
     context['login_form'] = form
-    return render(request, 'login.html', context)
+    return render(request, 'user/login.html', context)
 
 
 @login_required
@@ -77,7 +77,7 @@ def tickets(request):
     user_projects = Project.objects.filter(users__id=request.user.id)
     user_tickets = Ticket.objects.filter(project_id__in=user_projects)
     context['user_tickets'] = user_tickets
-    return render(request, 'tickets.html', context)
+    return render(request, 'ticket/tickets.html', context)
 
 
 @login_required
@@ -85,7 +85,7 @@ def projects(request):
     context = {}
     user_projects = Project.objects.filter(users__id=request.user.id)
     context['user_projects'] = user_projects
-    return render(request, 'projects.html', context)
+    return render(request, 'project/projects.html', context)
 
 
 @login_required
@@ -99,7 +99,7 @@ def new_ticket(request):
         'new_ticket_form': form
     }
 
-    return render(request, "new_ticket.html", context)
+    return render(request, "ticket/new_ticket.html", context)
 
 
 @login_required
@@ -114,5 +114,5 @@ def new_project(request):
         'new_project_form': form
     }
 
-    return render(request, "new_project.html", context)
+    return render(request, "project/new_project.html", context)
     
