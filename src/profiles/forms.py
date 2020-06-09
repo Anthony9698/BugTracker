@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from profiles.models import UserProfile, Project
+from profiles.models import UserProfile, Project, Ticket
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
+from django.db.models.query import RawQuerySet
 
 
 class RegistrationForm(UserCreationForm):
@@ -31,6 +32,25 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ('title', 'description')
+
+
+class TicketForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.user_id = kwargs.pop("user_id")
+        super(TicketForm, self).__init__(*args, **kwargs)
+        self.fields['project_id'].queryset = Project.objects.filter(users__id=self.user_id)
+
+    priorities = (
+        ('Low', 'Low'),
+        ('Medium', 'Medium'),
+        ('High', 'High'),
+    )
+
+    project_id = forms.ModelChoiceField(queryset=None)
+    priority = forms.CharField(widget=forms.Select(choices=priorities))
+    class Meta:
+        model = Ticket
+        fields = ('title', 'description', 'project_id', 'priority')
 
 
     

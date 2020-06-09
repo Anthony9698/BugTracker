@@ -66,6 +66,9 @@ class Project(models.Model):
     date_added = models.DateField(default=now, editable=False)
     users = models.ManyToManyField(UserProfile)
 
+    def __str__(self):
+        return self.title
+
 
 class Ticket(models.Model):
     title = models.CharField(max_length=64, null=False)
