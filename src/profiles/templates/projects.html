@@ -10,12 +10,22 @@
         <h4 style="margin-top: -20px;"><a href="{% url 'new_project' %}">Create New</a></h4>
     </div>
     
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-        </tr>
-    </table>
+    <div class="table">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+
+            {% for project in user_projects %}
+            <tr>
+                <td>{{project.title}}</td>
+                <td>{{project.description}}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
     <h4><a href="#">View Archived Projects</a></h4>
 </div>
 

@@ -77,13 +77,15 @@ def tickets(request):
     user_projects = Project.objects.filter(users__id=request.user.id)
     user_tickets = Ticket.objects.filter(project_id__in=user_projects)
     context['user_tickets'] = user_tickets
-    
     return render(request, 'tickets.html', context)
 
 
 @login_required
 def projects(request):
-    return render(request, 'projects.html')
+    context = {}
+    user_projects = Project.objects.filter(users__id=request.user.id)
+    context['user_projects'] = user_projects
+    return render(request, 'projects.html', context)
 
 
 @login_required
