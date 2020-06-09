@@ -31,6 +31,17 @@
                 <th>Status</th>
                 <th>Assigned To</th>
             </tr>
+
+            {% for ticket in user_tickets %}
+            <tr>
+                <td>{{ticket.title}}</td>
+                <td>{{ticket.date_created}}</td>
+                <td>{{ticket.project_id}}</td>
+                <td>{{ticket.priority}}</td>
+                <td>None</td>
+                <td>None</td>
+            </tr>
+            {% endfor %}
         </table>
     </div>
     <div class="priority-selection-wrapper">
