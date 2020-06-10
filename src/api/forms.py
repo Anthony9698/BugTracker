@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from profiles.models import UserProfile, Project, Ticket
+from api.models import UserProfile, Project, Ticket
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
 from django.db.models.query import RawQuerySet

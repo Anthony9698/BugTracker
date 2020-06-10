@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'profiles',
+    'api',
     'crispy_forms',
     'rest_framework',
 ]
@@ -74,7 +74,7 @@ TEMPLATES = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-AUTH_USER_MODEL = 'profiles.UserProfile'
+AUTH_USER_MODEL = 'api.UserProfile'
 
 WSGI_APPLICATION = 'bugtracker.wsgi.application'
 
