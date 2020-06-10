@@ -32,7 +32,7 @@
         </tr>
 
         {% for ticket in user_tickets %}
-        <tr data-href="{% url 'projects' %}">
+        <tr data-href="{% url 'new_ticket' %}">
             <td>{{ticket.title}}</td>
             <td>{{ticket.date_created}}</td>
             <td>{{ticket.project_id}}</td>
