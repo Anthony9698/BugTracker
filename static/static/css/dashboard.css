@@ -171,4 +171,12 @@ table {
     padding-left: 15px;
 }
 
+tr[data-href] {
+    cursor: pointer;
+}
+
+tr:hover {
+    background-color: teal;
+}
+
 

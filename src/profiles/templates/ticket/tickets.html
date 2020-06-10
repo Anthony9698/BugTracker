@@ -21,18 +21,27 @@
             <input type="search" name="" id="">
         </label>
     </div>
-    <div class="table">
-        <table>
-            <tr>
-                <th>Title</th>
-                <th>Created</th>
-                <th>Project</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Assigned To</th>
-            </tr>
-        </table>
-    </div>
+    <table class="table table-striped table-dark x">
+        <tr>
+            <th>Title</th>
+            <th>Created</th>
+            <th>Project</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Assigned To</th>
+        </tr>
+
+        {% for ticket in user_tickets %}
+        <tr data-href="{% url 'new_ticket' %}">
+            <td>{{ticket.title}}</td>
+            <td>{{ticket.date_created}}</td>
+            <td>{{ticket.project_id}}</td>
+            <td>{{ticket.priority}}</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        {% endfor %}
+    </table>
     <div class="priority-selection-wrapper">
         <div class="priority-selection">
             <label>
@@ -63,6 +72,20 @@
     </div>
 
     <h4><a href="#">Search all ticket fields</a></h4>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const rows = document.querySelectorAll("tr[data-href]");
+
+            rows.forEach(row => {
+                row.addEventListener("click", () => {
+                    window.location.href = row.dataset.href;
+                });
+            });
+        });
+    </script>
+
 </div>
 
 {% endblock %}

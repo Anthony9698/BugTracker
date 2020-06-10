@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm
 from django.contrib.auth.forms import AuthenticationForm
+from profiles.models import UserProfile, Project, Ticket
 
 # Create your views here.
 
@@ -33,7 +34,7 @@ def login_page(request):
         form = LoginForm()
 
     context['login_form'] = form
-    return render(request, 'login.html', context)
+    return render(request, 'user/login.html', context)
 
 
 @login_required
@@ -66,17 +67,25 @@ def register_page(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    context = {}
+    return render(request, 'dashboard.html', context)
 
 
 @login_required
 def tickets(request):
-    return render(request, 'tickets.html')
+    context = {}
+    user_projects = Project.objects.filter(users__id=request.user.id)
+    user_tickets = Ticket.objects.filter(project_id__in=user_projects)
+    context['user_tickets'] = user_tickets
+    return render(request, 'ticket/tickets.html', context)
 
 
 @login_required
 def projects(request):
-    return render(request, 'projects.html')
+    context = {}
+    user_projects = Project.objects.filter(users__id=request.user.id)
+    context['user_projects'] = user_projects
+    return render(request, 'project/projects.html', context)
 
 
 @login_required
@@ -84,13 +93,13 @@ def new_ticket(request):
     form = TicketForm(request.POST, user_id=request.user.id)
     if form.is_valid():
         form.save()
-        return redirect("dashboard")
+        return redirect("tickets")
 
     context = {
         'new_ticket_form': form
     }
 
-    return render(request, "new_ticket.html", context)
+    return render(request, "ticket/new_ticket.html", context)
 
 
 @login_required
@@ -99,11 +108,11 @@ def new_project(request):
     if form.is_valid():
         project = form.save()
         project.users.add(request.user)
-        return redirect("dashboard")
+        return redirect("projects")
 
     context = {
         'new_project_form': form
     }
 
-    return render(request, "new_project.html", context)
+    return render(request, "project/new_project.html", context)
     

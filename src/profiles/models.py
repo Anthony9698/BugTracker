@@ -75,4 +75,5 @@ class Ticket(models.Model):
     description = models.TextField(default="")
     project_id = models.ForeignKey(Project, default=None, on_delete=models.PROTECT)
     priority = models.CharField(max_length=64, null=False)
+    date_created = models.DateTimeField(default=now, editable=False)
 
