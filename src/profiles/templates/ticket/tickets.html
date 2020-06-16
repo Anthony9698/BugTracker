@@ -34,5 +34,25 @@
     </table>
     <h4><a href="#">Search all ticket fields</a></h4>
 </div>
+{% endblock %}
 
+{% block child_scripts %}
+<script>
+     // Basic example
+$(document).ready(function () {
+    $('#ticketTable').DataTable({
+        "pagingType": "simple" // "simple" option for 'Previous' and 'Next' buttons only
+    });
+
+    $('.dataTables_length').addClass('bs-select');
+
+    $('#ticketTable tbody').on('click', 'tr', () => {
+        // get row contents into an array
+        var tableData = $(this).children("td").map(() => {
+            return $(this).text();
+        }).get();
+        alert(tableData[1]);
+    });
+});
+</script>
 {% endblock %}

@@ -34,7 +34,10 @@
 </div>
 
 
-<main role="main" class="container"></main>
+<main role="main" class="container">
+
+    
+</main>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -50,7 +53,9 @@
 <!--Table scripts for pagination-->
 <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
-<script>
+{% block child_scripts %}
+{% endblock %}
+<!-- <script>
     // Basic example
     $(document).ready(function () {
     $('#ticketTable').DataTable({
@@ -58,12 +63,6 @@
     });
     $('.dataTables_length').addClass('bs-select');
     });
-</script>
-<!-- <script>
-    $(document).ready( function() {
-        $('#ticketTable').DataTable();
-    });
 </script> -->
-
 </body>
 </html>
