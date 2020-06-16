@@ -102,10 +102,10 @@
     padding-right: 15px;
 }
 
-table {
+/* table {
     width: 100%;
     border-bottom: 1px solid lightslategray;
-}
+} */
 
 .recently-updated {
     margin-bottom: 20px;
@@ -153,9 +153,9 @@ label {
     color: white;
 }
 
-table {
+/* table {
     color: white;
-}
+} */
 
 .logo-container {
     border-bottom: white solid 1px;
@@ -177,6 +177,26 @@ tr[data-href] {
 
 tr:hover {
     background-color: teal;
+}
+
+#ticketTable_wrapper {
+    display: block;
+}
+
+#ticketTable_length {
+    float: left;
+}
+
+#ticketTable_filter {
+    float: right;
+}
+
+#ticketTable_paginate {
+    float: right;
+}
+
+#ticketTable_previous {
+    margin-right: 50px;
 }
 
 
