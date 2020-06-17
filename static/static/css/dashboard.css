@@ -171,13 +171,13 @@ label {
     padding-left: 15px;
 }
 
-tr[data-href] {
+/* tr[data-href] {
     cursor: pointer;
 }
 
 tr:hover {
     background-color: teal;
-}
+} */
 
 #ticketTable_wrapper {
     display: block;
@@ -203,5 +203,16 @@ tr:hover {
     color:white;
 }
 
+.center-content {
+    margin-left: 10%;
+}
+
+.ticket-description-list dt{
+    color: #ffffffb8;
+}
+
+.ticket-description-list span{
+    color: grey;
+}
 
 

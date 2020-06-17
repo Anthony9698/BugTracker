@@ -21,8 +21,8 @@
         </thead>
         <tbody>
             {% for ticket in user_tickets %}
-            <tr data-href="{% url 'projects' %}">
-                <td>{{ticket.title}}</td>
+            <tr>
+                <td><a href="{% url 'ticket' ticket.id %}">{{ticket.title}}</a></td>
                 <td>{{ticket.date_created}}</td>
                 <td>{{ticket.project_id}}</td>
                 <td>{{ticket.priority}}</td>
@@ -43,16 +43,7 @@ $(document).ready(function () {
     $('#ticketTable').DataTable({
         "pagingType": "simple" // "simple" option for 'Previous' and 'Next' buttons only
     });
-
     $('.dataTables_length').addClass('bs-select');
-
-    $('#ticketTable tbody').on('click', 'tr', () => {
-        // get row contents into an array
-        var tableData = $(this).children("td").map(() => {
-            return $(this).text();
-        }).get();
-        alert(tableData[1]);
-    });
 });
 </script>
 {% endblock %}

@@ -103,6 +103,13 @@ def new_ticket(request):
 
 
 @login_required
+def ticket_detail(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    context = {'ticket': ticket}
+    return render(request, "ticket/ticket_detail.html", context)
+
+
+@login_required
 def new_project(request):
     form = ProjectForm(request.POST)
     if form.is_valid():
