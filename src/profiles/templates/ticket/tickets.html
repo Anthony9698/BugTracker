@@ -22,7 +22,7 @@
         <tbody>
             {% for ticket in user_tickets %}
             <tr>
-                <td><a href="{% url 'ticket' ticket.id %}">{{ticket.title}}</a></td>
+                <td><a href="{% url 'ticket_detail' ticket.id %}">{{ticket.title}}</a></td>
                 <td>{{ticket.date_created}}</td>
                 <td>{{ticket.project_id}}</td>
                 <td>{{ticket.priority}}</td>

@@ -11,7 +11,7 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = UserProfile
-        fields = ("email", "password1", "password2")
+        fields = ["email", "password1", "password2"]
 
 
 class LoginForm(forms.ModelForm):
@@ -19,7 +19,7 @@ class LoginForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ('email', 'password')
+        fields = ['email', 'password']
 
     def clean(self):
         email = self.cleaned_data['email']
@@ -31,27 +31,41 @@ class LoginForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ('title', 'description')
+        fields = ['title', 'description']
 
 
 class TicketForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.user_id = kwargs.pop("user_id")
+    def __init__(self, user, *args, **kwargs):
         super(TicketForm, self).__init__(*args, **kwargs)
-        self.fields['project_id'].queryset = Project.objects.filter(users__id=self.user_id)
+        self.fields['project_id'].queryset = Project.objects.filter(users__id=user.id)
+    priority = forms.CharField(widget=forms.Select(choices=(
+            ('Low', 'Low'),
+            ('Medium', 'Medium'),
+            ('High', 'High'))))
 
-    priorities = (
-        ('Low', 'Low'),
-        ('Medium', 'Medium'),
-        ('High', 'High'),
-    )
-
-    project_id = forms.ModelChoiceField(queryset=None)
-    priority = forms.CharField(widget=forms.Select(choices=priorities))
     class Meta:
         model = Ticket
-        fields = ('title', 'description', 'project_id', 'priority')
+        fields = ['title', 'description', 'project_id', 'priority']
 
+
+
+# class TicketForm(forms.ModelForm):
+#     def __init__(self, *args, **kwargs):
+#         self.user_id = kwargs.pop("user_id")
+#         super(TicketForm, self).__init__(*args, **kwargs)
+#         self.fields['project_id'].queryset = Project.objects.filter(users__id=self.user_id)
+
+#     priorities = (
+#         ('Low', 'Low'),
+#         ('Medium', 'Medium'),
+#         ('High', 'High'),
+#     )
+
+#     project_id = forms.ModelChoiceField(queryset=None)
+#     priority = forms.CharField(widget=forms.Select(choices=priorities))
+#     class Meta:
+#         model = Ticket
+#         fields = ('title', 'description', 'project_id', 'priority')
 
     
 

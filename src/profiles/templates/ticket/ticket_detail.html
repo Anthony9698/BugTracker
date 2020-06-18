@@ -16,13 +16,17 @@
         <dt>Assigned To: <a href="#">Edit</a></dt>
         <dt>Attachments</dt>
         <button class="btn btn-secondary">Add Attachment</button>
-        <button class="btn btn-secondary">Edit Ticket</button>
+        <a href="{% url 'edit_ticket' ticket.id %}" class="btn btn-info">Edit Ticket</a>
         <dt>Priority <span>{{ticket.priority}}</span></dt>
         <dt>Status</dt>
         <dt>Owner</dt>
         <dt><a href="#">Ticket History</a></dt>
         <dt><a href="#">Back to Tickets</a></dt>
     </dl>
-</div>
 
+    <div>
+        <h3>Comments</h2>
+            <button class="btn btn-secondary">Add Comment</button>
+    </div>
+</div>
 {% endblock %}
