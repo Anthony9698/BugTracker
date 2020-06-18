@@ -28,5 +28,12 @@
         <h3>Comments</h2>
             <button class="btn btn-secondary">Add Comment</button>
     </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button class="btn btn-danger">Delete</button>
+    </form>
+
+
 </div>
 {% endblock %}

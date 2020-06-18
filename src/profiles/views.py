@@ -107,6 +107,10 @@ def new_ticket(request):
 def ticket_detail(request, pk):
     ticket = Ticket.objects.get(pk=pk)
     context = {'ticket': ticket}
+    if request.method == 'POST':
+        ticket.delete()
+        return redirect('tickets')
+
     return render(request, "ticket/ticket_detail.html", context)
 
 
