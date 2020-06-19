@@ -7,6 +7,7 @@ from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm
 from django.contrib.auth.forms import AuthenticationForm
 from profiles.models import UserProfile, Project, Ticket
+from django.http import HttpResponseNotFound
 
 # Create your views here.
 
@@ -62,7 +63,7 @@ def register_page(request):
         form = RegistrationForm()
         context['registration_form'] = form
 
-    return render(request, 'register.html', context)
+    return render(request, 'user/register.html', context)
 
 
 @login_required
@@ -90,7 +91,7 @@ def projects(request):
 
 @login_required
 def new_ticket(request):
-    form = TicketForm(request.POST, user_id=request.user.id)
+    form = TicketForm(request.user, request.POST)
     if form.is_valid():
         form.save()
         return redirect("tickets")
@@ -100,6 +101,32 @@ def new_ticket(request):
     }
 
     return render(request, "ticket/new_ticket.html", context)
+
+
+@login_required
+def ticket_detail(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    context = {'ticket': ticket}
+    if request.method == 'POST':
+        ticket.delete()
+        return redirect('tickets')
+
+    return render(request, "ticket/ticket_detail.html", context)
+
+
+@login_required
+def edit_ticket(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    form = TicketForm(request.user, request.POST or None, instance=ticket)
+    if form.is_valid():
+        form.save()
+        return redirect("tickets")
+
+    context = {
+        'edit_ticket_form': form
+    }
+
+    return render(request, "ticket/edit_ticket.html", context)
 
 
 @login_required

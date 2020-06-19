@@ -17,11 +17,20 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from profiles import views as profile_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
-    path('', include('profiles.urls')),
+    path('register/', profile_views.register_page, name='register'),
+    path('logout/', profile_views.logout_request, name='logout'),
+    path('', profile_views.login_page, name='login'),
+    path('tickets/', profile_views.tickets, name='tickets'),
+    path('projects/', profile_views.projects, name='projects'),
+    path('dashboard/', profile_views.dashboard, name='dashboard'),
+    path('tickets/create', profile_views.new_ticket, name='new_ticket'),
+    path('tickets/detail/<str:pk>/', profile_views.ticket_detail, name='ticket_detail'),
+    path('tickets/edit/<str:pk>/', profile_views.edit_ticket, name='edit_ticket'),
+    path('projects/create', profile_views.new_project, name="new_project")
 ]
 
 if settings.DEBUG:
