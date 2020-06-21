@@ -38,7 +38,25 @@
 
 {% block child_scripts %}
 <script>
-     // Basic example
+$.fn.dataTable.ext.type.detect.unshift(
+    function ( d ) {
+        return (d === 'Low' || d === 'Medium' || d === 'High' || d === 'Urgent') ?
+            'ticket-priority' :
+            null;
+    }
+);
+
+$.fn.dataTable.ext.type.order['ticket-priority-pre'] = function ( d ) {
+    switch ( d ) {
+        case 'Low'      :   return 1;
+        case 'Medium'   :   return 2;
+        case 'High'     :   return 3;
+        case 'Critical'   :   return 4;
+    }
+    return 0;
+};
+
+// Basic example
 $(document).ready(function () {
     $('#ticketTable').DataTable({
         "pagingType": "simple" // "simple" option for 'Previous' and 'Next' buttons only
