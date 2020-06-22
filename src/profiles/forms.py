@@ -38,11 +38,19 @@ class TicketForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(TicketForm, self).__init__(*args, **kwargs)
         self.fields['project_id'].queryset = Project.objects.filter(users__id=user.id)
-    priority = forms.CharField(widget=forms.Select(choices=(
+    priority = forms.CharField(widget=forms.Select(
+        choices=(
             ('Low', 'Low'),
             ('Medium', 'Medium'),
             ('High', 'High'))))
+    status = forms.CharField(widget=forms.Select(
+        choices=(
+            ('Waiting for support', 'Waiting for support'),
+            ('Waiting for customer', 'Waiting for customer'),
+            ('Resolved', 'Resolved'),
+            ('On hold', 'On hold'),
+            ('New', 'New'))))
 
     class Meta:
         model = Ticket
-        fields = ['title', 'description', 'project_id', 'priority']
+        fields = ['title', 'description', 'project_id', 'priority', 'status']
