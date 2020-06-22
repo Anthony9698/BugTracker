@@ -142,4 +142,15 @@ def new_project(request):
     }
 
     return render(request, "project/new_project.html", context)
+
+
+@login_required
+def project_detail(request, pk):
+    project = Project.objects.get(pk=pk)
+    context = {'project': project}
+    # if request.method == 'POST':
+    #     ticket.delete()
+    #     return redirect('tickets')
+
+    return render(request, "project/project_detail.html", context)
     

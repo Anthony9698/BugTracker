@@ -18,7 +18,7 @@
 
         {% for project in user_projects %}
         <tr>
-            <td>{{project.title}}</td>
+            <td><a href="{% url 'project_detail' project.id %}">{{project.title}}</a></td>
             <td>{{project.description}}</td>
         </tr>
         {% endfor %}

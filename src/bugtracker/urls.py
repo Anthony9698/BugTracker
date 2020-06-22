@@ -30,7 +30,8 @@ urlpatterns = [
     path('tickets/create', profile_views.new_ticket, name='new_ticket'),
     path('tickets/detail/<str:pk>/', profile_views.ticket_detail, name='ticket_detail'),
     path('tickets/edit/<str:pk>/', profile_views.edit_ticket, name='edit_ticket'),
-    path('projects/create', profile_views.new_project, name="new_project")
+    path('projects/create', profile_views.new_project, name="new_project"),
+    path('projects/detail/<str:pk>/', profile_views.project_detail, name='project_detail'),
 ]
 
 if settings.DEBUG:
