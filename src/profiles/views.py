@@ -69,6 +69,9 @@ def register_page(request):
 @login_required
 def dashboard(request):
     context = {}
+    user_projects = Project.objects.filter(users__id=request.user.id)
+    user_tickets = Ticket.objects.filter(project_id__in=user_projects)
+    context['user_tickets'] = user_tickets
     return render(request, 'dashboard.html', context)
 
 

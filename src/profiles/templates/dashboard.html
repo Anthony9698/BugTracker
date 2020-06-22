@@ -23,7 +23,14 @@
             </tr>
         </thead>
         <tbody>
-
+            {% for ticket in user_tickets %}
+            <tr>
+                <td>{{ticket.title}}</td>
+                <td>{{ticket.last_modified_date}}</td>
+                <td>{{ticket.project_id}}</td>
+                <td>{{ticket.priority}}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
     <a class="btn btn-link" href="{% url 'tickets' %}" style="padding-left: 0px;">View all tickets</a>    
