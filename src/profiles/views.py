@@ -147,7 +147,11 @@ def new_project(request):
 @login_required
 def project_detail(request, pk):
     project = Project.objects.get(pk=pk)
-    context = {'project': project}
+    project_tickets = Ticket.objects.filter(project_id=project.id)
+    context = {
+        'project': project,
+        'project_tickets': project_tickets
+    }
     # if request.method == 'POST':
     #     ticket.delete()
     #     return redirect('tickets')

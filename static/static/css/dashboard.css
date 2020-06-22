@@ -179,27 +179,27 @@ tr:hover {
     background-color: teal;
 } */
 
-#ticketTable_wrapper {
+#ticketTable_wrapper, #projectTicketTable_wrapper {
     display: block;
 }
 
-#ticketTable_length {
+#ticketTable_length, #projectTicketTable_length {
     float: left;
 }
 
-#ticketTable_filter {
+#ticketTable_filter, #projectTicketTable_filter {
     float: right;
 }
 
-#ticketTable_paginate {
+#ticketTable_paginate, #projectTicketTable_paginate {
     float: right;
 }
 
-#ticketTable_previous {
+#ticketTable_previous, #projectTicketTable_previous {
     margin-right: 50px;
 }
 
-#ticketTable_info {
+#ticketTable_info, #projectTicketTable_info {
     color:white;
 }
 

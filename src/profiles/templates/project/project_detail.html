@@ -44,9 +44,14 @@
                 </tr>
             </thead>
             <tbody>
-
+            {% for ticket in project_tickets %}
+            <tr>
+                <td><a href="{% url 'ticket_detail' ticket.id %}">{{ticket.title}}</a></td>
+                <td>{{ticket.date_created}}</td>
+                <td>None</td>
+            </tr>
+            {% endfor %}
             </tbody>
-
         </table>
     </div>
 
@@ -54,5 +59,12 @@
 {% endblock %}
 
 {% block child_scripts %}
-
+<script>
+$(document).ready(function () {
+    $('#projectTicketTable').DataTable({
+        "pagingType": "simple" // "simple" option for 'Previous' and 'Next' buttons only
+    });
+    $('.dataTables_length').addClass('bs-select');
+});
+</script>
 {% endblock %}
