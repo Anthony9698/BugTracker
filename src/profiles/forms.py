@@ -42,7 +42,8 @@ class TicketForm(forms.ModelForm):
         choices=(
             ('Low', 'Low'),
             ('Medium', 'Medium'),
-            ('High', 'High'))))
+            ('High', 'High'),
+            ('Critical', 'Critical'))))
     status = forms.CharField(widget=forms.Select(
         choices=(
             ('Waiting for support', 'Waiting for support'),

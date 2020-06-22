@@ -13,16 +13,21 @@
 
 <div class="dashboard-center-content top-heading">
     <h2>Recently updated tickets</h2>
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Updated/Created</th>
-            <th>Project</th>
-            <th>Priority</th>
-        </tr>
+    <table class="table table-striped table-dark">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Updated/Created</th>
+                <th>Project</th>
+                <th>Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
     </table>
-    <h4><a href="#">View all tickets</a></h4>    
+    <a class="btn btn-link" href="{% url 'tickets' %}" style="padding-left: 0px;">View all tickets</a>    
     <h2> Projects</h2>
-    <h4><a href="#">View project list</a></h4>
+    <a class="btn btn-link" href="{% url 'projects' %}" style="padding-left: 0px;">View project list</a>
 </div>
 {% endblock %}
