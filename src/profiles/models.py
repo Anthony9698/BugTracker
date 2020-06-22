@@ -77,4 +77,5 @@ class Ticket(models.Model):
     priority = models.CharField(max_length=64, null=False)
     status = models.CharField(max_length=64, null=False, default=None)
     date_created = models.DateTimeField(default=now, editable=False)
+    last_modified_date = models.DateTimeField(auto_now=True)
 
