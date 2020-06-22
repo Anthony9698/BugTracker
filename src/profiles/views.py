@@ -157,4 +157,19 @@ def project_detail(request, pk):
     #     return redirect('tickets')
 
     return render(request, "project/project_detail.html", context)
+
+
+@login_required
+def edit_project(request, pk):
+    project = Project.objects.get(pk=pk)
+    form = ProjectForm(request.POST or None, instance=project)
+    if form.is_valid():
+        form.save()
+        return redirect("projects")
+
+    context = {
+        'edit_project_form': form
+    }
+
+    return render(request, "project/edit_project.html", context)
     

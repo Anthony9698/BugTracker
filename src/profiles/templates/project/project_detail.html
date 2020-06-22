@@ -12,7 +12,7 @@
             <dt>Name: <span>{{project.title}}</span></dt>
             <dt>Description <span>{{project.description}}</span></dt>
         </dl>
-        <a class="btn btn-link" href="#" style="padding-left: 0px;">Edit Project Details</a>
+        <a class="btn btn-link" href="{% url 'edit_project' project.id %}" style="padding-left: 0px;">Edit Project Details</a>
     </div>
 
     <div style="margin-top: 30px;">
