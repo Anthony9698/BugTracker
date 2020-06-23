@@ -70,7 +70,7 @@ def register_page(request):
 @login_required
 def dashboard(request):
     user_projects = Project.objects.filter(users__id=request.user.id)
-    user_tickets = Ticket.objects.filter(project_id__in=user_projects)
+    user_tickets = Ticket.objects.filter(project_id__in=user_projects).order_by('-last_modified_date')
 
     project_tickets_dict = {}
     critical_tickets_dict = {}

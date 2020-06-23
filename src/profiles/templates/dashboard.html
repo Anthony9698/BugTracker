@@ -26,7 +26,7 @@
         <tbody>
             {% for ticket in user_tickets %}
             <tr>
-                <td>{{ticket.title}}</td>
+                <td><a href="{% url 'ticket_detail' ticket.id %}">{{ticket.title}}</a></td>
                 <td>{{ticket.last_modified_date}}</td>
                 <td>{{ticket.project_id}}</td>
                 <td>
