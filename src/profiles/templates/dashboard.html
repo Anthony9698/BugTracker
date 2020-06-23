@@ -28,7 +28,25 @@
                 <td>{{ticket.title}}</td>
                 <td>{{ticket.last_modified_date}}</td>
                 <td>{{ticket.project_id}}</td>
-                <td>{{ticket.priority}}</td>
+                <td>
+                    {% if ticket.priority == 'Low' %}
+                        <div id="priority_label" style="background-color: rgb(61, 84, 107);">
+                            {{ticket.priority}}
+                        </div>
+                    {% elif ticket.priority == 'Medium' %}
+                        <div id="priority_label" style="    background-color: rgb(193, 118, 23);">
+                            {{ticket.priority}}
+                        </div>
+                    {% elif ticket.priority == 'High' %}
+                        <div id="priority_label" style="background-color: rgba(255, 68, 0, 0.678);">
+                            {{ticket.priority}}
+                        </div>
+                    {% elif ticket.priority == 'Critical' %}
+                        <div id="priority_label" style="background-color: rgb(186, 21, 18);">
+                            {{ticket.priority}}
+                        </div>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
