@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load dashboard_extras %}
 
 {% block navbar %}
     {% include 'navbar.html' %}
@@ -8,7 +10,6 @@
 {% block content %}
 <div class="top-heading">
   <h1>My Dashboard</h1>
-  
 </div>
 
 <div class="dashboard-center-content top-heading">
@@ -51,8 +52,25 @@
             {% endfor %}
         </tbody>
     </table>
-    <a class="btn btn-link" href="{% url 'tickets' %}" style="padding-left: 0px;">View all tickets</a>    
-    <h2> Projects</h2>
+    <a class="btn btn-link" href="{% url 'tickets' %}" style="padding-left: 0px;">View all tickets</a>
+    <h2> Projects</h2> 
+    <div class="emulated-flex-gap">
+        {% for project in user_projects %}
+            <figure>
+                <a href="{% url 'project_detail' project.id %}">
+                    <img id="project_img" src="{% static 'images/folder.png' %}" alt="project">
+                </a>
+                <div style="margin-left: 15px; color: white;">
+                    <figcaption><b><a href="{% url 'project_detail' project.id %}">{{project.title}}</a></b></figcaption>
+                    <figcaption><b>Tickets: </b>{{project_tickets_dict|keyvalue:project.id}}</figcaption>
+                    <figcaption><b>Critical: </b>{{critical_tickets_dict|keyvalue:project.id}}</figcaption>
+                    <figcaption><b>Resolved: </b>{{resolved_tickets_dict|keyvalue:project.id}}</figcaption>
+                </div>
+            </figure>
+        {% endfor %}
+
+    </div>
+     
     <a class="btn btn-link" href="{% url 'projects' %}" style="padding-left: 0px;">View project list</a>
 </div>
 {% endblock %}

@@ -68,11 +68,11 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
-
+        
 
 class Ticket(models.Model):
     title = models.CharField(max_length=64, null=False)
-    description = models.TextField(default="")
+    description = models.TextField(default="")       
     project_id = models.ForeignKey(Project, default=None, on_delete=models.PROTECT)
     priority = models.CharField(max_length=64, null=False)
     status = models.CharField(max_length=64, null=False, default=None)

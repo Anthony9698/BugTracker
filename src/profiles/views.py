@@ -8,6 +8,7 @@ from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm
 from django.contrib.auth.forms import AuthenticationForm
 from profiles.models import UserProfile, Project, Ticket
 from django.http import HttpResponseNotFound
+from django.db.models import Q
 
 # Create your views here.
 
@@ -68,10 +69,28 @@ def register_page(request):
 
 @login_required
 def dashboard(request):
-    context = {}
     user_projects = Project.objects.filter(users__id=request.user.id)
     user_tickets = Ticket.objects.filter(project_id__in=user_projects)
-    context['user_tickets'] = user_tickets
+
+    project_tickets_dict = {}
+    critical_tickets_dict = {}
+    resolved_tickets_dict = {}
+    for project in user_projects:
+        project_tickets = Ticket.objects.filter(project_id=project.id).count()
+        critical_tickets = Ticket.objects.filter(Q(project_id=project.id) & Q(priority__exact='Critical')).count()
+        resolved_tickets = Ticket.objects.filter(Q(project_id=project.id) & Q(status__exact='Resolved')).count()
+        project_tickets_dict[project.id] = project_tickets
+        critical_tickets_dict[project.id] = critical_tickets
+        resolved_tickets_dict[project.id] = resolved_tickets
+
+    context = {
+        'user_tickets': user_tickets,
+        'user_projects': user_projects,
+        'project_tickets_dict': project_tickets_dict,
+        'critical_tickets_dict': critical_tickets_dict,
+        'resolved_tickets_dict': resolved_tickets_dict
+    }
+    
     return render(request, 'dashboard.html', context)
 
 
