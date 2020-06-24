@@ -17,6 +17,7 @@
                 <th>Priority</th>
                 <th>Status</th>
                 <th>Assigned To</th>
+                <th class="no-sort"></th>
             </tr>
         </thead>
         <tbody>
@@ -28,6 +29,11 @@
                 <td>{{ticket.priority}}</td>
                 <td>{{ticket.status}}</td>
                 <td>None</td>
+                <td>
+                    <a href="{% url 'ticket_detail' ticket.id %}">Details</a>
+                    <br>
+                    <a href="{% url 'edit_ticket' ticket.id %}">Edit</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -59,7 +65,11 @@ $.fn.dataTable.ext.type.order['ticket-priority-pre'] = function ( d ) {
 // Basic example
 $(document).ready(function () {
     $('#ticketTable').DataTable({
-        "pagingType": "simple" // "simple" option for 'Previous' and 'Next' buttons only
+        "pagingType": "simple", // "simple" option for 'Previous' and 'Next' buttons only
+        "columnDefs": [ {
+            "targets": 'no-sort',
+            "orderable": false,
+        }]
     });
     $('.dataTables_length').addClass('bs-select');
 });
