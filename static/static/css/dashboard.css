@@ -226,12 +226,6 @@ tr:hover {
     justify-content: center;
 }
 
-/* .project-icon-list-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-} */
-
 .emulated-flex-gap {
     display: inline-flex;
     flex-wrap: wrap;
@@ -242,5 +236,3 @@ tr:hover {
   .emulated-flex-gap > * {
     margin: 50px 0 0 50px;
   }
-
-
