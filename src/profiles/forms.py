@@ -7,11 +7,13 @@ from django.db.models.query import RawQuerySet
 
 
 class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(max_length=60, help_text='Required. Add a valid email address.')
+    first_name = forms.CharField(max_length=64)
+    last_name = forms.CharField(max_length=64)
+    email = forms.EmailField(max_length=64, help_text='Required. Add a valid email address.')
 
     class Meta:
         model = UserProfile
-        fields = ["email", "password1", "password2"]
+        fields = ["first_name", "last_name", "email", "password1", "password2"]
 
 
 class LoginForm(forms.ModelForm):

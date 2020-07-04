@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm
 from django.contrib.auth.forms import AuthenticationForm
-from profiles.models import UserProfile, Project, Ticket
+from profiles.models import UserProfile, Project, Ticket, Roles
 from django.http import HttpResponseNotFound
 from django.db.models import Q
 
@@ -55,6 +55,7 @@ def register_page(request):
             email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password1')
             user_profile = authenticate(email=email, password=raw_password)
+            user_profile.roles.add(Roles.objects.first())
             login(request, user_profile)
             return redirect('dashboard')
         else:
@@ -194,4 +195,20 @@ def edit_project(request, pk):
     }
 
     return render(request, "project/edit_project.html", context)
+
+
+@login_required
+def admin_user_view(request):
+    user_list = UserProfile.objects.all()
+    user_roles_dict = {}
+    
+    for user in user_list:
+        user_roles_dict[user.id] = user.roles.all()
+    
+    context = {
+        'user_list': user_list,
+        'user_roles_dict': user_roles_dict
+    }
+
+    return render(request, "user/roles.html", context)
     

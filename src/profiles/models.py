@@ -34,7 +34,16 @@ class MyProfileManager(BaseUserManager):
         user.save(using=self._db)
 
 
+class Roles(models.Model):
+    description = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.description
+
+
 class UserProfile(AbstractBaseUser):
+    first_name = models.CharField(max_length=64, null=False, default="First Name")
+    last_name = models.CharField(max_length=64, null=False, default="Last Name")
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     #username = models.CharField(max_length=30, unique=True)
     date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True)
@@ -43,6 +52,7 @@ class UserProfile(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    roles = models.ManyToManyField(Roles)
 
     USERNAME_FIELD = 'email'
     #REQUIRED_FIELDS = ['username']
@@ -78,4 +88,7 @@ class Ticket(models.Model):
     status = models.CharField(max_length=64, null=False, default=None)
     date_created = models.DateTimeField(default=now, editable=False)
     last_modified_date = models.DateTimeField(auto_now=True)
+
+
+
 

@@ -236,3 +236,7 @@ tr:hover {
   .emulated-flex-gap > * {
     margin: 50px 0 0 50px;
   }
+
+  .navbar-nav {
+      padding-right: 10%;
+  }
