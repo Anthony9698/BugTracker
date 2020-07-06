@@ -57,3 +57,16 @@ class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ['title', 'description', 'project_id', 'priority', 'status']
+
+
+class UserRolesForm(forms.ModelForm):
+    roles = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple,
+        choices=(
+            ('Submitter', 'Submitter'),
+            ('Developer', 'Developer'),
+            ('Project Manager', 'Project Manager'),
+            ('Admin', 'Admin')))
+
+    class Meta:
+        model = UserProfile
+        fields = ['roles',]

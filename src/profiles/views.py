@@ -4,9 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm
+from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm, UserRolesForm
 from django.contrib.auth.forms import AuthenticationForm
-from profiles.models import UserProfile, Project, Ticket, Roles
+from profiles.models import UserProfile, Project, Ticket
 from django.http import HttpResponseNotFound
 from django.db.models import Q
 
@@ -199,16 +199,34 @@ def edit_project(request, pk):
 
 @login_required
 def admin_user_view(request):
-    user_list = UserProfile.objects.all()
+    user_list = UserProfile.objects.all().order_by('last_name')
     user_roles_dict = {}
-    
+
     for user in user_list:
-        user_roles_dict[user.id] = user.roles.all()
-    
+        user_roles_dict[user.id] = list(user.roles)
+  
     context = {
         'user_list': user_list,
-        'user_roles_dict': user_roles_dict
+        'user_roles_dict': user_roles_dict,
     }
 
     return render(request, "user/roles.html", context)
+
+
+@login_required
+def edit_roles(request, pk):
+    user = UserProfile.objects.get(pk=pk)
+    role_form = UserRolesForm(request.POST or None, instance=user)
+
+    if role_form.is_valid():
+        role_form.save()
+        
+        return redirect('admin_user_view')
+
+    context = {
+        'user': user,
+        'role_form': role_form
+    }
+    
+    return render(request, 'user/edit_roles.html', context)
     

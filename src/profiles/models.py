@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils.timezone import now
+from multiselectfield import MultiSelectField
 
 
 # defining what I want to happen when a new user/superuser is created
@@ -34,14 +35,12 @@ class MyProfileManager(BaseUserManager):
         user.save(using=self._db)
 
 
-class Roles(models.Model):
-    description = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.description
-
-
 class UserProfile(AbstractBaseUser):
+    choices = (('Submitter', 'Submitter'),
+               ('Developer', 'Developer'),
+               ('Project Manager', 'Project Manager'),
+               ('Admin', 'Admin'))
+
     first_name = models.CharField(max_length=64, null=False, default="First Name")
     last_name = models.CharField(max_length=64, null=False, default="Last Name")
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
@@ -52,7 +51,7 @@ class UserProfile(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    roles = models.ManyToManyField(Roles)
+    roles = MultiSelectField(choices=choices, default='Submitter')
 
     USERNAME_FIELD = 'email'
     #REQUIRED_FIELDS = ['username']

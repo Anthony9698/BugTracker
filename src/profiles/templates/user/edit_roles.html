@@ -1,0 +1,25 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="top-heading">
+    <h2>Edit Roles</h2>
+</div>
+
+<div class="center-content">
+    <dl class="ticket-description-list">
+        <dt>Name</dt>
+        <dt><span>{{user.first_name}} {{user.last_name}}</span></dt>
+        <br>
+        <dt>Email</dt>
+        <dt><span>{{user.email}}</span></dt>
+        <br>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{role_form|crispy}}
+            <button class="btn btn-secondary">Save</button>
+        </form>
+    </dl>
+</div>
+{% endblock content %}
