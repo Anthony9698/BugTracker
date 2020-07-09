@@ -107,7 +107,7 @@ def tickets(request):
 @login_required
 def projects(request):
     context = {}
-    user_projects = Project.objects.filter(users__id=request.user.id)
+    user_projects = Project.objects.filter(Q(users__id=request.user.id) & Q(archived=False))
     context['user_projects'] = user_projects
     return render(request, 'project/projects.html', context)
 
@@ -229,4 +229,34 @@ def edit_roles(request, pk):
     }
     
     return render(request, 'user/edit_roles.html', context)
+
+
+@login_required
+def archived_projects(request):
+    project_list = Project.objects.filter(archived=True).order_by('title')
+
+    
+
+    context = {
+        'project_list': project_list
+    }
+
+    return render(request, 'project/archived_projects.html', context)
+
+
+@login_required
+def archive_project(request, pk):
+    project = Project.objects.get(pk=pk)
+
+    if request.GET.get("archive"):
+        project.archived = True
+        project.save()
+        
+        return redirect('projects')
+    
+    context = {
+        'project': project
+    }
+
+    return render(request, 'project/archive_project.html', context)
     

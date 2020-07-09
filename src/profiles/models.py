@@ -73,6 +73,7 @@ class Project(models.Model):
     title = models.CharField(max_length=64, null=False)
     description = models.TextField()
     date_added = models.DateField(default=now, editable=False)
+    archived = models.BooleanField(default=False)
     users = models.ManyToManyField(UserProfile)
 
     def __str__(self):

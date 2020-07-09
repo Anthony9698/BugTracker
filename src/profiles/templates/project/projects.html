@@ -32,7 +32,7 @@
                     <a href="{% url 'project_detail' project.id %}">Details</a> |
                     <a href="{% url 'edit_project' project.id %}">Edit</a> |
                     <a href="#">Assign Users</a> |
-                    <a href="#">Archive</a>
+                    <a href="{% url 'archive_project' project.id %}">Archive</a>
                 </div>
             </td>
         </tr>
@@ -40,7 +40,13 @@
 
     </table>
     
-    <h4><a href="#">View Archived Projects</a></h4>
+    <div>
+        <a style="padding-left: 0;" class="btn btn-link" href="{% url 'admin_user_view' %}">Manage User Roles</a>
+    </div>
+    <div>
+        <a style="padding-left: 0;" class="btn btn-link" href="{% url 'archived_projects' %}">View Archived Projects</a>
+    </div>
+    
 </div>
 
 {% endblock %}

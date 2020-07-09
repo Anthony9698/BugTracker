@@ -1,0 +1,38 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+<div class="top-heading" style="border-bottom: none;">
+    <h2>Archive Project</h2>
+</div>
+
+<div class="top-heading dashboard-center-content" style="border-bottom: none">
+    <div class="container" style="margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0;">
+        <div class="row text-center">
+            <div class="col-lg-6">
+                <h3 class="alert alert-danger">Are you sure you want to archive this project?</h3>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-lg-6">
+                <dl class="ticket-description-list">
+                    <dt>Name: <span>{{project.title}}</span></dt>
+                    <dt>Description: <span>{{project.description}}</span></dt>
+                </dl>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <form method="get">
+                    <input class="btn btn-secondary" type="submit" name="archive" value="Confirm Archive">
+                </form>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-lg-6">
+                <a href="{% url 'projects' %}">Back to Projects</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
