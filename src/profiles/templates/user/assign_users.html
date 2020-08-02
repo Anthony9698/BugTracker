@@ -7,6 +7,13 @@
 </div>
 
 <div class="ticket-form">
+    <div>
+        <dl class="ticket-description-list">
+            <dt>Project Name</dt>
+            <dt><span>{{project.title}}</span></dt>
+        </dl> 
+    </div>
+   
     <div class="container">
         <div class="row">
             <div class="col-lg-4">
@@ -15,7 +22,10 @@
                     {{remove_users_form|crispy}}
                     <button id="remove_users_btn" type="submit" class="btn btn-secondary">Remove Selected Users</button>
                 </form>
-
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-lg-4">
                 <form method="POST">
                     {% csrf_token %}
                     {{add_users_form|crispy}}
@@ -23,6 +33,18 @@
                 </form>
             </div>
         </div>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col" style="padding: 0;">
+                <a class="btn btn-link" href="{% url 'project_detail' project.id %}">Back to Project Details</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col" style="padding: 0;">
+                <a class="btn btn-link" href="{% url 'projects' %}">Back to Projects</a>
+            </div>
+        </div>
+        
     </div>
 </div>
 {% endblock %}

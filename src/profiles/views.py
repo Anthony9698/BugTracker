@@ -302,7 +302,8 @@ def assign_users(request, pk):
         
     context = {
         'remove_users_form': remove_users_form,
-        'add_users_form': add_users_form
+        'add_users_form': add_users_form,
+        'project': project
     }
 
     return render(request, 'user/assign_users.html', context)
