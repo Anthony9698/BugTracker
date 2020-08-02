@@ -70,3 +70,29 @@ class UserRolesForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['roles',]
+
+
+# class AssignUsersForm(forms.ModelForm):
+#     def __init__(self, users, *args, **kwargs):
+#         super(AssignUsersForm, self).__init__(*args, **kwargs)
+#         self.fields['users'] = forms.ModelMultipleChoiceField(queryset=users)
+       
+#     class Meta:
+#         model = Project
+#         fields = ['users',]
+
+
+class AddUsersForm(forms.Form):
+    def __init__(self, project_users, *args, **kwargs):
+        super(AddUsersForm, self).__init__(*args, **kwargs)
+        self.fields['assigned'] = forms.ModelMultipleChoiceField(queryset=project_users)
+        self.fields['assigned'].label = "Assigned Users"
+        self.fields['assigned'].required = False
+
+
+class RemoveUsersForm(forms.Form):
+    def __init__(self, all_users, *args, **kwargs):
+        super(RemoveUsersForm, self).__init__(*args, **kwargs)
+        self.fields['all_users'] = forms.ModelMultipleChoiceField(queryset=all_users)
+        self.fields['all_users'].label = "Users to Add"
+        self.fields['all_users'].required = False

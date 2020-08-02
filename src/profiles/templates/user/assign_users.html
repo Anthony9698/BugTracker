@@ -1,0 +1,28 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="top-heading">
+    <h2>Assign Users</h2>
+</div>
+
+<div class="ticket-form">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{remove_users_form|crispy}}
+                    <button id="remove_users_btn" type="submit" class="btn btn-secondary">Remove Selected Users</button>
+                </form>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {{add_users_form|crispy}}
+                    <button type="submit" class="btn btn-secondary">Add Selected Users</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

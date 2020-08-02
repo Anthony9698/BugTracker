@@ -37,6 +37,7 @@ urlpatterns = [
     path('projects/archive/<str:pk>/', profile_views.archive_project, name="archive_project"),
     path('admin-user-view', profile_views.admin_user_view, name="admin_user_view"),
     path('admin-user-view/edit/<str:pk>/', profile_views.edit_roles, name="edit_role"),
+    path('project-user-view/edit/<str:pk>/', profile_views.assign_users, name="assign_users"),
 ]
 
 if settings.DEBUG:

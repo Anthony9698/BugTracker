@@ -45,7 +45,7 @@ class UserProfile(AbstractBaseUser):
     last_name = models.CharField(max_length=64, null=False, default="Last Name")
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     #username = models.CharField(max_length=30, unique=True)
-    date_joined= models.DateTimeField(verbose_name='date joined', auto_now_add=True)
+    date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -59,7 +59,7 @@ class UserProfile(AbstractBaseUser):
     objects = MyProfileManager()
 
     def __str__(self):
-        return self.email
+        return self.first_name + ' ' + self.last_name
 
     # users can do stuff if they are admin
     def has_perm(self, perm, obj=None):

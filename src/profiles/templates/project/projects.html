@@ -31,7 +31,7 @@
                 <div style="float: right;">
                     <a href="{% url 'project_detail' project.id %}">Details</a> |
                     <a href="{% url 'edit_project' project.id %}">Edit</a> |
-                    <a href="#">Assign Users</a> |
+                    <a href="{% url 'assign_users' project.id %}">Assign Users</a> |
                     <a href="{% url 'archive_project' project.id %}">Archive</a>
                 </div>
             </td>

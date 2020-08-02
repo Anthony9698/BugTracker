@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm, UserRolesForm
+from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm, UserRolesForm, AddUsersForm, RemoveUsersForm
 from django.contrib.auth.forms import AuthenticationForm
 from profiles.models import UserProfile, Project, Ticket
 from django.http import HttpResponseNotFound
@@ -55,7 +55,6 @@ def register_page(request):
             email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password1')
             user_profile = authenticate(email=email, password=raw_password)
-            user_profile.roles.add(Roles.objects.first())
             login(request, user_profile)
             return redirect('dashboard')
         else:
@@ -107,7 +106,14 @@ def tickets(request):
 @login_required
 def projects(request):
     context = {}
-    user_projects = Project.objects.filter(Q(users__id=request.user.id) & Q(archived=False))
+    
+    # display all unarchived projects here if you are admin
+    if request.user.is_admin:
+        user_projects = Project.objects.filter(archived=False)
+    
+    else:
+        user_projects = Project.objects.filter(Q(users__id=request.user.id) & Q(archived=False))
+
     context['user_projects'] = user_projects
     return render(request, 'project/projects.html', context)
 
@@ -163,7 +169,6 @@ def new_project(request):
     context = {
         'new_project_form': form
     }
-
     return render(request, "project/new_project.html", context)
 
 
@@ -235,8 +240,6 @@ def edit_roles(request, pk):
 def archived_projects(request):
     project_list = Project.objects.filter(archived=True).order_by('title')
 
-    
-
     context = {
         'project_list': project_list
     }
@@ -259,4 +262,47 @@ def archive_project(request, pk):
     }
 
     return render(request, 'project/archive_project.html', context)
+
+
+# @login_required
+# def assign_users(request, pk):
+#     project = Project.objects.get(pk=pk)
+#     all_users = UserProfile.objects.exclude(id__in=project.users.all())
+#     assign_users_form = AssignUsersForm(project.users.all(), all_users, request.POST or None, instance=project)
     
+#     context = {
+#         'assign_users_form': assign_users_form
+#     }
+
+#     return render(request, 'user/assign_users.html', context)
+    
+
+@login_required
+def assign_users(request, pk):
+    project = Project.objects.get(pk=pk)
+    project_users = project.users.all()
+    all_users = UserProfile.objects.exclude(id__in=project.users.all())
+    remove_users_form = AddUsersForm(project_users, request.POST or None)
+    add_users_form = RemoveUsersForm(all_users, request.POST or None)
+
+    if request.method == 'POST':
+        if request.POST.get("assigned"):
+            selected_users = request.POST.getlist("assigned")
+            users_to_remove = UserProfile.objects.filter(id__in=selected_users)
+            if remove_users_form.is_valid():
+                for user in users_to_remove:
+                    project.users.remove(user)
+            
+        elif request.POST.get("all_users"):
+            selected_users = request.POST.getlist("all_users")
+            users_to_add = UserProfile.objects.filter(id__in=selected_users)
+            if add_users_form.is_valid():
+                for user in users_to_add:
+                    project.users.add(user)
+        
+    context = {
+        'remove_users_form': remove_users_form,
+        'add_users_form': add_users_form
+    }
+
+    return render(request, 'user/assign_users.html', context)
