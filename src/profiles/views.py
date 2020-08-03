@@ -312,6 +312,8 @@ def assign_users(request, pk):
 @login_required
 def assign_ticket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    context = {}
+    context = {
+        'ticket': ticket
+    }
 
     return render(request, 'ticket/assign_ticket.html', context)

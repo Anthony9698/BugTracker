@@ -5,4 +5,23 @@
 <div class="top-heading">
     <h2>Assign Ticket</h2>
 </div>
+<div class="container" style="margin-left: 180px;">
+    <div class="row">
+        <div class="col">
+            <dl class="ticket-description-list">
+                <dt>Title: <span>{{ticket.title}}</span></dt>
+                <dt>Description: <span>{{ticket.description}}</span></dt>
+                <dt>Created: <span>{{ticket.date_created}}</span></dt>
+                <dt>Updated: <span>{{ticket.last_modified_date}}</span></dt>
+                <dt>Project: <span>{{ticket.project_id}}</span></dt>
+                <dt>Type: <span></span></dt>
+                <dt>Priority: <span>{{ticket.priority}}</span></dt>
+                <dt>Status: <span>{{ticket.status}}</span></dt>
+                <dt>Owner: <span></span></dt>
+                <dt>Assigned User:</dt>
+            </dl> 
+        </div>
+    </div>
+</div>
+div
 {% endblock %}
