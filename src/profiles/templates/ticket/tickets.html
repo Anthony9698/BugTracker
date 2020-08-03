@@ -33,6 +33,8 @@
                     <a href="{% url 'ticket_detail' ticket.id %}">Details</a>
                     <br>
                     <a href="{% url 'edit_ticket' ticket.id %}">Edit</a>
+                    <br>
+                    <a href="{% url 'assign_ticket' ticket.id %}">Assign</a>
                 </td>
             </tr>
             {% endfor %}

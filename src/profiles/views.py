@@ -307,3 +307,11 @@ def assign_users(request, pk):
     }
 
     return render(request, 'user/assign_users.html', context)
+
+
+@login_required
+def assign_ticket(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    context = {}
+
+    return render(request, 'ticket/assign_ticket.html', context)
