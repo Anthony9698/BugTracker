@@ -12,14 +12,14 @@
         <dt>Description: <span>{{ticket.description}}</span></dt>
         <dt>Project: <span>{{ticket.project_id}}</span></dt>
         <dt>Created: <span>{{ticket.date_created}}</span></dt>
-        <dt>Updated:</dt>
-        <dt>Assigned To: <a href="#">Edit</a></dt>
+        <dt>Updated: <span>{{ticket.last_modified_date}}</span></dt>
+        <dt>Assigned To: <span>{{ticket.assigned_user}}</span><a href="{% url 'assign_ticket' ticket.id %}">Edit</a></dt>
         <dt>Attachments</dt>
         <button class="btn btn-secondary">Add Attachment</button>
         <a href="{% url 'edit_ticket' ticket.id %}" class="btn btn-info">Edit Ticket</a>
-        <dt>Priority <span>{{ticket.priority}}</span></dt>
-        <dt>Status</dt>
-        <dt>Owner</dt>
+        <dt>Priority: <span>{{ticket.priority}}</span></dt>
+        <dt>Status: <span>{{ticket.status}}</span> </dt>
+        <dt>Owner: <span>{{ticket.owner}}</span></dt>
         <dt><a href="#">Ticket History</a></dt>
         <dt><a href="#">Back to Tickets</a></dt>
     </dl>

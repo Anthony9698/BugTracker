@@ -299,23 +299,11 @@ def assign_users(request, pk):
 @login_required
 def assign_ticket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    # assign_ticket_form = AssignTicketUserForm(project_dev_users, request.POST or None)
     assign_ticket_form = AssignTicketUserForm(ticket, request.POST or None, instance=ticket)
 
     if assign_ticket_form.is_valid():
         assign_ticket_form.save()
-
         return redirect("tickets")
-
-    # if request.method == 'POST':
-    #     if request.POST.get("user"):
-    #         user_to_assign = UserProfile.objects.get(pk=int(request.POST.get("user")))
-
-    #         if assign_ticket_form.is_valid():
-    #             print(ticket.assigned_user)
-    #             ticket.assigned_user = user_to_assign
-    #             print(ticket.assigned_user)
-    #             return redirect('tickets')
 
     context = {
         'ticket': ticket,
