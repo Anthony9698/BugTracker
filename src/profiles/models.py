@@ -81,6 +81,8 @@ class Project(models.Model):
         
 
 class Ticket(models.Model):
+    owner = models.OneToOneField(UserProfile, on_delete=models.PROTECT, null=True, related_name='owner')
+    assigned_user = models.OneToOneField(UserProfile, on_delete=models.PROTECT, null=True, related_name='assigned_user')
     title = models.CharField(max_length=64, null=False)
     description = models.TextField(default="")       
     project_id = models.ForeignKey(Project, default=None, on_delete=models.PROTECT)

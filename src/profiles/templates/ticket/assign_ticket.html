@@ -17,11 +17,19 @@
                 <dt>Type: <span></span></dt>
                 <dt>Priority: <span>{{ticket.priority}}</span></dt>
                 <dt>Status: <span>{{ticket.status}}</span></dt>
-                <dt>Owner: <span></span></dt>
-                <dt>Assigned User:</dt>
+                <dt>Owner: <span>{{ticket.owner}}</span></dt>
             </dl> 
         </div>
     </div>
+    <div class="row">
+        <div class="col-3">
+            <form method="POST">
+                {% csrf_token %}
+                {{assign_ticket_form|crispy}}
+                <button type="submit" class="btn btn-secondary">Assign Ticket to User</button>
+            </form>
+        </div>
+    </div>
 </div>
-div
+
 {% endblock %}

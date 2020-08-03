@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm, UserRolesForm, AddUsersForm, RemoveUsersForm
+from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm, UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm
 from django.contrib.auth.forms import AuthenticationForm
 from profiles.models import UserProfile, Project, Ticket
 from django.http import HttpResponseNotFound
@@ -264,56 +264,62 @@ def archive_project(request, pk):
     return render(request, 'project/archive_project.html', context)
 
 
-# @login_required
-# def assign_users(request, pk):
-#     project = Project.objects.get(pk=pk)
-#     all_users = UserProfile.objects.exclude(id__in=project.users.all())
-#     assign_users_form = AssignUsersForm(project.users.all(), all_users, request.POST or None, instance=project)
-    
-#     context = {
-#         'assign_users_form': assign_users_form
-#     }
-
-#     return render(request, 'user/assign_users.html', context)
-    
-
 @login_required
 def assign_users(request, pk):
     project = Project.objects.get(pk=pk)
     project_users = project.users.all()
     all_users = UserProfile.objects.exclude(id__in=project.users.all())
-    remove_users_form = AddUsersForm(project_users, request.POST or None)
-    add_users_form = RemoveUsersForm(all_users, request.POST or None)
+    remove_project_users_form = AddProjectUsersForm(project_users, request.POST or None)
+    add_project_users_form = RemoveProjectUsersForm(all_users, request.POST or None)
 
     if request.method == 'POST':
         if request.POST.get("assigned"):
             selected_users = request.POST.getlist("assigned")
             users_to_remove = UserProfile.objects.filter(id__in=selected_users)
-            if remove_users_form.is_valid():
+            if remove_project_users_form.is_valid():
                 for user in users_to_remove:
                     project.users.remove(user)
             
         elif request.POST.get("all_users"):
             selected_users = request.POST.getlist("all_users")
             users_to_add = UserProfile.objects.filter(id__in=selected_users)
-            if add_users_form.is_valid():
+            if add_project_users_form.is_valid():
                 for user in users_to_add:
                     project.users.add(user)
         
     context = {
-        'remove_users_form': remove_users_form,
-        'add_users_form': add_users_form,
+        'remove_project_users_form': remove_project_users_form,
+        'add_project_users_form': add_project_users_form,
         'project': project
     }
 
-    return render(request, 'user/assign_users.html', context)
+    return render(request, 'user/assign_project_users.html', context)
 
 
 @login_required
 def assign_ticket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
+    # assign_ticket_form = AssignTicketUserForm(project_dev_users, request.POST or None)
+    assign_ticket_form = AssignTicketUserForm(ticket, request.POST or None, instance=ticket)
+
+    if assign_ticket_form.is_valid():
+        assign_ticket_form.save()
+
+        return redirect("tickets")
+
+    # if request.method == 'POST':
+    #     if request.POST.get("user"):
+    #         user_to_assign = UserProfile.objects.get(pk=int(request.POST.get("user")))
+
+    #         if assign_ticket_form.is_valid():
+    #             print(ticket.assigned_user)
+    #             ticket.assigned_user = user_to_assign
+    #             print(ticket.assigned_user)
+    #             return redirect('tickets')
+
     context = {
-        'ticket': ticket
+        'ticket': ticket,
+        'assign_ticket_form': assign_ticket_form
     }
 
     return render(request, 'ticket/assign_ticket.html', context)

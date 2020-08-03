@@ -72,17 +72,29 @@ class UserRolesForm(forms.ModelForm):
         fields = ['roles',]
         
 
-class AddUsersForm(forms.Form):
+class AddProjectUsersForm(forms.Form):
     def __init__(self, project_users, *args, **kwargs):
-        super(AddUsersForm, self).__init__(*args, **kwargs)
+        super(AddProjectUsersForm, self).__init__(*args, **kwargs)
         self.fields['assigned'] = forms.ModelMultipleChoiceField(queryset=project_users)
         self.fields['assigned'].label = "Assigned Users"
         self.fields['assigned'].required = False
 
 
-class RemoveUsersForm(forms.Form):
+class RemoveProjectUsersForm(forms.Form):
     def __init__(self, all_users, *args, **kwargs):
-        super(RemoveUsersForm, self).__init__(*args, **kwargs)
+        super(RemoveProjectUsersForm, self).__init__(*args, **kwargs)
         self.fields['all_users'] = forms.ModelMultipleChoiceField(queryset=all_users)
         self.fields['all_users'].label = "Users to Add"
         self.fields['all_users'].required = False
+
+
+class AssignTicketUserForm(forms.ModelForm):
+    def __init__(self, ticket, *args, **kwargs):
+        super(AssignTicketUserForm, self).__init__(*args, **kwargs)
+        project = Project.objects.get(pk=ticket.project_id.id)
+        self.fields['assigned_user'].queryset = project.users.filter(roles__contains="Developer")
+        self.fields['assigned_user'].required = False
+
+    class Meta:
+        model = Ticket
+        fields = ['assigned_user',]
