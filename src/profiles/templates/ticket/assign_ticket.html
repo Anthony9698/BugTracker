@@ -28,6 +28,12 @@
                 {{assign_ticket_form|crispy}}
                 <button type="submit" class="btn btn-secondary">Assign Ticket to User</button>
             </form>
+
+            <div style="margin-top: 20px;">
+                <a href="{% url 'edit_ticket' ticket.id %}">Back to Ticket Edit</a>
+                <br>
+                <a href="{% url 'tickets' %}">Back to Tickets</a>
+            </div>
         </div>
     </div>
 </div>
