@@ -4,7 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm, UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm
+from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
+    UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
+    CommentForm
 from django.contrib.auth.forms import AuthenticationForm
 from profiles.models import UserProfile, Project, Ticket
 from django.http import HttpResponseNotFound
@@ -311,3 +313,16 @@ def assign_ticket(request, pk):
     }
 
     return render(request, 'ticket/assign_ticket.html', context)
+
+
+@login_required
+def new_comment(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    new_comment_form = CommentForm(request.POST)
+
+    context = {
+        'new_comment_form': new_comment_form,
+        'ticket': ticket
+    }
+
+    return render(request, 'ticket/new_comment.html', context)

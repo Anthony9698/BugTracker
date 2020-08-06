@@ -38,7 +38,8 @@ urlpatterns = [
     path('admin-user-view', profile_views.admin_user_view, name="admin_user_view"),
     path('admin-user-view/edit/<str:pk>/', profile_views.edit_roles, name="edit_role"),
     path('project-user-view/edit/<str:pk>/', profile_views.assign_users, name="assign_users"),
-    path('tickets/assign-user/<str:pk>/', profile_views.assign_ticket, name="assign_ticket")
+    path('tickets/assign-user/<str:pk>/', profile_views.assign_ticket, name="assign_ticket"),
+    path('ticket-comments/ticket-id/<str:pk>/', profile_views.new_comment, name="new_comment")
 ]
 
 if settings.DEBUG:

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from profiles.models import UserProfile, Project, Ticket
+from profiles.models import UserProfile, Project, Ticket, Comment
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
 from django.db.models.query import RawQuerySet
@@ -98,3 +98,14 @@ class AssignTicketUserForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ['assigned_user',]
+
+
+class CommentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.fields['description'].widget.attrs['rows'] = 4
+        self.fields['description'].widget.attrs['cols'] = 15
+
+    class Meta:
+        model = Comment
+        fields = ['description',]
