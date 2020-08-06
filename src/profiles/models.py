@@ -92,5 +92,11 @@ class Ticket(models.Model):
     last_modified_date = models.DateTimeField(auto_now=True)
 
 
+class Comment(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.PROTECT)
+    description = models.TextField(default="")
+    date_posted = models.DateTimeField(default=now, editable=False)
+
+
 
 
