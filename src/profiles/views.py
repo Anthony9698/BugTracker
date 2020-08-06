@@ -8,7 +8,7 @@ from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm
 from django.contrib.auth.forms import AuthenticationForm
-from profiles.models import UserProfile, Project, Ticket
+from profiles.models import UserProfile, Project, Ticket, Comment
 from django.http import HttpResponseNotFound
 from django.db.models import Q
 
@@ -137,7 +137,13 @@ def new_ticket(request):
 @login_required
 def ticket_detail(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    context = {'ticket': ticket}
+    ticket_comments = Comment.objects.filter(ticket_id=ticket.id)
+    
+    context = {
+        'ticket': ticket,
+        'ticket_comments': ticket_comments
+    }
+    
     if request.method == 'POST':
         ticket.delete()
         return redirect('tickets')
@@ -319,6 +325,14 @@ def assign_ticket(request, pk):
 def new_comment(request, pk):
     ticket = Ticket.objects.get(pk=pk)
     new_comment_form = CommentForm(request.POST)
+
+    if new_comment_form.is_valid():
+        comment = new_comment_form.save()
+        comment.user_id = request.user
+        comment.ticket_id = ticket
+        comment.save()
+
+        return redirect("/tickets/detail/" + str(ticket.id))
 
     context = {
         'new_comment_form': new_comment_form,

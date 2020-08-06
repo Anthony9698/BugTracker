@@ -93,7 +93,8 @@ class Ticket(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.PROTECT)
+    user_id = models.ForeignKey(UserProfile, on_delete=models.PROTECT, null=True)
+    ticket_id = models.ForeignKey(Ticket, on_delete=models.PROTECT, null=True)
     description = models.TextField(default="")
     date_posted = models.DateTimeField(default=now, editable=False)
 

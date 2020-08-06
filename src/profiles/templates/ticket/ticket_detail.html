@@ -20,12 +20,31 @@
         <dt>Priority: <span>{{ticket.priority}}</span></dt>
         <dt>Status: <span>{{ticket.status}}</span> </dt>
         <dt>Owner: <span>{{ticket.owner}}</span></dt>
-        <dt><a href="#">Ticket History</a></dt>
-        <dt><a href="#">Back to Tickets</a></dt>
+        <dt><a class="btn btn-link" href="#" style="padding: 0;">Ticket History</a></dt>
+        <dt><a class="btn btn-link" href="#" style="padding: 0;">Back to Tickets</a></dt>
     </dl>
 
     <div>
         <h3>Comments</h2>
+            <div class="container" style="margin-left: 0px; padding: 0px;">
+                {% for comment in ticket_comments %}
+                <div class="row">
+                    <div class="col-3">
+                        {{comment.description}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3" style="font-size: small; margin-bottom: 20px;">
+                        <b>Posted by <span>{{comment.user_id.first_name}} {{comment.user_id.last_name}}</span></b>
+                        <br>
+                        <b>{{comment.date_posted}}</b>
+                        <br>
+                        <a class="btn btn-link" href="{% url 'edit_ticket' ticket.id %}" style="padding: 0px;">Edit</a> | 
+                        <a class="btn btn-link" href="" style="padding: 0px;">Delete</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
             <a class="btn btn-secondary" href="{% url 'new_comment' ticket.id %}">Add Comment</a>
     </div>
 
