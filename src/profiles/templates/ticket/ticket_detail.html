@@ -21,7 +21,7 @@
         <dt>Status: <span>{{ticket.status}}</span> </dt>
         <dt>Owner: <span>{{ticket.owner}}</span></dt>
         <dt><a class="btn btn-link" href="#" style="padding: 0;">Ticket History</a></dt>
-        <dt><a class="btn btn-link" href="#" style="padding: 0;">Back to Tickets</a></dt>
+        <dt><a class="btn btn-link" href="{% url 'tickets' %}" style="padding: 0;">Back to Tickets</a></dt>
     </dl>
 
     <div>
@@ -40,7 +40,7 @@
                         <b>{{comment.date_posted}}</b>
                         <br>
                         <a class="btn btn-link" href="{% url 'edit_ticket' ticket.id %}" style="padding: 0px;">Edit</a> | 
-                        <a class="btn btn-link" href="" style="padding: 0px;">Delete</a>
+                        <a class="btn btn-link" href="{% url 'delete_comment' comment.id %}" style="padding: 0px;">Delete</a>
                     </div>
                 </div>
                 {% endfor %}
@@ -48,10 +48,10 @@
             <a class="btn btn-secondary" href="{% url 'new_comment' ticket.id %}">Add Comment</a>
     </div>
 
-    <!-- <form method="POST">
+    <form method="POST">
         {% csrf_token %}
         <button class="btn btn-danger">Delete</button>
-    </form> -->
+    </form>
 
 
 </div>

@@ -139,14 +139,14 @@ def ticket_detail(request, pk):
     ticket = Ticket.objects.get(pk=pk)
     ticket_comments = Comment.objects.filter(ticket_id=ticket.id)
     
+    if request.POST:
+        ticket.delete()
+        return redirect('tickets')
+
     context = {
         'ticket': ticket,
         'ticket_comments': ticket_comments
     }
-    
-    if request.method == 'POST':
-        ticket.delete()
-        return redirect('tickets')
 
     return render(request, "ticket/ticket_detail.html", context)
 
@@ -177,6 +177,7 @@ def new_project(request):
     context = {
         'new_project_form': form
     }
+
     return render(request, "project/new_project.html", context)
 
 
@@ -184,13 +185,11 @@ def new_project(request):
 def project_detail(request, pk):
     project = Project.objects.get(pk=pk)
     project_tickets = Ticket.objects.filter(project_id=project.id)
+        
     context = {
         'project': project,
         'project_tickets': project_tickets
     }
-    # if request.method == 'POST':
-    #     ticket.delete()
-    #     return redirect('tickets')
 
     return render(request, "project/project_detail.html", context)
 
@@ -233,14 +232,13 @@ def edit_roles(request, pk):
 
     if role_form.is_valid():
         role_form.save()
-        
         return redirect('admin_user_view')
 
     context = {
         'user': user,
         'role_form': role_form
     }
-    
+
     return render(request, 'user/edit_roles.html', context)
 
 
@@ -259,10 +257,9 @@ def archived_projects(request):
 def archive_project(request, pk):
     project = Project.objects.get(pk=pk)
 
-    if request.GET.get("archive"):
+    if request.POST:
         project.archived = True
         project.save()
-        
         return redirect('projects')
     
     context = {
@@ -331,7 +328,6 @@ def new_comment(request, pk):
         comment.user_id = request.user
         comment.ticket_id = ticket
         comment.save()
-
         return redirect("/tickets/detail/" + str(ticket.id))
 
     context = {
@@ -340,3 +336,34 @@ def new_comment(request, pk):
     }
 
     return render(request, 'ticket/new_comment.html', context)
+
+
+@login_required
+def delete_comment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+
+    if request.POST:
+        comment.delete()
+        return redirect("/tickets/detail/" + str(comment.ticket_id.id))
+
+    context = {
+        'comment': comment,
+    }
+
+    return render(request, 'ticket/delete_comment.html', context)
+
+
+
+
+
+    # if request.GET.get("archive"):
+    #     project.archived = True
+    #     project.save()
+        
+    #     return redirect('projects')
+    
+    # context = {
+    #     'project': project
+    # }
+
+    # return render(request, 'project/archive_project.html', context)

@@ -1,0 +1,11 @@
+{% extends 'project/archive_project.html' %}
+
+{% block title %}Delete Comment{% endblock %}
+{% block warning %}Are you sure you want to delete this comment?{% endblock %}
+{% block model_detail %} <dt>Description: <span>{{comment.description}}</span></dt> {% endblock %}
+{% block form_button %}<button class="btn btn-danger" type="submit">Delete</button>{% endblock %}
+{% block links %}
+    <a href="{% url 'ticket_detail' comment.ticket_id.id %}">Back to Ticket Details</a>
+    <br>
+    <a href="{% url 'tickets' %}">Back to Tickets</a>
+{% endblock %}
