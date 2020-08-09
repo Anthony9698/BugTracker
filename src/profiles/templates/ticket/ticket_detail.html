@@ -35,11 +35,18 @@
                 </div>
                 <div class="row">
                     <div class="col-3" style="font-size: small; margin-bottom: 20px;">
-                        <b>Posted by <span>{{comment.user_id.first_name}} {{comment.user_id.last_name}}</span></b>
-                        <br>
-                        <b>{{comment.date_posted}}</b>
-                        <br>
-                        <a class="btn btn-link" href="{% url 'edit_ticket' ticket.id %}" style="padding: 0px;">Edit</a> | 
+                        {% if comment.last_modified_date == comment.date_posted %}
+                            <b>Posted by <span>{{comment.user_id.first_name}} {{comment.user_id.last_name}}</span></b>
+                            <br>
+                            <b>{{comment.date_posted}}</b>
+                            <br>
+                        {% else %}
+                            <b>Edited by <span>{{comment.user_id.first_name}} {{comment.user_id.last_name}}</span></b>
+                            <br>
+                            <b>{{comment.last_modified_date}}</b>
+                            <br>
+                        {% endif %}
+                        <a class="btn btn-link" href="{% url 'edit_comment' comment.id %}" style="padding: 0px;">Edit</a> | 
                         <a class="btn btn-link" href="{% url 'delete_comment' comment.id %}" style="padding: 0px;">Delete</a>
                     </div>
                 </div>

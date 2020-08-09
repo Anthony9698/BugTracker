@@ -40,7 +40,8 @@ urlpatterns = [
     path('project-user-view/edit/<str:pk>/', profile_views.assign_users, name="assign_users"),
     path('tickets/assign-user/<str:pk>/', profile_views.assign_ticket, name="assign_ticket"),
     path('ticket-comments/ticket-id/<str:pk>/', profile_views.new_comment, name="new_comment"),
-    path('ticket-comments/delete/<str:pk>/', profile_views.delete_comment, name="delete_comment")
+    path('ticket-comments/delete/<str:pk>/', profile_views.delete_comment, name="delete_comment"),
+    path('ticket-comments/edit/<str:pk>/', profile_views.edit_comment, name="edit_comment"),
 ]
 
 if settings.DEBUG:

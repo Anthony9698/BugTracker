@@ -353,17 +353,18 @@ def delete_comment(request, pk):
     return render(request, 'ticket/delete_comment.html', context)
 
 
+@login_required
+def edit_comment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    edit_comment_form = CommentForm(request.POST or None, instance=comment)
 
+    if edit_comment_form.is_valid():
+        edit_comment_form.save()
+        return redirect("/tickets/detail/" + str(comment.ticket_id.id))
 
+    context = {
+        'comment': comment,
+        'edit_comment_form': edit_comment_form
+    }
 
-    # if request.GET.get("archive"):
-    #     project.archived = True
-    #     project.save()
-        
-    #     return redirect('projects')
-    
-    # context = {
-    #     'project': project
-    # }
-
-    # return render(request, 'project/archive_project.html', context)
+    return render(request, 'ticket/edit_comment.html', context)

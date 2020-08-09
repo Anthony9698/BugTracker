@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils.timezone import now
 from multiselectfield import MultiSelectField
-
+from django.utils.timezone import get_current_timezone
+from datetime import datetime
 
 # defining what I want to happen when a new user/superuser is created
 class MyProfileManager(BaseUserManager):
@@ -97,6 +98,24 @@ class Comment(models.Model):
     ticket_id = models.ForeignKey(Ticket, on_delete=models.PROTECT, null=True)
     description = models.TextField(default="")
     date_posted = models.DateTimeField(default=now, editable=False)
+    last_modified_date = models.DateTimeField(blank=True)
+
+    __original_description = None
+
+    def __init__(self, *args, **kwargs):
+        super(Comment, self).__init__(*args, **kwargs)
+        self.__original_description = self.description
+
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        # description changed, do something here
+        if self.description != self.__original_description:
+            self.last_modified_date = datetime.now(tz=get_current_timezone())
+
+        super(Comment, self).save(force_insert, force_update, *args, **kwargs)
+        self.__original_description = self.description
+
+
+
 
 
 
