@@ -11,6 +11,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from profiles.models import UserProfile, Project, Ticket, Comment
 from django.http import HttpResponseNotFound
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 
@@ -138,6 +139,20 @@ def new_ticket(request):
 def ticket_detail(request, pk):
     ticket = Ticket.objects.get(pk=pk)
     ticket_comments = Comment.objects.filter(ticket_id=ticket.id)
+    paginator = Paginator(ticket_comments, 2)
+    page = request.GET.get('page')
+    print("********************************")
+    print(page)
+
+    try:
+        comment_posts = paginator.page(page)
+
+    except PageNotAnInteger:
+        comment_posts = paginator.page(1)
+
+    except EmptyPage:
+        comment_posts = paginator.page(paginator.num_pages)
+
     
     if request.POST:
         ticket.delete()
@@ -145,7 +160,8 @@ def ticket_detail(request, pk):
 
     context = {
         'ticket': ticket,
-        'ticket_comments': ticket_comments
+        'page': page,
+        'comment_posts': comment_posts
     }
 
     return render(request, "ticket/ticket_detail.html", context)
