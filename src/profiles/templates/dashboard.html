@@ -68,9 +68,10 @@
                 </div>
             </figure>
         {% endfor %}
-
     </div>
-     
+    <div>
+        {% include 'pagination.html' with page=user_projects %}
+    </div>
     <a class="btn btn-link" href="{% url 'projects' %}" style="padding-left: 0px;">View project list</a>
 </div>
 {% endblock %}

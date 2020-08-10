@@ -53,7 +53,7 @@
                 {% endfor %}
             </div>
             {% if ticket_comments|length > 2 %}
-                {% include 'pagination/comment_posts.html' with page=comment_posts %}
+                {% include 'pagination.html' with page=comment_posts %}
             {% endif %}
             <a class="btn btn-secondary" href="{% url 'new_comment' ticket.id %}" style="margin-top: 20px; margin-bottom: 20px;">Add Comment</a>
     </div>

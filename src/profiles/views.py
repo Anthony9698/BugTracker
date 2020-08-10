@@ -74,6 +74,17 @@ def register_page(request):
 def dashboard(request):
     user_projects = Project.objects.filter(users__id=request.user.id)
     user_tickets = Ticket.objects.filter(project_id__in=user_projects).order_by('-last_modified_date')
+    project_paginator = Paginator(user_projects, 5)
+    page = request.GET.get('page')
+
+    try:
+        user_projects = project_paginator.page(page)
+
+    except PageNotAnInteger:
+        user_projects = project_paginator.page(1)
+
+    except EmptyPage:
+        user_projects = project_paginator.page(project_paginator.num_pages)
 
     project_tickets_dict = {}
     critical_tickets_dict = {}
