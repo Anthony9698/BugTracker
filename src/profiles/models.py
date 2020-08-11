@@ -92,10 +92,57 @@ class Ticket(models.Model):
     date_created = models.DateTimeField(default=now, editable=False)
     last_modified_date = models.DateTimeField(auto_now=True)
 
+    __original_assigned_user = None
+    __original_title = None
+    __original_description = None
+    __original_project_id = None
+    __original_priority = None
+    __original_status = None
+    __modifications = []
+
+    def detect_changes(self, *args, **kwargs):
+        if self.assigned_user != self.__original_assigned_user and self.__original_assigned_user is not "":
+            self.__modifications.append("Ticket assignment changed from " + self.__original_assigned_user + " to " + self.assigned_user)
+
+        if self.title != self.__original_title and self.__original_title is not "":
+            self.__modifications.append("Title changed from " + self.__original_title + " to " + self.title)
+
+        if self.description != self.__original_description and self.__original_description is not "":
+            self.__modifications.append("Description changed from " + self.__original_description + ' to ' + self.description)
+
+        if self.project_id != self.__original_project_id and self.__original_project_id is not None:
+            self.__modifications.append("Project changed from " + self.__original_project_id + ' to ' + self.project_id)
+
+        if self.priority != self.__original_priority and self.__original_priority is not "":
+            self.__modifications.append("Priority changed from " + self.__original_priority + ' to ' + self.priority)
+
+        if self.status != self.__original_status and self.__original_status is not None:
+            self.__modifications.append("Status changed from " + self.__original_status + ' to ' + self.status)
+            
+
+    def __init__(self, *args, **kwargs):
+        super(Ticket, self).__init__(*args, **kwargs)
+        self.__original_assigned_user = self.assigned_user
+        self.__original_title = self.title
+        self.__original_description = self.description
+        self.__original_priority = self.priority
+        self.__original_status = self.status
+   
+    def save(self, *args, **kwargs):
+        self.detect_changes()
+        super(Ticket, self).save(*args, **kwargs)       
+        self.__original_assigned_user = self.assigned_user
+        self.__original_title = self.title
+        self.__original_description = self.description
+        self.__original_project_id = self.project_id
+        self.__original_priority = self.priority
+        self.__original_status = self.status
+        self.__modifications.clear()
+
 
 class Comment(models.Model):
-    user_id = models.ForeignKey(UserProfile, on_delete=models.PROTECT, null=True)
-    ticket_id = models.ForeignKey(Ticket, on_delete=models.PROTECT, null=True)
+    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
+    ticket_id = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=True)
     description = models.TextField(default="")
     date_posted = models.DateTimeField(default=now, editable=False)
     last_modified_date = models.DateTimeField(blank=True)
