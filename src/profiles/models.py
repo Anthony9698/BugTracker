@@ -108,7 +108,7 @@ class Project(models.Model):
 
 class Ticket(models.Model):
     # owner = models.ForeignKey(UserProfile, on_delete=models.PROTECT, null=True, related_name='owner')
-    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=None)
+    #owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=None)
     assigned_user = models.OneToOneField(UserProfile, on_delete=models.PROTECT, null=True, related_name='assigned_user')
     title = models.CharField(max_length=64, null=False)
     description = models.TextField(default="")       
@@ -118,60 +118,61 @@ class Ticket(models.Model):
     date_created = models.DateTimeField(default=now, editable=False)
     last_modified_date = models.DateTimeField(auto_now=True)
 
-    __original_assigned_user = None
-    __original_title = None
-    __original_description = None
-    __original_project = None
-    __original_priority = None
-    __original_status = None
-    __new_ticket = False
+    # __original_assigned_user = None
+    # __original_title = None
+    # __original_description = None
+    # __original_project = None
+    # __original_priority = None
+    # __original_status = None
+    # __new_ticket = False
 
-    def detect_changes(self, *args, **kwargs):
-        if self.assigned_user != self.__original_assigned_user and self.__original_assigned_user != "":
-            TicketAuditTrail.objects.create(ticket=self, entry_message="Ticket assignment changed from " + "\"" + self.__original_assigned_user + "\"" + " to " + "\"" + self.assigned_user + "\"")
+    # def detect_changes(self, *args, **kwargs):
+    #     if self.assigned_user != self.__original_assigned_user and self.__original_assigned_user != "":
+    #         TicketAuditTrail.objects.create(ticket=self, entry_message="Ticket assignment changed from " + "\"" + self.__original_assigned_user + "\"" + " to " + "\"" + self.assigned_user + "\"")
 
-        if self.title != self.__original_title and self.__original_title != "":
-            TicketAuditTrail.objects.create(ticket=self, entry_message="Title changed from " + "\"" + self.__original_title + "\"" + " to " + "\"" + self.title + "\"")
+    #     if self.title != self.__original_title and self.__original_title != "":
+    #         TicketAuditTrail.objects.create(ticket=self, entry_message="Title changed from " + "\"" + self.__original_title + "\"" + " to " + "\"" + self.title + "\"")
 
-        if self.description != self.__original_description and self.__original_description != "":
-            TicketAuditTrail.objects.create(ticket=self, entry_message="Description changed from " + "\"" + self.__original_description + "\"" + ' to ' + "\"" + self.description + "\"")
+    #     if self.description != self.__original_description and self.__original_description != "":
+    #         TicketAuditTrail.objects.create(ticket=self, entry_message="Description changed from " + "\"" + self.__original_description + "\"" + ' to ' + "\"" + self.description + "\"")
 
-        if self.project != self.__original_project and self.__original_project is not None:
-            TicketAuditTrail.objects.create(ticket=self, entry_message="Project changed from " + "\"" + self.__original_project + "\"" + ' to ' + "\"" + self.project + "\"")
+    #     if self.project != self.__original_project and self.__original_project is not None:
+    #         TicketAuditTrail.objects.create(ticket=self, entry_message="Project changed from " + "\"" + self.__original_project + "\"" + ' to ' + "\"" + self.project + "\"")
 
-        if self.priority != self.__original_priority and self.__original_priority != "":
-            TicketAuditTrail.objects.create(ticket=self, entry_message="Priority changed from " + "\"" + self.__original_priority + "\"" + ' to ' + "\"" + self.priority + "\"")
+    #     if self.priority != self.__original_priority and self.__original_priority != "":
+    #         TicketAuditTrail.objects.create(ticket=self, entry_message="Priority changed from " + "\"" + self.__original_priority + "\"" + ' to ' + "\"" + self.priority + "\"")
 
-        if self.status != self.__original_status and self.__original_status is not None:
-            TicketAuditTrail.objects.create(ticket=self, entry_message="Status changed from " + "\"" + self.__original_status + "\"" + ' to ' + "\"" + self.status + "\"")
+    #     if self.status != self.__original_status and self.__original_status is not None:
+    #         TicketAuditTrail.objects.create(ticket=self, entry_message="Status changed from " + "\"" + self.__original_status + "\"" + ' to ' + "\"" + self.status + "\"")
 
 
-    def __init__(self, *args, **kwargs):
-        super(Ticket, self).__init__(*args, **kwargs)
-        self.__original_assigned_user = self.assigned_user
-        self.__original_title = self.title
-        self.__original_description = self.description
-        self.__original_priority = self.priority
-        self.__original_status = self.status
+    # def __init__(self, *args, **kwargs):
+    #     super(Ticket, self).__init__(*args, **kwargs)
+    #     self.__original_assigned_user = self.assigned_user
+    #     self.__original_title = self.title
+    #     self.__original_description = self.description
+    #     self.__original_priority = self.priority
+    #     self.__original_status = self.status
    
-    def save(self, *args, **kwargs):
-        if self.id is not None:
-            self.detect_changes()
-        else:
-            self.__new_ticket = True
-        super(Ticket, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.id is not None:
+    #         self.detect_changes()
+    #     else:
+    #         self.__new_ticket = True
+    #     super(Ticket, self).save(*args, **kwargs)
 
-        if self.__new_ticket:
-            TicketAuditTrail.objects.create(ticket=self, entry_message="Created by " + str(self.owner) + "\nTitle: " \
-                                         + self.title + "\nProject: " + str(self.project) + "\nDescription: " + self.description \
-                                         + "\nPriority: " + self.priority)
-            self.__new_ticket = False
-        self.__original_assigned_user = self.assigned_user
-        self.__original_title = self.title
-        self.__original_description = self.description
-        self.__original_project = self.project
-        self.__original_priority = self.priority
-        self.__original_status = self.status
+    #     if self.__new_ticket:
+    #         TicketAuditTrail.objects.create(ticket=self, entry_message="Created by " + "str(self.owner)" + "\nTitle: " \
+    #                                      + self.title + "\nProject: " + str(self.project) + "\nDescription: " + self.description \
+    #                                      + "\nPriority: " + self.priority)
+    #         self.__new_ticket = False
+
+    #     self.__original_assigned_user = self.assigned_user
+    #     self.__original_title = self.title
+    #     self.__original_description = self.description
+    #     self.__original_project = self.project
+    #     self.__original_priority = self.priority
+    #     self.__original_status = self.status
 
 
 class Comment(models.Model):
@@ -197,6 +198,7 @@ class Comment(models.Model):
 
 
 class TicketAuditTrail(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     date_added = models.DateTimeField(default=now, editable=False)
     entry_message = models.TextField(default="")

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from profiles.models import UserProfile, Project, Ticket, Comment
+from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
 from django.db.models.query import RawQuerySet
@@ -40,6 +40,17 @@ class TicketForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(TicketForm, self).__init__(*args, **kwargs)
         self.fields['project'].queryset = Project.objects.filter(users__id=user.id)
+        self.initial_title = self.instance.title
+        self.initial_description = self.instance.description
+        self.initial_priority = self.instance.priority
+        self.initial_status = self.instance.status
+        self.user = user
+
+        try:
+            self.initial_project = self.instance.project
+        except Project.DoesNotExist:
+            self.initial_project = None
+
     priority = forms.CharField(widget=forms.Select(
         choices=(
             ('Low', 'Low'),
@@ -53,6 +64,46 @@ class TicketForm(forms.ModelForm):
             ('Resolved', 'Resolved'),
             ('On hold', 'On hold'),
             ('New', 'New'))))
+
+    def save(self, commit=True):
+        super(TicketForm, self).save(commit=True)
+        if self.initial_project is None:
+            TicketAuditTrail.objects.create(
+                user=self.user,
+                ticket=self.instance,
+                entry_message="Title: " + self.instance.title + "\n" + "Project: " + str(self.instance.project) + "\n" \
+                              "Description: " + self.instance.description + "\n" + "Priority: " + self.instance.priority)
+        elif self.has_changed():
+            for change in self.changed_data:
+                if change == 'title':
+                    TicketAuditTrail.objects.create(
+                        user=self.user,
+                        ticket=self.instance,
+                        entry_message="Title changed from " + "\"" + self.initial_title + "\"" + " to " + "\"" + self.instance.title + "\"")
+                
+                elif change == 'description':
+                    TicketAuditTrail.objects.create(
+                        user=self.user,
+                        ticket=self.instance,
+                        entry_message="Description changed from " + "\"" + self.initial_description + "\"" + ' to ' + "\"" + self.instance.description + "\"")
+
+                elif change == 'project':
+                    TicketAuditTrail.objects.create(
+                        user=self.user,
+                        ticket=self.instance,
+                        entry_message="Project changed from " + "\"" + str(self.initial_project) + "\"" + ' to ' + "\"" + str(self.instance.project) + "\"")
+
+                elif change == 'priority':
+                    TicketAuditTrail.objects.create(
+                        user=self.user,
+                        ticket=self.instance,
+                        entry_message="Priority changed from " + "\"" + self.initial_priority + "\"" + ' to ' + "\"" + self.instance.priority + "\"")
+
+                elif change == 'status':
+                    TicketAuditTrail.objects.create(
+                        user=self.user,
+                        ticket=self.instance,
+                        entry_message="Status changed from " + "\"" + str(self.initial_status) + "\"" + ' to ' + "\"" + self.instance.status + "\"")
 
     class Meta:
         model = Ticket
