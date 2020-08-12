@@ -73,7 +73,7 @@ def register_page(request):
 @login_required
 def dashboard(request):
     user_projects = Project.objects.filter(users__id=request.user.id)
-    user_tickets = Ticket.objects.filter(project_id__in=user_projects).order_by('-last_modified_date')
+    user_tickets = Ticket.objects.filter(project__in=user_projects).order_by('-last_modified_date')
     project_paginator = Paginator(user_projects, 5)
     page = request.GET.get('page')
 
@@ -89,13 +89,13 @@ def dashboard(request):
     project_tickets_dict = {}
     critical_tickets_dict = {}
     resolved_tickets_dict = {}
-    for project in user_projects:
-        project_tickets = Ticket.objects.filter(project_id=project.id).count()
-        critical_tickets = Ticket.objects.filter(Q(project_id=project.id) & Q(priority__exact='Critical')).count()
-        resolved_tickets = Ticket.objects.filter(Q(project_id=project.id) & Q(status__exact='Resolved')).count()
-        project_tickets_dict[project.id] = project_tickets
-        critical_tickets_dict[project.id] = critical_tickets
-        resolved_tickets_dict[project.id] = resolved_tickets
+    for proj in user_projects:
+        project_tickets = Ticket.objects.filter(project=proj.id).count()
+        critical_tickets = Ticket.objects.filter(Q(project=proj.id) & Q(priority__exact='Critical')).count()
+        resolved_tickets = Ticket.objects.filter(Q(project=proj.id) & Q(status__exact='Resolved')).count()
+        project_tickets_dict[proj.id] = project_tickets
+        critical_tickets_dict[proj.id] = critical_tickets
+        resolved_tickets_dict[proj.id] = resolved_tickets
 
     context = {
         'user_tickets': user_tickets,
@@ -112,7 +112,7 @@ def dashboard(request):
 def tickets(request):
     context = {}
     user_projects = Project.objects.filter(users__id=request.user.id)
-    user_tickets = Ticket.objects.filter(project_id__in=user_projects)
+    user_tickets = Ticket.objects.filter(project__in=user_projects)
     context['user_tickets'] = user_tickets
     return render(request, 'ticket/tickets.html', context)
 
@@ -136,7 +136,9 @@ def projects(request):
 def new_ticket(request):
     form = TicketForm(request.user, request.POST)
     if form.is_valid():
-        form.save()
+        ticket = form.save(commit=False)
+        ticket.owner = request.user
+        ticket.save()
         return redirect("tickets")
 
     context = {
@@ -148,8 +150,8 @@ def new_ticket(request):
 
 @login_required
 def ticket_detail(request, pk):
-    ticket = Ticket.objects.get(pk=pk)
-    ticket_comments = Comment.objects.filter(ticket_id=ticket.id)
+    _ticket = Ticket.objects.get(pk=pk)
+    ticket_comments = Comment.objects.filter(ticket=_ticket.id)
     paginator = Paginator(ticket_comments, 2)
     page = request.GET.get('page')
 
@@ -163,11 +165,11 @@ def ticket_detail(request, pk):
         comment_posts = paginator.page(paginator.num_pages)
     
     if request.POST:
-        ticket.delete()
+        _ticket.delete()
         return redirect('tickets')
 
     context = {
-        'ticket': ticket,
+        'ticket': _ticket,
         'ticket_comments': ticket_comments,
         'page': page,
         'comment_posts': comment_posts
@@ -209,7 +211,7 @@ def new_project(request):
 @login_required
 def project_detail(request, pk):
     project = Project.objects.get(pk=pk)
-    project_tickets = Ticket.objects.filter(project_id=project.id)
+    project_tickets = Ticket.objects.filter(project=project.id)
         
     context = {
         'project': project,
@@ -351,7 +353,7 @@ def new_comment(request, pk):
     if new_comment_form.is_valid():
         comment = new_comment_form.save()
         comment.user_id = request.user
-        comment.ticket_id = ticket
+        comment.ticket = ticket
         comment.save()
         return redirect("/tickets/detail/" + str(ticket.id))
 
@@ -369,7 +371,7 @@ def delete_comment(request, pk):
 
     if request.POST:
         comment.delete()
-        return redirect("/tickets/detail/" + str(comment.ticket_id.id))
+        return redirect("/tickets/detail/" + str(comment.ticket.id))
 
     context = {
         'comment': comment,
@@ -385,7 +387,7 @@ def edit_comment(request, pk):
 
     if edit_comment_form.is_valid():
         edit_comment_form.save()
-        return redirect("/tickets/detail/" + str(comment.ticket_id.id))
+        return redirect("/tickets/detail/" + str(comment.ticket.id))
 
     context = {
         'comment': comment,

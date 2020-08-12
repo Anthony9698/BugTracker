@@ -28,7 +28,7 @@
             <tr>
                 <td><a href="{% url 'ticket_detail' ticket.id %}">{{ticket.title}}</a></td>
                 <td>{{ticket.last_modified_date}}</td>
-                <td>{{ticket.project_id}}</td>
+                <td>{{ticket.project}}</td>
                 <td>
                     {% if ticket.priority == 'Low' %}
                         <div id="priority_label" style="background-color: rgb(61, 84, 107);">

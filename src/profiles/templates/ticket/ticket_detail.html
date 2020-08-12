@@ -10,7 +10,7 @@
     <dl class="ticket-description-list">
         <dt>Title: <span>{{ticket.title}}</span></dt>
         <dt>Description: <span>{{ticket.description}}</span></dt>
-        <dt>Project: <span>{{ticket.project_id}}</span></dt>
+        <dt>Project: <span>{{ticket.project}}</span></dt>
         <dt>Created: <span>{{ticket.date_created}}</span></dt>
         <dt>Updated: <span>{{ticket.last_modified_date}}</span></dt>
         <dt>Assigned To: <span>{{ticket.assigned_user}}</span><a href="{% url 'assign_ticket' ticket.id %}">Edit</a></dt>
