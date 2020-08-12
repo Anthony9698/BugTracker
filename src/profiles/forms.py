@@ -39,7 +39,7 @@ class ProjectForm(forms.ModelForm):
 class TicketForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(TicketForm, self).__init__(*args, **kwargs)
-        self.fields['project_id'].queryset = Project.objects.filter(users__id=user.id)
+        self.fields['project'].queryset = Project.objects.filter(users__id=user.id)
     priority = forms.CharField(widget=forms.Select(
         choices=(
             ('Low', 'Low'),
@@ -56,7 +56,7 @@ class TicketForm(forms.ModelForm):
 
     class Meta:
         model = Ticket
-        fields = ['title', 'description', 'project_id', 'priority', 'status']
+        fields = ['title', 'description', 'project', 'priority', 'status']
 
 
 class UserRolesForm(forms.ModelForm):
@@ -91,7 +91,7 @@ class RemoveProjectUsersForm(forms.Form):
 class AssignTicketUserForm(forms.ModelForm):
     def __init__(self, ticket, *args, **kwargs):
         super(AssignTicketUserForm, self).__init__(*args, **kwargs)
-        project = Project.objects.get(pk=ticket.project_id.id)
+        project = Project.objects.get(pk=ticket.project.id)
         self.fields['assigned_user'].queryset = project.users.filter(roles__contains="Developer")
         self.fields['assigned_user'].required = False
 
