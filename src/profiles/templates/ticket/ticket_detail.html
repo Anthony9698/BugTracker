@@ -20,7 +20,7 @@
         <dt>Priority: <span>{{ticket.priority}}</span></dt>
         <dt>Status: <span>{{ticket.status}}</span> </dt>
         <dt>Owner: <span>{{ticket.owner}}</span></dt>
-        <dt><a class="btn btn-link" href="#" style="padding: 0;">Ticket History</a></dt>
+        <dt><a class="btn btn-link" href="{% url 'ticket_history' ticket.id %}" style="padding: 0;">Ticket History</a></dt>
         <dt><a class="btn btn-link" href="{% url 'tickets' %}" style="padding: 0;">Back to Tickets</a></dt>
     </dl>
 

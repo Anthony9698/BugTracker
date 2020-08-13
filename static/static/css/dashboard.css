@@ -240,3 +240,7 @@ tr:hover {
   .navbar-nav {
       padding-right: 10%;
   }
+
+   .audit_messages pre {
+       color: white;
+   }
