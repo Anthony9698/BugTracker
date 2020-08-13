@@ -1,0 +1,38 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block content %}
+<div class="top-heading">
+    <h2>Ticket History</h2>
+</div>
+
+<div class="container" style="margin-left: 80px;">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col" style="color: white;">
+            Log for "{{ticket.title}}"
+        </div>
+    </div>
+    {% for audit in ticket_audits %}
+    <div class="row">
+        <div class="col">
+            <div class="audit_messages">
+                <pre style="margin-bottom: 0px;"><b>{{audit.date_added}}</b></pre>
+                <pre style="margin-bottom: 0px;">{{audit.entry_message}}</pre>
+                {% if audit == first_audit %}
+                <pre>Created by {{audit.user}}</pre>
+                {% else %}
+                <pre>Edited by {{audit.user}}</pre>
+                {% endif %}
+            </div> 
+        </div>
+    </div>
+    {% endfor %}
+    <div class="row" style="margin-left: 0px;">
+        {% if audit_trail|length > 5 %}
+                {% include 'pagination.html' with page=ticket_audits %}
+        {% endif %}
+    </div>
+    <div class="row">
+        <a class="btn btn-link" href="{% url 'ticket_detail' ticket.id %}">Back to Ticket Details</a>
+    </div>
+</div>
+{% endblock %}

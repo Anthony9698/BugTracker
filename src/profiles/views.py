@@ -8,7 +8,7 @@ from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm
 from django.contrib.auth.forms import AuthenticationForm
-from profiles.models import UserProfile, Project, Ticket, Comment
+from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from django.http import HttpResponseNotFound
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -397,3 +397,27 @@ def edit_comment(request, pk):
     }
 
     return render(request, 'ticket/edit_comment.html', context)
+
+
+def ticket_history(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    audit_trail = TicketAuditTrail.objects.filter(ticket=ticket.id).order_by('-date_added')
+    first_audit = TicketAuditTrail.objects.filter(ticket=ticket.id).earliest('date_added')
+    paginator = Paginator(audit_trail, 5)
+    page = request.GET.get('page')
+
+    try:
+        ticket_audits = paginator.page(page)
+    except PageNotAnInteger:
+        ticket_audits = paginator.page(1)
+    except EmptyPage:
+        ticket_audits = paginator.page(paginator.num_pages)
+
+    context = {
+        'ticket': ticket,
+        'ticket_audits': ticket_audits,
+        'page': page,
+        'audit_trail': audit_trail,
+        'first_audit': first_audit
+    }
+    return render(request, 'ticket/ticket_history.html', context)

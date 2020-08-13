@@ -42,6 +42,7 @@ urlpatterns = [
     path('ticket-comments/ticket-id/<str:pk>/', profile_views.new_comment, name="new_comment"),
     path('ticket-comments/delete/<str:pk>/', profile_views.delete_comment, name="delete_comment"),
     path('ticket-comments/edit/<str:pk>/', profile_views.edit_comment, name="edit_comment"),
+    path('tickets/history/<str:pk>/', profile_views.ticket_history, name="ticket_history")
 ]
 
 if settings.DEBUG:
