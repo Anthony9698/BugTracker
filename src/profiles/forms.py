@@ -91,19 +91,22 @@ class TicketForm(forms.ModelForm):
                     TicketAuditTrail.objects.create(
                         user=self.user,
                         ticket=self.instance,
-                        entry_message="Project changed from " + "\"" + str(self.initial_project) + "\"" + ' to ' + "\"" + str(self.instance.project) + "\"")
+                        entry_message="Project changed from " + "\"" + str(self.initial_project) + "\"" + ' to ' + "\"" + str(self.instance.project) + "\""
+                    )
 
                 elif change == 'priority':
                     TicketAuditTrail.objects.create(
                         user=self.user,
                         ticket=self.instance,
-                        entry_message="Priority changed from " + "\"" + self.initial_priority + "\"" + ' to ' + "\"" + self.instance.priority + "\"")
+                        entry_message="Priority changed from " + "\"" + self.initial_priority + "\"" + ' to ' + "\"" + self.instance.priority + "\""
+                    )
 
                 elif change == 'status':
                     TicketAuditTrail.objects.create(
                         user=self.user,
                         ticket=self.instance,
-                        entry_message="Status changed from " + "\"" + str(self.initial_status) + "\"" + ' to ' + "\"" + self.instance.status + "\"")
+                        entry_message="Status changed from " + "\"" + str(self.initial_status) + "\"" + ' to ' + "\"" + self.instance.status + "\""
+                    )
 
     class Meta:
         model = Ticket
@@ -140,11 +143,24 @@ class RemoveProjectUsersForm(forms.Form):
 
 
 class AssignTicketUserForm(forms.ModelForm):
-    def __init__(self, ticket, *args, **kwargs):
+    def __init__(self, user, ticket, *args, **kwargs):
         super(AssignTicketUserForm, self).__init__(*args, **kwargs)
         project = Project.objects.get(pk=ticket.project.id)
         self.fields['assigned_user'].queryset = project.users.filter(roles__contains="Developer")
         self.fields['assigned_user'].required = False
+        self.user = user
+        self.initial_assignment = self.instance.assigned_user
+
+    def save(self, commit=True):
+        super(AssignTicketUserForm, self).save(commit=True)
+        
+        if self.has_changed():
+            TicketAuditTrail.objects.create(
+                user=self.user,
+                ticket=self.instance,
+                entry_message="Ticket assignment changed from " + "\"" + str(self.initial_assignment) \
+                                + "\"" + " to " + "\"" + str(self.instance.assigned_user) + "\""
+            )
 
     class Meta:
         model = Ticket
