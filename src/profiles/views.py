@@ -333,7 +333,7 @@ def assign_users(request, pk):
 @login_required
 def assign_ticket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    assign_ticket_form = AssignTicketUserForm(ticket, request.POST or None, instance=ticket)
+    assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.POST or None, instance=ticket)
 
     if assign_ticket_form.is_valid():
         assign_ticket_form.save()
