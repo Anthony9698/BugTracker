@@ -107,9 +107,8 @@ class Project(models.Model):
         
 
 class Ticket(models.Model):
-    # owner = models.ForeignKey(UserProfile, on_delete=models.PROTECT, null=True, related_name='owner')
-    #owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=None)
-    assigned_user = models.OneToOneField(UserProfile, on_delete=models.PROTECT, null=True, related_name='assigned_user')
+    owner = models.OneToOneField(UserProfile, on_delete=models.PROTECT, null=True, default=None, related_name='owner')
+    assigned_user = models.OneToOneField(UserProfile, on_delete=models.PROTECT, null=True, default=None, related_name='assigned_user')
     title = models.CharField(max_length=64, null=False)
     description = models.TextField(default="")       
     project = models.ForeignKey(Project, default=None, on_delete=models.PROTECT)
@@ -120,8 +119,8 @@ class Ticket(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=False, default=None)
     description = models.TextField(default="")
     date_posted = models.DateTimeField(default=now, editable=False)
     last_modified_date = models.DateTimeField(blank=True)
@@ -142,8 +141,8 @@ class Comment(models.Model):
 
 
 class TicketAuditTrail(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, null=False, default=None)
+    ticket = models.ForeignKey(Ticket, on_delete=models.DO_NOTHING, null=False, default=None)
     date_added = models.DateTimeField(default=now, editable=False)
     entry_message = models.TextField(default="")
 

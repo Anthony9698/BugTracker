@@ -136,10 +136,9 @@ def projects(request):
 def new_ticket(request):
     form = TicketForm(request.user, request.POST, instance=None)
     if form.is_valid():
-        # ticket = form.save(commit=False)
-        # ticket.owner = request.user
-        # ticket.save()
-        form.save()
+        ticket = form.save(commit=False)
+        ticket.owner = request.user
+        ticket.save()
         return redirect("tickets")
 
     context = {
