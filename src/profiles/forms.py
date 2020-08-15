@@ -42,6 +42,7 @@ class TicketForm(forms.ModelForm):
         self.fields['project'].queryset = Project.objects.filter(users__id=user.id)
         self.initial_title = self.instance.title
         self.initial_description = self.instance.description
+        self.initial_classification = self.instance.classification
         self.initial_priority = self.instance.priority
         self.initial_status = self.instance.status
         self.user = user
@@ -51,12 +52,19 @@ class TicketForm(forms.ModelForm):
         except Project.DoesNotExist:
             self.initial_project = None
 
+    classification = forms.CharField(widget=forms.Select(
+        choices=(
+            ('Error report', 'Error report'),
+            ('Feature request', 'Feature request'),
+            ('Service request', 'Service request'))))
+
     priority = forms.CharField(widget=forms.Select(
         choices=(
             ('Low', 'Low'),
             ('Medium', 'Medium'),
             ('High', 'High'),
             ('Critical', 'Critical'))))
+
     status = forms.CharField(widget=forms.Select(
         choices=(
             ('Waiting for support', 'Waiting for support'),
@@ -94,6 +102,13 @@ class TicketForm(forms.ModelForm):
                         entry_message="Project changed from " + "\"" + str(self.initial_project) + "\"" + ' to ' + "\"" + str(self.instance.project) + "\""
                     )
 
+                elif change == 'classification':
+                    TicketAuditTrail.objects.create(
+                        user=self.user,
+                        ticket=self.instance,
+                        entry_message="Type changed from " + "\"" + str(self.initial_classification) + "\"" + ' to ' + "\"" + str(self.instance.classification) + "\""
+                    )
+
                 elif change == 'priority':
                     TicketAuditTrail.objects.create(
                         user=self.user,
@@ -115,7 +130,7 @@ class TicketForm(forms.ModelForm):
 
     class Meta:
         model = Ticket
-        fields = ['title', 'description', 'project', 'priority', 'status']
+        fields = ['title', 'description', 'project', 'classification', 'priority', 'status']
 
 
 class UserRolesForm(forms.ModelForm):
