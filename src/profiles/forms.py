@@ -66,7 +66,7 @@ class TicketForm(forms.ModelForm):
             ('New', 'New'))))
 
     def save(self, commit=True):
-        super(TicketForm, self).save(commit=True)
+        ticket_instance = super(TicketForm, self).save(commit=True)
         if self.initial_project is None:
             TicketAuditTrail.objects.create(
                 user=self.user,
@@ -107,6 +107,11 @@ class TicketForm(forms.ModelForm):
                         ticket=self.instance,
                         entry_message="Status changed from " + "\"" + str(self.initial_status) + "\"" + ' to ' + "\"" + self.instance.status + "\""
                     )
+
+        if commit:
+            ticket_instance.save()
+        return ticket_instance
+                
 
     class Meta:
         model = Ticket
