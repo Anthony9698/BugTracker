@@ -28,7 +28,11 @@
                 <td>{{ticket.project}}</td>
                 <td>{{ticket.priority}}</td>
                 <td>{{ticket.status}}</td>
-                <td>None</td>
+                {% if ticket.assigned_user is not None %}
+                <td>{{ticket.assigned_user}}</td>
+                {% else %}
+                <td>Unassigned</td>
+                {% endif %}
                 <td>
                     <a href="{% url 'ticket_detail' ticket.id %}">Details</a>
                     <br>

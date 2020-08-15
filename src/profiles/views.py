@@ -336,7 +336,7 @@ def assign_ticket(request, pk):
 
     if assign_ticket_form.is_valid():
         assign_ticket_form.save()
-        return redirect("tickets")
+        return redirect("/tickets/detail/" + str(ticket.id))
 
     context = {
         'ticket': ticket,
@@ -352,8 +352,8 @@ def new_comment(request, pk):
     new_comment_form = CommentForm(request.POST)
 
     if new_comment_form.is_valid():
-        comment = new_comment_form.save()
-        comment.user_id = request.user
+        comment = new_comment_form.save(commit=False)
+        comment.user = request.user
         comment.ticket = ticket
         comment.save()
         return redirect("/tickets/detail/" + str(ticket.id))
