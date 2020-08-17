@@ -1,13 +1,13 @@
 from django.http import *
 from .models import UserProfile
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm, EditProfileForm
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from django.http import HttpResponseNotFound
 from django.db.models import Q
@@ -444,3 +444,24 @@ def edit_profile(request):
     }
 
     return render(request, 'user/edit_profile.html', context)
+
+
+def change_password(request):
+    if request.method == 'POST':
+        password_change_form = PasswordChangeForm(request.user, request.POST)
+        
+        if password_change_form.is_valid():
+            user = password_change_form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('manage_profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        password_change_form = PasswordChangeForm(request.user)
+
+    context = {
+        'change_password_form': password_change_form
+    }
+
+    return render(request, 'user/change_password.html', context)

@@ -44,7 +44,8 @@ urlpatterns = [
     path('ticket-comments/edit/<str:pk>/', profile_views.edit_comment, name="edit_comment"),
     path('tickets/history/<str:pk>/', profile_views.ticket_history, name="ticket_history"),
     path('manage', profile_views.manage_profile, name="manage_profile"),
-    path('manage/edit-settings/', profile_views.edit_profile, name="edit_profile")
+    path('manage/edit-settings/', profile_views.edit_profile, name="edit_profile"),
+    path('manage/change-password/', profile_views.change_password, name="change_password")
 ]
 
 if settings.DEBUG:
