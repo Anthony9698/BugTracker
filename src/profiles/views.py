@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
-    CommentForm
+    CommentForm, EditProfileForm
 from django.contrib.auth.forms import AuthenticationForm
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from django.http import HttpResponseNotFound
@@ -429,3 +429,18 @@ def manage_profile(request):
     }
 
     return render(request, 'user/profile.html', context)
+
+
+def edit_profile(request):
+    my_profile_form = EditProfileForm(request.POST or None, instance=request.user)
+
+    if my_profile_form.is_valid():
+        my_profile_form.save()
+        return redirect('manage_profile')
+
+    context = {
+        'my_user': request.user,
+        'my_profile_form': my_profile_form
+    }
+
+    return render(request, 'user/edit_profile.html', context)

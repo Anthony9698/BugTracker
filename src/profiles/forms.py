@@ -196,3 +196,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['description',]
+
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['first_name', 'last_name', 'email']
