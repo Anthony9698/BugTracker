@@ -54,7 +54,7 @@
     <a class="btn btn-link" href="{% url 'tickets' %}" style="padding-left: 0px;">View all tickets</a>
     <h2> Projects</h2> 
     <div class="emulated-flex-gap">
-        {% for project in user_projects %}
+        {% for project in projects %}
             <figure>
                 <a href="{% url 'project_detail' project.id %}">
                     <img id="project_img" src="{% static 'images/folder.png' %}" alt="project">
@@ -69,7 +69,9 @@
         {% endfor %}
     </div>
     <div>
-        {% include 'pagination.html' with page=user_projects %}
+        {%  if user_projects|length > 5 %}
+        {% include 'pagination.html' with page=projects %}
+        {% endif %}
     </div>
     <a class="btn btn-link" href="{% url 'projects' %}" style="padding-left: 0px;">View project list</a>
 </div>

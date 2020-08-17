@@ -94,6 +94,12 @@ class UserProfile(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
+
+class Attachment(models.Model):
+    uploader = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, default=None)
+    content = models.FileField(default=None)
+    date_uploaded = models.DateField(default=now, editable=False)
+
     
 class Project(models.Model):
     title = models.CharField(max_length=64, null=False)
@@ -101,6 +107,7 @@ class Project(models.Model):
     date_added = models.DateField(default=now, editable=False)
     archived = models.BooleanField(default=False)
     users = models.ManyToManyField(UserProfile)
+    attachment = models.ForeignKey(Attachment, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.title
@@ -146,4 +153,3 @@ class TicketAuditTrail(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.SET_NULL, null=True, default=None)
     date_added = models.DateTimeField(default=now, editable=False)
     entry_message = models.TextField(default="")
-

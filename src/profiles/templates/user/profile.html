@@ -1,0 +1,20 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+<div class="top-heading">
+    <h2>User Profile</h2>
+</div>
+
+<div class="center-content">
+    <dl class="ticket-description-list">
+        <dt>Name: <span>{{my_user}}</span></dt>
+        <dt>Email: <span>{{my_user.email}}</span></dt>
+        <dt>My Roles: <span>{{my_user.roles}}</span>
+        </dt>
+    </dl>
+    <div>
+        <a class="btn btn-secondary" href="#">Edit profile</a>
+        <a class="btn btn-secondary" href="#">Change password</a>
+    </div>
+</div>
+{% endblock %}
