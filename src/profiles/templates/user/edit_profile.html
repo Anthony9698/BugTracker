@@ -1,0 +1,41 @@
+{% extends 'dashboard.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="top-heading">
+    <h2>Edit Profile</h2>
+</div>
+
+<div class="center-content">
+    <div class="container" style="margin-left: 0;">
+        <div class="row">
+            <div class="col-6">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{my_profile_form|crispy}}
+                    <div class="row">
+                        <div class="col">
+                            <b style="color: white;">Password</b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a class="btn btn-link" href="#">Change password</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-secondary" type="submit">Save Changes</button>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col">
+                            <a classs="btn btn-link" href="{% url 'manage_profile' %}">Back to Profile</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
