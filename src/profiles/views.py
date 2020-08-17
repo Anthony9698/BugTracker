@@ -78,18 +78,18 @@ def dashboard(request):
     page = request.GET.get('page')
 
     try:
-        user_projects = project_paginator.page(page)
+        projects = project_paginator.page(page)
 
     except PageNotAnInteger:
-        user_projects = project_paginator.page(1)
+        projects = project_paginator.page(1)
 
     except EmptyPage:
-        user_projects = project_paginator.page(project_paginator.num_pages)
+        projects = project_paginator.page(project_paginator.num_pages)
 
     project_tickets_dict = {}
     critical_tickets_dict = {}
     resolved_tickets_dict = {}
-    for proj in user_projects:
+    for proj in projects:
         project_tickets = Ticket.objects.filter(project=proj.id).count()
         critical_tickets = Ticket.objects.filter(Q(project=proj.id) & Q(priority__exact='Critical')).count()
         resolved_tickets = Ticket.objects.filter(Q(project=proj.id) & Q(status__exact='Resolved')).count()
@@ -100,6 +100,7 @@ def dashboard(request):
     context = {
         'user_tickets': user_tickets,
         'user_projects': user_projects,
+        'projects': projects,
         'project_tickets_dict': project_tickets_dict,
         'critical_tickets_dict': critical_tickets_dict,
         'resolved_tickets_dict': resolved_tickets_dict
@@ -420,3 +421,11 @@ def ticket_history(request, pk):
         'first_audit': first_audit
     }
     return render(request, 'ticket/ticket_history.html', context)
+
+
+def manage_profile(request):
+    context = {
+        'my_user': request.user
+    }
+
+    return render(request, 'user/profile.html', context)
