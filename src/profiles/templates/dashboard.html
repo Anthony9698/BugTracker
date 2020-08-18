@@ -51,7 +51,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <a class="btn btn-link link-no-left-padding" href="{% url 'tickets' %}">View all tickets</a>
+    <a class="btn btn-link pl-0" href="{% url 'tickets' %}">View all tickets</a>
     <h2>Projects</h2> 
     <div class="emulated-flex-gap">
         {% for project in projects %}
@@ -73,6 +73,6 @@
         {% include 'pagination.html' with page=projects %}
         {% endif %}
     </div>
-    <a class="btn btn-link link-no-left-padding" href="{% url 'projects' %}">View project list</a>
+    <a class="btn btn-link pl-0" href="{% url 'projects' %}">View project list</a>
 </div>
 {% endblock %}
