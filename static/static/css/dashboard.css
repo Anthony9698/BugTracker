@@ -215,7 +215,7 @@ tr:hover {
     color: grey;
 }
 
-#priority_label {
+.priority-label {
     height: 20px;
     width: 60px;
     border-radius: 8px;
@@ -224,6 +224,22 @@ tr:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.low-pr {
+    background-color: rgb(61, 84, 107);
+}
+
+.med-pr {
+    background-color: rgb(193, 118, 23);
+}
+
+.high-pr {
+    background-color: rgba(255, 68, 0, 0.678);
+}
+
+.crit-pr {
+    background-color: rgb(186, 21, 18);
 }
 
 .emulated-flex-gap {
@@ -254,4 +270,13 @@ tr:hover {
 .nav-container {
     padding-left: 14%;
     padding-right: 5%;
+}
+
+.link-no-left-padding {
+    padding-left: 0;
+}
+
+.project-icons-container {
+    margin-left: 15px;
+    color: white;
 }

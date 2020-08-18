@@ -30,42 +30,42 @@
                 <td>{{ticket.project}}</td>
                 <td>
                     {% if ticket.priority == 'Low' %}
-                        <div id="priority_label" style="background-color: rgb(61, 84, 107);">
-                            {{ticket.priority}}
-                        </div>
+                    <div class="priority-label low-pr">
+                        {{ticket.priority}}
+                    </div>
                     {% elif ticket.priority == 'Medium' %}
-                        <div id="priority_label" style="    background-color: rgb(193, 118, 23);">
-                            {{ticket.priority}}
-                        </div>
+                    <div class="priority-label med-pr">
+                        {{ticket.priority}}
+                    </div>
                     {% elif ticket.priority == 'High' %}
-                        <div id="priority_label" style="background-color: rgba(255, 68, 0, 0.678);">
-                            {{ticket.priority}}
-                        </div>
+                    <div class="priority-label high-pr">
+                        {{ticket.priority}}
+                    </div>
                     {% elif ticket.priority == 'Critical' %}
-                        <div id="priority_label" style="background-color: rgb(186, 21, 18);">
-                            {{ticket.priority}}
-                        </div>
+                    <div class="priority-label crit-pr">
+                        {{ticket.priority}}
+                    </div>
                     {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a class="btn btn-link" href="{% url 'tickets' %}" style="padding-left: 0px;">View all tickets</a>
-    <h2> Projects</h2> 
+    <a class="btn btn-link link-no-left-padding" href="{% url 'tickets' %}">View all tickets</a>
+    <h2>Projects</h2> 
     <div class="emulated-flex-gap">
         {% for project in projects %}
-            <figure>
-                <a href="{% url 'project_detail' project.id %}">
-                    <img id="project_img" src="{% static 'images/folder.png' %}" alt="project">
-                </a>
-                <div style="margin-left: 15px; color: white;">
-                    <figcaption><b><a href="{% url 'project_detail' project.id %}">{{project.title}}</a></b></figcaption>
-                    <figcaption><b>Tickets: </b>{{project_tickets_dict|keyvalue:project.id}}</figcaption>
-                    <figcaption><b>Critical: </b>{{critical_tickets_dict|keyvalue:project.id}}</figcaption>
-                    <figcaption><b>Resolved: </b>{{resolved_tickets_dict|keyvalue:project.id}}</figcaption>
-                </div>
-            </figure>
+        <figure>
+            <a href="{% url 'project_detail' project.id %}">
+                <img id="project_img" src="{% static 'images/folder.png' %}" alt="project">
+            </a>
+            <div class="project-icons-container">
+                <figcaption><b><a href="{% url 'project_detail' project.id %}">{{project.title}}</a></b></figcaption>
+                <figcaption><b>Tickets: </b>{{project_tickets_dict|keyvalue:project.id}}</figcaption>
+                <figcaption><b>Critical: </b>{{critical_tickets_dict|keyvalue:project.id}}</figcaption>
+                <figcaption><b>Resolved: </b>{{resolved_tickets_dict|keyvalue:project.id}}</figcaption>
+            </div>
+        </figure>
         {% endfor %}
     </div>
     <div>
@@ -73,6 +73,6 @@
         {% include 'pagination.html' with page=projects %}
         {% endif %}
     </div>
-    <a class="btn btn-link" href="{% url 'projects' %}" style="padding-left: 0px;">View project list</a>
+    <a class="btn btn-link link-no-left-padding" href="{% url 'projects' %}">View project list</a>
 </div>
 {% endblock %}
