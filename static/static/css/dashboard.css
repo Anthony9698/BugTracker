@@ -294,3 +294,7 @@ tr:hover {
     padding-left: 0;
     padding-right: 0;
 }
+
+.archive-project-details {
+    float: right;
+}
