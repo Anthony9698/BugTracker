@@ -1,18 +1,18 @@
 {% extends 'dashboard.html' %}
 
 {% block content %}
-<div class="top-heading" style="border-bottom: none;">
+<div class="top-heading no-border-bottom">
     <h2>{% block title %}Archive Project{% endblock %}</h2>
 </div>
 
-<div class="top-heading dashboard-center-content" style="border-bottom: none">
-    <div class="container" style="margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0;">
+<div class="top-heading center-content no-border-bottom">
+    <div class="container px-0">
         <div class="row text-center">
             <div class="col-lg-6">
                 <h3 class="alert alert-danger">{% block warning %}Are you sure you want to archive this project?{% endblock %}</h3>
             </div>
         </div>
-        <div class="row" style="margin-top: 10px;">
+        <div class="row mt-3">
             <div class="col-lg-6">
                 <dl class="ticket-description-list">
                     {% block model_detail %}
@@ -32,9 +32,9 @@
                 </form>
             </div>
         </div>
-        <div class="row" style="margin-top: 10px;">
+        <div class="row mt-3">
             <div class="col-lg-6">
-                {% block  links %}
+                {% block links %}
                 <a href="{% url 'projects' %}">Back to Projects</a>
                 {% endblock %}
             </div>

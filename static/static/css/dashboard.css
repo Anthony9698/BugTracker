@@ -280,3 +280,17 @@ tr:hover {
     margin-left: 15px;
     color: white;
 }
+
+.no-border-bottom {
+    border-bottom: none
+}
+
+.no-left-right-margin {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.no-left-right-padding {
+    padding-left: 0;
+    padding-right: 0;
+}
