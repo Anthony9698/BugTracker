@@ -1,45 +1,38 @@
 {% extends 'dashboard.html' %}
 
 {% block content %}
-<div class="top-heading no-border-bottom">
+<div class="top-heading">
     <h2>{% block title %}Archive Project{% endblock %}</h2>
 </div>
 
-<div class="top-heading center-content no-border-bottom">
-    <div class="container px-0">
-        <div class="row text-center">
-            <div class="col-lg-6">
-                <h3 class="alert alert-danger">{% block warning %}Are you sure you want to archive this project?{% endblock %}</h3>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-lg-6">
-                <dl class="ticket-description-list">
-                    {% block model_detail %}
-                    <dt>Name: <span>{{project.title}}</span></dt>
-                    <dt>Description: <span>{{project.description}}</span></dt>
-                    {% endblock %}
-                </dl>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <form method="POST">
-                    {% csrf_token %}
-                    {% block form_button %}
-                    <button class="btn btn-secondary" type="submit">Confirm Archive</button>
-                    {% endblock %}
-                </form>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-lg-6">
-                {% block links %}
-                <a href="{% url 'projects' %}">Back to Projects</a>
-                {% endblock %}
-            </div>
-        </div>
+<div class="row">
+    <div class="col-lg-7 col-md-12 col-sm-12">
+        <h3 class="alert alert-danger">{% block warning %}Are you sure you want to archive this project?{% endblock %}</h3>
     </div>
 </div>
-
+<div class="row mt-3">
+    <div class="col-lg-6">
+        <dl class="dl-horizontal">
+            {% block model_detail %}
+            <dt>Name: </dt><dd>{{project.title}}</dd>
+            <dt>Description: </dt><dd>{{project.description}}</dd>
+            {% endblock %}
+        </dl>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <form method="POST">
+            {% csrf_token %}
+            {% block form_button %}
+            <button class="btn btn-danger" type="submit">Confirm Archive</button>
+            {% endblock %}
+        </form>
+    </div>
+</div>
+<div class="footer">
+    {% block links %}
+    <a class="btn btn-link" href="{% url 'projects' %}">Back to Projects</a>
+    {% endblock %}
+</div>
 {% endblock %}

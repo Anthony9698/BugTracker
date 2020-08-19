@@ -16,73 +16,9 @@
     margin-bottom: 20px;
 }
 
-.dashboard-center-content {
-    margin-top: 20px;
-}
-
-.project-center-content {
-    margin-top: 40px;
-}
-
-.ticket-center-content {
-    margin-top: 10px;
-}
-
-.dashboard-center-content h4 {
-    font-size: 18px;
-    font-weight: 500;
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
-
-.project-center-content h4 {
-    font-size: 18px;
-    font-weight: 500;
-    margin-top: 30px;
-    margin-bottom: 20px;
-}
-
-.entries-search-wrapper {
-    display: flex;
-    justify-content: space-between;
-}
-
-.priority-selection-wrapper {
-    display: flex;
-    justify-content: center;
-}
-
-.priority-selection {
-    margin-right: 2%;
-}
-
-.status-selection {
-    margin-left: 2%;
-}
-
 .priority-selection label {
     display: flex;
     flex-direction: column;
-}
-
-.status-selection label {
-    display: flex;
-    flex-direction: column;
-}
-
-
-.ticket-center-content h4 {
-    font-size: 18px;
-    font-weight: 500;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-
-.dashboard-center-content h2 {
-    font-size: 32px;
-    font-weight: 400;
-    margin-bottom: 20px;
 }
 
 .navigation-bar {
@@ -98,28 +34,9 @@
     float: right;
 }
 
-#bug-tracker {
-    padding-right: 15px;
-}
-
 table {
     width: 100%;
     border-bottom: 1px solid lightslategray;
-}
-
-.recently-updated {
-    margin-bottom: 20px;
-}
-
-.showing-prev-next-wrapper {
-    display: flex;
-    justify-content: space-between;
-}
-
-.new-ticket-form {
-    margin-top: 2%;
-    margin-left: 10%;
-    margin-right: 50%;
 }
 
 .login-form {

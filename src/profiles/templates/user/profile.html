@@ -5,16 +5,48 @@
     <h2>User Profile</h2>
 </div>
 
-<div class="center-content">
-    <dl class="ticket-description-list">
-        <dt>Name: <span>{{my_user}}</span></dt>
-        <dt>Email: <span>{{my_user.email}}</span></dt>
-        <dt>My Roles: <span>{{my_user.roles}}</span>
-        </dt>
-    </dl>
-    <div>
-        <a class="btn btn-secondary" href="{% url 'edit_profile' %}">Edit profile</a>
-        <a class="btn btn-secondary" href="{% url 'change_password' %}">Change password</a>
+<div class="row offset-md-2 offset-lg-2">
+    <div class="col-8">
+        <dl>
+            <div class="row">
+                <div class="col-2">
+                    <dt>Name:</dt>
+                </div>
+                <div class="col-8">
+                    <dd>{{user}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <dt>Email:</dt>
+                </div>
+                <div class="col-8">
+                    <dd>{{user.email}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <dt>Roles:</dt>
+                </div>
+                <div class="col-8">
+                    {% for role in user.roles %}
+                    <div class="row">
+                        <div class="col">
+                            <dd class="my-0">{{role}}</dd>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </dl>
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-secondary" href="{% url 'edit_profile' %}">Edit profile</a>
+                <a class="btn btn-secondary" href="{% url 'change_password' %}">Change password</a>
+            </div>
+        </div>
     </div>
+</div>
+<div class="footer">
 </div>
 {% endblock %}

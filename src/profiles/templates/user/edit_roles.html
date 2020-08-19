@@ -6,20 +6,41 @@
     <h2>Edit Roles</h2>
 </div>
 
-<div class="center-content">
-    <dl class="ticket-description-list">
-        <dt>Name</dt>
-        <dt><span>{{user.first_name}} {{user.last_name}}</span></dt>
-        <br>
-        <dt>Email</dt>
-        <dt><span>{{user.email}}</span></dt>
-        <br>
-
-        <form method="POST">
-            {% csrf_token %}
-            {{role_form|crispy}}
-            <button class="btn btn-secondary">Save</button>
-        </form>
-    </dl>
+<div class="row">
+    <div class="col offset-lg-1">
+        <dl>
+            <div class="row">
+                <div class="col-2">
+                    <dt>Name:</dt>
+                </div>
+                <div class="col-8">
+                    <dd>{{user}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <dt>Email:</dt>
+                </div>
+                <div class="col-8">
+                    <dd>{{user.email}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <dt>Roles:</dt>
+                </div>
+                <div class="col-8">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{role_form|crispy}}
+                        <button class="btn btn-secondary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </dl>
+    </div>
+</div>
+<div class="footer">
+    <a class="btn btn-link" href="{% url 'admin_user_view' %}">Back to Role Assignments</a>
 </div>
 {% endblock content %}

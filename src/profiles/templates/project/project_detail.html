@@ -6,16 +6,17 @@
     <h2>Project Details</h2>
 </div>
 
-<div class="center-content top-heading">
-    <div>
-        <dl class="ticket-description-list">
-            <dt>Name: <span>{{project.title}}</span></dt>
-            <dt>Description <span>{{project.description}}</span></dt>
+<div class="row">
+    <div class="col">
+        <dl class="dl-horizontal">
+            <dt>Name: </dt><dd>{{project.title}}</dd>
+            <dt>Description: </dt><dd>{{project.description}}</dd>
         </dl>
-        <a class="btn btn-link" href="{% url 'edit_project' project.id %}" style="padding-left: 0px;">Edit Project Details</a>
+        <a class="btn btn-link p-0" href="{% url 'edit_project' project.id %}">Edit Project Details</a>
     </div>
-
-    <div style="margin-top: 30px;">
+</div>
+<div class="row mt-4">
+    <div class="col">
         <h3>Assigned Users</h3>
         <table class="table table-dark table-hover">
             <thead>
@@ -24,18 +25,24 @@
                 <th>Email</th>
             </thead>
             <tbody>
-                <td>name</td>
-                <td>role</td>
-                <td>email</td>
+                {% for user in project.users.all %}
+                <tr>
+                    <td>{{user}}</td>
+                    <td>{{user.roles}}</td>
+                    <td>{{user.email}}</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
-        <a class="btn btn-link" href="#" style="padding-left: 0px;">Edit Project Users</a>
+        <a class="btn btn-link pl-0" href="{% url 'assign_users' project.id %}">Edit Project Users</a><br>
+        <a class="btn btn-link pl-0" href="{% url 'admin_user_view' %}">Manage User Roles</a>
     </div>
-
-    <div style="margin-top: 30px">
+</div>
+<div class="row mt-4">
+    <div class="col">
         <h3>Project Tickets</h3>
-        <div style="margin-bottom: 30px;">
-            <a class="btn btn-link" href="{% url 'new_ticket' %}" style="padding-left: 0px;">Create New</a>
+        <div class="mb-3">
+            <a class="btn btn-link pl-0" href="{% url 'new_ticket' %}">Create New</a>
         </div>
         <table id="projectTicketTable" class="table table-dark table-hover">
             <thead>
@@ -55,9 +62,11 @@
             {% endfor %}
             </tbody>
         </table>
-        <div style="margin-top: 30px;">
-            <a href="{% url 'projects' %}">Back to Projects</a>
-        </div>
+    </div>
+</div>
+<div class="footer">
+    <div class="my-3">
+        <a href="{% url 'projects' %}">Back to Projects</a>
     </div>
 </div>
 {% endblock %}

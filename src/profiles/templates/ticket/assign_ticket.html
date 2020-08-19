@@ -5,37 +5,99 @@
 <div class="top-heading">
     <h2>Assign Ticket</h2>
 </div>
-<div class="container" style="margin-left: 180px;">
-    <div class="row">
-        <div class="col">
-            <dl class="ticket-description-list">
-                <dt>Title: <span>{{ticket.title}}</span></dt>
-                <dt>Description: <span>{{ticket.description}}</span></dt>
-                <dt>Created: <span>{{ticket.date_created}}</span></dt>
-                <dt>Updated: <span>{{ticket.last_modified_date}}</span></dt>
-                <dt>Project: <span>{{ticket.project}}</span></dt>
-                <dt>Type: <span></span></dt>
-                <dt>Priority: <span>{{ticket.priority}}</span></dt>
-                <dt>Status: <span>{{ticket.status}}</span></dt>
-                <dt>Owner: <span>{{ticket.owner}}</span></dt>
-            </dl> 
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-3">
-            <form method="POST">
-                {% csrf_token %}
-                {{assign_ticket_form|crispy}}
-                <button type="submit" class="btn btn-secondary">Assign Ticket to User</button>
-            </form>
-
-            <div style="margin-top: 20px;">
-                <a href="{% url 'edit_ticket' ticket.id %}">Back to Ticket Edit</a>
-                <br>
-                <a href="{% url 'tickets' %}">Back to Tickets</a>
+<div class="row offset-lg-1">
+    <div class="col">
+        <dl>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Title:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.title}}</dd>
+                </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Description:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.description}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Created:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.date_created}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Updated:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.last_modified_date}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Project:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.project}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Type:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.classification}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Priority:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.priority}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Status:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.status}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Owner:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.owner}}</dd>
+                </div>
+            </div>
+        </dl>
     </div>
 </div>
-
+<div class="row">
+    <div class="col-7 col-lg-4 col-md-5">
+        <form method="POST">
+            {% csrf_token %}
+            {{assign_ticket_form|crispy}}
+            <button type="submit" class="btn btn-secondary">Assign Ticket to User</button>
+        </form>
+    </div>
+</div>
+<div class="footer">
+    <div class="my-3">
+        <a href="{% url 'edit_ticket' ticket.id %}">Back to Ticket Edit</a><br>
+    </div>
+    <div class="my-3">
+        <a href="{% url 'tickets' %}">Back to Tickets</a>
+    </div>
+</div>
 {% endblock %}

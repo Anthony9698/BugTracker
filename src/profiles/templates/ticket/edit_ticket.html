@@ -6,12 +6,16 @@
     <h2>Edit Ticket</h2>
 </div>
 
-<div class="ticket-form">
-    <form method='POST'>
-        {% csrf_token %}
-        {{edit_ticket_form|crispy}}
-        <button class="btn btn-success">Save</button>
-    </form>
-    <a class="btn btn-link" href="{% url 'tickets' %}" style="padding-left: 0px;">Back to Tickets</a>
+<div class="row">
+    <div class="col-md-6 col-lg-4 offset-lg-2">
+        <form method='POST'>
+            {% csrf_token %}
+            {{edit_ticket_form|crispy}}
+            <button class="btn btn-success">Save</button>
+        </form>
+    </div>
+</div>
+<div class="footer">
+    <a class="btn btn-link" href="{% url 'tickets' %}">Back to Tickets</a>
 </div>
 {% endblock %}

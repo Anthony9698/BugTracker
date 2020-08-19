@@ -5,11 +5,8 @@
     <h1>My Projects</h1>
 </div>
 
-<div class="project-center-content top-heading">
-    <div>
-        <h4 style="margin-top: -20px;"><a href="{% url 'new_project' %}">Create New</a></h4>
-    </div>
-    
+<div class="top-heading">
+    <h4><a href="{% url 'new_project' %}">Create New</a></h4>
     <table class="table table-dark table-hover">
         <tr>
             <th>Name</th>
@@ -27,8 +24,8 @@
             <td></td>
             <td></td>
             <td></td>
-            <td>
-                <div style="float: right;">
+            <td class="pr-1">
+                <div class="float-right">
                     <a href="{% url 'project_detail' project.id %}">Details</a> |
                     <a href="{% url 'edit_project' project.id %}">Edit</a> |
                     <a href="{% url 'assign_users' project.id %}">Assign Users</a> |
@@ -37,16 +34,9 @@
             </td>
         </tr>
         {% endfor %}
-
     </table>
-    
-    <div>
-        <a style="padding-left: 0;" class="btn btn-link" href="{% url 'admin_user_view' %}">Manage User Roles</a>
-    </div>
-    <div>
-        <a style="padding-left: 0;" class="btn btn-link" href="{% url 'archived_projects' %}">View Archived Projects</a>
-    </div>
-    
+    <a class="btn btn-link pl-0" href="{% url 'admin_user_view' %}">Manage User Roles</a>
+    <br>
+    <a class="btn btn-link pl-0" href="{% url 'archived_projects' %}">View Archived Projects</a>
 </div>
-
 {% endblock %}
