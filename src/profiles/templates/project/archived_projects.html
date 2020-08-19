@@ -1,28 +1,30 @@
 {% extends 'dashboard.html' %}
 
 {% block content %}
-<div class="top-heading no-border-bottom">
+<div class="top-heading">
     <h2>Archived Projects</h2>
 </div>
 
-<div class="top-heading center-content">
-    <table class="table table-dark table-hover">
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th></th>
-        </tr>
-        {% for project in project_list %}
-        <tr>
-            <td>{{project.title}}</td>
-            <td>{{project.description}}</td>
-            <td>
-                <div class="archive-project-details">
-                    <a href="{% url 'project_detail' project.id %}">Details</a>
-                </div> 
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+<div class="row">
+    <div class="col">
+        <table class="table table-dark table-hover">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+            {% for project in project_list %}
+            <tr>
+                <td>{{project.title}}</td>
+                <td>{{project.description}}</td>
+                <td>
+                    <div class="float-right">
+                        <a href="{% url 'project_detail' project.id %}">Details</a>
+                    </div> 
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 {% endblock %}

@@ -6,79 +6,158 @@
     <h2>Ticket Details</h2>
 </div>
 
-<div class="center-content">
-    <dl class="ticket-description-list">
-        <dt>Title: <span>{{ticket.title}}</span></dt>
-        <dt>Description: <span>{{ticket.description}}</span></dt>
-        <dt>Project: <span>{{ticket.project}}</span></dt>
-        <dt>Created: <span>{{ticket.date_created}}</span></dt>
-        <dt>Updated:
-            {% if ticket.date_created|date:"d m y f A" != ticket.last_modified_date|date:"d m y f A" %}
-            <span>{{ticket.last_modified_date}}</span>
-            {% endif %}
-        </dt>
-        <dt>Assigned To:
-            {% if ticket.assigned_user is not None %} 
-            <span>{{ticket.assigned_user}}</span>
-            {% else %}
-            <span>Unassigned</span>
-            {% endif %}
-            <a href="{% url 'assign_ticket' ticket.id %}">Edit</a>
-        </dt>
-        <dt>Attachments</dt>
-        <button class="btn btn-secondary">Add Attachment</button>
-        <a href="{% url 'edit_ticket' ticket.id %}" class="btn btn-info">Edit Ticket</a>
-        <dt>Priority: <span>{{ticket.priority}}</span></dt>
-        <dt>Type: <span>{{ticket.classification}}</span></dt>
-        <dt>Status: <span>{{ticket.status}}</span> </dt>
-        <dt>Owner: <span>{{ticket.owner}}</span></dt>
-        <dt><a class="btn btn-link" href="{% url 'ticket_history' ticket.id %}" style="padding: 0;">Ticket History</a></dt>
-        <dt><a class="btn btn-link" href="{% url 'tickets' %}" style="padding: 0;">Back to Tickets</a></dt>
-    </dl>
-
-    <div>
-        <h3>Comments</h2>
-            <div class="container" style="margin-left: 0px; padding: 0px;">
-                {% for comment in comment_posts %}
-                    <div class="row">
-                        <div class="col-3">
-                            {{comment.description}}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3" style="font-size: small; margin-bottom: 20px;">
-                            {% if comment.last_modified_date|date:"d m y f A" == comment.date_posted|date:"d m y f A" %}
-                                <b>Posted by <span>{{comment.user.first_name}} {{comment.user.last_name}}</span></b>
-                                <br>
-                                <b>{{comment.date_posted}}</b>
-                                <br>
-                            {% else %}
-                                <b>Edited by <span>{{comment.user.first_name}} {{comment.user.last_name}}</span></b>
-                                <br>
-                                <b>{{comment.last_modified_date}}</b>
-                                <br>
-                            {% endif %}
-                            <div>
-                                {{comment.date_posted}}
-                                {{comment.last_modified_date}}
-                            </div>
-                            <a class="btn btn-link" href="{% url 'edit_comment' comment.id %}" style="padding: 0px;">Edit</a> | 
-                            <a class="btn btn-link" href="{% url 'delete_comment' comment.id %}" style="padding: 0px;">Delete</a>
-                        </div>
-                    </div>
-                {% endfor %}
+<div class="row">
+    <div class="col col-lg-8">
+        <dl>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Title:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.title}}</dd>
+                </div>
             </div>
-            {% if ticket_comments|length > 2 %}
-                {% include 'pagination.html' with page=comment_posts %}
-            {% endif %}
-            <a class="btn btn-secondary" href="{% url 'new_comment' ticket.id %}" style="margin-top: 20px; margin-bottom: 20px;">Add Comment</a>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Description:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.description}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Project:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.project}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Created:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.date_created}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Updated:</dt>
+                </div>
+                <div class="col-9">
+                    {% if ticket.date_created|date:"d m y f A" != ticket.last_modified_date|date:"d m y f A" %}
+                    <dd>{{ticket.last_modified_date}}</dd>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Assigned To:</dt>
+                </div>
+                <div class="col-9">
+                    {% if ticket.assigned_user is not None %} 
+                    <dd>{{ticket.assigned_user}}</dd>
+                    {% else %}
+                    <dd>Unassigned</dd>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Attachments</dt>
+                </div>
+                <div class="col-9">
+                    <dd>Add later!!!</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="{% url 'edit_ticket' ticket.id %}" class="btn btn-info">Edit Ticket</a>
+                </div>
+            </div>
+        </dl>
     </div>
-
-    <form method="POST">
-        {% csrf_token %}
-        <button class="btn btn-danger">Delete</button>
-    </form>
-
-
+    <div class="col-lg-4">
+        <dl>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Priority:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.priority}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Type:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.classification}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Status:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.status}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <dt>Owner:</dt>
+                </div>
+                <div class="col-9">
+                    <dd>{{ticket.owner}}</dd>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                </div>
+                <div class="col-9">
+                    <a class="btn btn-link" href="{% url 'ticket_history' ticket.id %}" style="padding: 0;">Ticket History</a>
+                </div>
+            </div>
+        </dl>
+    </div>
 </div>
+<div class="row">
+    <div class="col-7">
+        <h3>Comments</h2>
+            {% for comment in comment_posts %}
+            <div class="row">
+                <div class="col comment-sect">
+                    {{comment.description}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col comment-sect">
+                    {% if comment.last_modified_date|date:"d m y f A" == comment.date_posted|date:"d m y f A" %}
+                        <b>Posted by <span>{{comment.user.first_name}} {{comment.user.last_name}}</span></b>
+                        <br>
+                        <b>{{comment.date_posted}}</b>
+                        <br>
+                    {% else %}
+                        <b>Edited by <span>{{comment.user.first_name}} {{comment.user.last_name}}</span></b>
+                        <br>
+                        <b>{{comment.last_modified_date}}</b>
+                        <br>
+                    {% endif %}
+                    <a class="btn btn-link pl-0" href="{% url 'edit_comment' comment.id %}">Edit</a> 
+                    <a class="btn btn-link pl-0" href="{% url 'delete_comment' comment.id %}">Delete</a>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+</div>
+<div class="footer">
+    <div class="my-4">
+        {% if ticket_comments|length > 2 %}
+        {% include 'pagination.html' with page=comment_posts %}
+        {% endif %}
+    </div>
+    <a class="btn btn-secondary mb-3" href="{% url 'new_comment' ticket.id %}">Add Comment</a>
+</div>
+
 {% endblock %}

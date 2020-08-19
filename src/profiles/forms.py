@@ -34,6 +34,9 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['title', 'description']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows':4, 'cols':15})
+        }
 
 
 class TicketForm(forms.ModelForm):
@@ -131,9 +134,16 @@ class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ['title', 'description', 'project', 'classification', 'priority', 'status']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows':4, 'cols':15})
+        }
 
 
 class UserRolesForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(UserRolesForm, self).__init__(*args, **kwargs)
+        self.fields['roles'].label = ""
+        
     roles = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple,
         choices=(
             ('Submitter', 'Submitter'),
