@@ -74,7 +74,7 @@ def register_page(request):
 def dashboard(request):
     user_projects = Project.objects.filter(users__id=request.user.id)
     user_tickets = Ticket.objects.filter(project__in=user_projects).order_by('-last_modified_date')
-    project_paginator = Paginator(user_projects, 5)
+    project_paginator = Paginator(user_projects, 4)
     page = request.GET.get('page')
 
     try:
