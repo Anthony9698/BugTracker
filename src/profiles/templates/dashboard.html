@@ -8,11 +8,12 @@
 
 {% block content %}
 <div class="top-heading">
-  <h1>My Dashboard</h1>
+    <h1>My Dashboard</h1>
 </div>
-
-<div class="top-heading">
+<div class="second-heading">
     <h2>Recently updated tickets</h2>
+</div>
+<div>
     <table class="table table-dark table-hover">
         <thead>
             <tr>
@@ -51,9 +52,12 @@
             {% endfor %}
         </tbody>
     </table>
+<div>
     <a class="btn btn-link pl-0" href="{% url 'tickets' %}">View all tickets</a>
     <h2>Projects</h2> 
-    <div class="emulated-flex-gap">
+</div>
+<div class="row">
+    <div class="col-10 emulated-flex-gap">
         {% for project in projects %}
         <figure>
             <a href="{% url 'project_detail' project.id %}">
@@ -68,11 +72,13 @@
         </figure>
         {% endfor %}
     </div>
-    <div>
-        {%  if user_projects|length > 5 %}
-        {% include 'pagination.html' with page=projects %}
-        {% endif %}
-    </div>
-    <a class="btn btn-link pl-0" href="{% url 'projects' %}">View project list</a>
+</div>
+<div>
+    {%  if user_projects|length > 4 %}
+    {% include 'pagination.html' with page=projects %}
+    {% endif %}
+</div>
+<div class="footer top-link">
+    <h4><a href="{% url 'projects' %}">View project list</a></h4>
 </div>
 {% endblock %}

@@ -15,7 +15,6 @@ dl dt, dl dd {
 }
 
 .top-heading {
-    width: auto;
     margin-bottom: 20px;
     border-bottom: 1px solid lightslategray;
 }
@@ -32,6 +31,13 @@ dl dt, dl dd {
 }
 
 .top-heading h4 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.top-link h4 {
     font-size: 18px;
     font-weight: 500;
     margin-top: 20px;
@@ -57,15 +63,15 @@ dl dt, dl dd {
     color:white;
 }
 
+.second-heading h2 {
+    font-weight: normal;
+    margin-bottom: 10px;
+}
+
 .login-form {
     width: 400px;
     margin: auto;
     color: white;
-}
-
-.stretch-button {
-    width: 100%;
-    display: block;
 }
 
 .login-form-container {
@@ -79,10 +85,6 @@ dl dt, dl dd {
 .logo-container {
     border-bottom: white solid 1px;
     margin-bottom: 10px;
-}
-
-#error_1_id_password2 {
-    color: red;
 }
 
 .alert, .alert-block, .alert-danger, ul {
@@ -112,14 +114,6 @@ dl dt, dl dd {
 
 #ticketTable_info, #projectTicketTable_info {
     color:white;
-}
-
-.ticket-description-list dt{
-    color: #ffffffb8;
-}
-
-.ticket-description-list span{
-    color: grey;
 }
 
 .priority-label {
@@ -160,27 +154,8 @@ dl dt, dl dd {
     margin: 50px 0 0 50px;
   }
 
-/* .navbar-nav {
-    padding-right: 10%;
-} */
-
 .audit_messages pre {
     color: white;
-}
-
-.content-container {
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* .nav-container {
-    padding-left: 14%;
-    padding-right: 5%;
-} */
-
-.link-no-left-padding {
-    padding-left: 0;
 }
 
 .project-icons-container {
@@ -188,20 +163,10 @@ dl dt, dl dd {
     color: white;
 }
 
-.no-border-bottom {
-    border-bottom: none
-}
-
-.no-left-right-margin {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-.no-left-right-padding {
-    padding-left: 0;
-    padding-right: 0;
-}
-
 .float-right {
     float: right;
+}
+
+.table tr td{
+    padding: .5rem;
 }
