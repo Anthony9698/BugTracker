@@ -78,10 +78,11 @@ $.fn.dataTable.ext.type.order['ticket-priority-pre'] = function ( d ) {
 $(document).ready(function () {
     $('#ticketTable').DataTable({
         "pagingType": "simple", // "simple" option for 'Previous' and 'Next' buttons only
+        "order": [[1, 'dsc']],
         "columnDefs": [ {
             "targets": 'no-sort',
             "orderable": false,
-        }]
+        }],
     });
     $('.dataTables_length').addClass('bs-select');
 });
