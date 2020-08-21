@@ -48,12 +48,9 @@
     </table>
     </div>
 </div>
+<div class="footer">
+</div>
 {% endblock %}
-
-
-
-
-
 {% block child_scripts %}
 <script>
 $.fn.dataTable.ext.type.detect.unshift(
@@ -81,7 +78,7 @@ $(document).ready(function () {
         "order": [[1, 'dsc']],
         "columnDefs": [ {
             "targets": 'no-sort',
-            "orderable": false,
+            "orderable": true,
         }],
     });
     $('.dataTables_length').addClass('bs-select');

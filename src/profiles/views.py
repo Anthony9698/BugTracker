@@ -135,12 +135,15 @@ def projects(request):
 
 @login_required
 def new_ticket(request):
-    form = TicketForm(request.user, request.POST, instance=None)
-    if form.is_valid():
-        ticket = form.save(commit=False)
-        ticket.owner = request.user
-        ticket.save()
-        return redirect("tickets")
+    if request.method == 'POST':
+        form = TicketForm(request.user, request.POST, instance=None)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.owner = request.user
+            ticket.save()
+            return redirect("tickets")
+    else:
+        form = TicketForm(request.user)
 
     context = {
         'new_ticket_form': form
@@ -186,7 +189,7 @@ def edit_ticket(request, pk):
     
     if form.is_valid():
         form.save()
-        return redirect("tickets")
+        return redirect("/tickets/detail/" + str(ticket.id))
 
     context = {
         'edit_ticket_form': form
