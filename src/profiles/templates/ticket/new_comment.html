@@ -5,21 +5,18 @@
 <div class="top-heading">
     <h2>{% block title %}Add Comment{% endblock %}</h2>
 </div>
-
-<div class="container" style="margin-left: 180px;">
-    <div class="row">
-        <div class="col-6">
-            <form method="POST">
-                {% csrf_token %}
-                {% block form_section %}
-                {{new_comment_form|crispy}}
-                <button class="btn btn-secondary" type="submit">Add Comment</button>
-                <br>
-                <a class="btn btn-link" href="{% url 'ticket_detail' ticket.id %}" style="padding-left: 0; margin-top: 20px;">Back to Ticket Details</a>
-                {% endblock %}
-            </form>
-        </div>
+<div class="row">
+    <div class="col-6 col-md-5 col-lg-4 offset-md-2">
+        <form method="POST">
+            {% csrf_token %}
+            {% block form_section %}
+            {{new_comment_form|crispy}}
+            <button class="btn btn-secondary" type="submit">Add Comment</button>
+            {% endblock %}
+        </form>
     </div>
 </div>
-
+<div class="footer">
+    <a class="btn btn-link" href="{% url 'ticket_detail' ticket.id %}">Back to Ticket Details</a>
+</div>
 {% endblock %}

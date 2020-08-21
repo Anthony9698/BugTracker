@@ -353,14 +353,17 @@ def assign_ticket(request, pk):
 @login_required
 def new_comment(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    new_comment_form = CommentForm(request.POST)
+    if request.method == 'POST':
+        new_comment_form = CommentForm(request.POST)
 
-    if new_comment_form.is_valid():
-        comment = new_comment_form.save(commit=False)
-        comment.user = request.user
-        comment.ticket = ticket
-        comment.save()
-        return redirect("/tickets/detail/" + str(ticket.id))
+        if new_comment_form.is_valid():
+            comment = new_comment_form.save(commit=False)
+            comment.user = request.user
+            comment.ticket = ticket
+            comment.save()
+            return redirect("/tickets/detail/" + str(ticket.id))
+    else:
+        new_comment_form = CommentForm()
 
     context = {
         'new_comment_form': new_comment_form,
