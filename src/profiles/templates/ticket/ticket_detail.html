@@ -116,7 +116,7 @@
                 <div class="col-3">
                 </div>
                 <div class="col-9">
-                    <a class="btn btn-link" href="{% url 'ticket_history' ticket.id %}" style="padding: 0;">Ticket History</a>
+                    <a class="btn btn-link pl-0" href="{% url 'ticket_history' ticket.id %}">Ticket History</a>
                 </div>
             </div>
         </dl>
@@ -157,7 +157,8 @@
         {% include 'pagination.html' with page=comment_posts %}
         {% endif %}
     </div>
-    <a class="btn btn-secondary mb-3" href="{% url 'new_comment' ticket.id %}">Add Comment</a>
+    <a class="btn btn-secondary mb-3" href="{% url 'new_comment' ticket.id %}">Add Comment</a><br>
+    <a class="btn btn-link pl-0" href="{% url 'tickets' %}">Back to Tickets</a>
 </div>
 
 {% endblock %}
