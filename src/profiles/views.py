@@ -70,6 +70,10 @@ def register_page(request):
     return render(request, 'user/register.html', context)
 
 
+def demo(request):
+    return render(request, 'user/demo.html')
+
+
 @login_required
 def dashboard(request):
     user_projects = Project.objects.filter(users__id=request.user.id)
@@ -200,14 +204,17 @@ def edit_ticket(request, pk):
 
 @login_required
 def new_project(request):
-    form = ProjectForm(request.POST)
-    if form.is_valid():
-        project = form.save()
-        project.users.add(request.user)
-        return redirect("projects")
+    if request.method == 'POST':
+        new_project_form = ProjectForm(request.POST)
+        if new_project_form.is_valid():
+            project = new_project_form.save()
+            project.users.add(request.user)
+            return redirect("projects")
+    else:
+        new_project_form = ProjectForm()
 
     context = {
-        'new_project_form': form
+        'new_project_form': new_project_form
     }
 
     return render(request, "project/new_project.html", context)
