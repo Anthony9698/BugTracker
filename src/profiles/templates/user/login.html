@@ -18,9 +18,10 @@
             <h2 class="text-center"><img src="{% static 'images/bug_tracker_logo_white.ico' %}" alt="logo" width="50" height="50"/> Bug Tracker</h2>
         </div>
         {% block form_content %}
-        <form method="POST"> {% csrf_token %}
-                {{login_form|crispy}}
-                <button class="btn btn-success btn-block" type="submit">Login</button>
+        <form method="POST"> 
+            {% csrf_token %}
+            {{login_form|crispy}}
+            <button class="btn btn-success btn-block" type="submit">Login</button>
         </form>        
         <div class="text-center">
             <button class="btn btn-link">Forgot your email or password?</button>

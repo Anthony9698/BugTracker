@@ -71,6 +71,26 @@ def register_page(request):
 
 
 def demo(request):
+    user = None
+
+    if request.GET.get('Submitter') == 'Submitter':
+        user = authenticate(email="sophiav17@gmail.com", password="AeV45954595$")
+
+    elif request.GET.get("Developer") == 'Developer':
+        user = authenticate(email="idk123@gmail.com", password="Cheese123@")
+
+    elif request.GET.get("Project Manager") == 'Project Manager':
+        user = authenticate(email="meshell.campbell14@gmail.com", password="cheese123@")
+
+    elif request.GET.get("Admin") == 'Admin':
+        user = authenticate(email="anthonyviera4@gmail.com", password="cheese123")
+
+    print(user)
+
+    if user:
+        login(request, user)
+        return redirect('dashboard')
+
     return render(request, 'user/demo.html')
 
 

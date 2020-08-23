@@ -1,9 +1,11 @@
 {% extends 'user/login.html' %}
 
 {% block form_content %}
-<a class="btn btn-dark btn-block">Submitter</a>
-<a class="btn btn-dark btn-block">Developer</a>
-<a class="btn btn-dark btn-block">Project Manager</a>
-<a class="btn btn-dark btn-block">Admin</a>
-<a class="btn btn-link btn-block" href="{% url 'login' %}">Back to Login</a>
+<form method="GET">
+    <input class="btn btn-dark btn-block" type="submit" value="Submitter" name="Submitter"/>
+    <input class="btn btn-dark btn-block" type="submit" value="Developer" name="Developer"/>
+    <input class="btn btn-dark btn-block" type="submit" value="Project Manager" name="Project Manager"/>
+    <input class="btn btn-dark btn-block" type="submit" value="Admin" name="Admin"/>
+    <a class="btn btn-link btn-block" href="{% url 'login' %}">Back to Login</a>
+</form>
 {% endblock %}
