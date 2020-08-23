@@ -3,7 +3,7 @@
 {% load dashboard_extras %}
 
 {% block navbar %}
-{% include 'navbar.html' %}
+{% include 'navbar.html' with user_roles=user_roles %}
 {% endblock %}
 
 {% block content %}

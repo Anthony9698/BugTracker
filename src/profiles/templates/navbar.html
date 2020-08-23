@@ -18,9 +18,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'projects' %}">Projects</a>
                 </li>
+                {% if 'Admin' in user_roles %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'admin_user_view' %}">Roles</a>
                 </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav">
                 <li id="right-menu-section" class="nav-item">

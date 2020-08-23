@@ -85,8 +85,6 @@ def demo(request):
     elif request.GET.get("Admin") == 'Admin':
         user = authenticate(email="anthonyviera4@gmail.com", password="cheese123")
 
-    print(user)
-
     if user:
         login(request, user)
         return redirect('dashboard')
@@ -120,8 +118,10 @@ def dashboard(request):
         project_tickets_dict[proj.id] = project_tickets
         critical_tickets_dict[proj.id] = critical_tickets
         resolved_tickets_dict[proj.id] = resolved_tickets
+    user_roles = [role for role in request.user.roles]
 
     context = {
+        'user_roles': user_roles,
         'user_tickets': user_tickets,
         'user_projects': user_projects,
         'projects': projects,
