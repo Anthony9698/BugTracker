@@ -170,3 +170,8 @@ dl dt, dl dd {
 .table tr td{
     padding: .5rem;
 }
+
+.error-container h1 {
+    font-size: 48px;
+    font-weight: normal;
+}

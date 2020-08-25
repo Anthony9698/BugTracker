@@ -36,7 +36,7 @@ urlpatterns = [
     path('projects/edit/<str:pk>/', profile_views.edit_project, name="edit_project"),
     path('projects/archived-projects', profile_views.archived_projects, name="archived_projects"),
     path('projects/archive/<str:pk>/', profile_views.archive_project, name="archive_project"),
-    path('admin-user-view', profile_views.admin_user_view, name="admin_user_view"),
+    path('admin-user-view/', profile_views.admin_user_view, name="admin_user_view"),
     path('admin-user-view/edit/<str:pk>/', profile_views.edit_roles, name="edit_role"),
     path('project-user-view/edit/<str:pk>/', profile_views.assign_users, name="assign_users"),
     path('tickets/assign-user/<str:pk>/', profile_views.assign_ticket, name="assign_ticket"),
@@ -46,7 +46,7 @@ urlpatterns = [
     path('tickets/history/<str:pk>/', profile_views.ticket_history, name="ticket_history"),
     path('manage', profile_views.manage_profile, name="manage_profile"),
     path('manage/edit-settings/', profile_views.edit_profile, name="edit_profile"),
-    path('manage/change-password/', profile_views.change_password, name="change_password")
+    path('manage/change-password/', profile_views.change_password, name="change_password"),
 ]
 
 if settings.DEBUG:

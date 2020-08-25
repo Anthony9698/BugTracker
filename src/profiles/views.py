@@ -7,6 +7,7 @@ from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm, EditProfileForm
+from profiles.decorators import is_admin
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from django.http import HttpResponseNotFound
@@ -269,6 +270,7 @@ def edit_project(request, pk):
 
 
 @login_required
+@is_admin
 def admin_user_view(request):
     user_list = UserProfile.objects.all().order_by('last_name')
     user_roles_dict = {}
