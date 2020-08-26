@@ -13,6 +13,7 @@ from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTr
 from django.http import HttpResponseNotFound
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from profiles.utils import get_user_tickets
 
 # Create your views here.
 
@@ -95,8 +96,9 @@ def demo(request):
 
 @login_required
 def dashboard(request):
+    user_roles = [role for role in request.user.roles]
     user_projects = Project.objects.filter(users__id=request.user.id)
-    user_tickets = Ticket.objects.filter(project__in=user_projects).order_by('-last_modified_date')[:5]
+    user_tickets = list(get_user_tickets(request, user_roles))[:5]
     project_paginator = Paginator(user_projects, 4)
     page = request.GET.get('page')
 
@@ -121,7 +123,7 @@ def dashboard(request):
         resolved_tickets_dict[proj.id] = resolved_tickets
 
     context = {
-        'user_roles': [role for role in request.user.roles],
+        'user_roles': user_roles,
         'user_tickets': user_tickets,
         'user_projects': user_projects,
         'projects': projects,
@@ -136,24 +138,10 @@ def dashboard(request):
 @login_required
 def tickets(request):
     user_roles = [role for role in request.user.roles]
-    user_projects = Project.objects.filter(users__id=request.user.id)
-    user_tickets = set()
-
-    if 'Submitter' in user_roles:
-        user_tickets = set(Ticket.objects.filter(owner__id=request.user.id))|user_tickets
     
-    if 'Developer' in user_roles:
-        user_tickets = set(Ticket.objects.filter(assigned_user__id=request.user.id))|user_tickets
-
-    if 'Project Manager' in user_roles:
-        user_tickets = set(Ticket.objects.filter(project__in=user_projects))|user_tickets
-
-    if 'Admin' in user_roles:
-        user_tickets = set(Ticket.objects.all())|user_tickets
-
     context = {
         'user_roles': user_roles,
-        'user_tickets': user_tickets
+        'user_tickets': get_user_tickets(request, user_roles)
     }
 
     return render(request, 'ticket/tickets.html', context)
