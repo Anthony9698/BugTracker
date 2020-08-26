@@ -28,10 +28,13 @@
             <td></td>
             <td class="pr-1">
                 <div class="float-right">
-                    <a href="{% url 'project_detail' project.id %}">Details</a> |
+                    <a href="{% url 'project_detail' project.id %}">Details</a>
+                    {% if 'Admin' in user_roles or 'Project Manager' in user_roles %}
+                    |
                     <a href="{% url 'edit_project' project.id %}">Edit</a> |
                     <a href="{% url 'assign_users' project.id %}">Assign Users</a> |
                     <a href="{% url 'archive_project' project.id %}">Archive</a>
+                    {% endif %}
                 </div>
             </td>
         </tr>
