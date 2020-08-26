@@ -6,7 +6,9 @@
 </div>
 
 <div class="top-heading">
+    {% if 'Admin' in user_roles or 'Project Manager' in user_roles %}
     <h4><a href="{% url 'new_project' %}">Create New</a></h4>
+    {% endif %}
     <table class="table table-dark table-hover">
         <tr>
             <th>Name</th>
@@ -35,8 +37,12 @@
         </tr>
         {% endfor %}
     </table>
+    {% if 'Admin' in user_roles %}
     <a class="btn btn-link pl-0" href="{% url 'admin_user_view' %}">Manage User Roles</a>
     <br>
+    {% endif %}
+    {% if 'Admin' in user_roles or 'Project Manager' in user_roles %}
     <a class="btn btn-link pl-0" href="{% url 'archived_projects' %}">View Archived Projects</a>
+    {% endif %}
 </div>
 {% endblock %}
