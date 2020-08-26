@@ -135,12 +135,24 @@ def dashboard(request):
 
 @login_required
 def tickets(request):
-    context = {}
+    user_roles = [role for role in request.user.roles]
     user_projects = Project.objects.filter(users__id=request.user.id)
-    user_tickets = Ticket.objects.filter(project__in=user_projects)
+    user_tickets = set()
+
+    if 'Submitter' in user_roles:
+        user_tickets = set(Ticket.objects.filter(owner__id=request.user.id))|user_tickets
+    
+    if 'Developer' in user_roles:
+        user_tickets = set(Ticket.objects.filter(assigned_user__id=request.user.id))|user_tickets
+
+    if 'Project Manager' in user_roles:
+        user_tickets = set(Ticket.objects.filter(project__in=user_projects))|user_tickets
+
+    if 'Admin' in user_roles:
+        user_tickets = set(Ticket.objects.all())|user_tickets
 
     context = {
-        'user_roles': [role for role in request.user.roles],
+        'user_roles': user_roles,
         'user_tickets': user_tickets
     }
 
