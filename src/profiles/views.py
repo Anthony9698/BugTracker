@@ -7,7 +7,7 @@ from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm, EditProfileForm
-from profiles.decorators import is_admin
+from profiles.decorators import is_admin, is_admin_or_manager
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from django.http import HttpResponseNotFound
@@ -96,7 +96,7 @@ def demo(request):
 @login_required
 def dashboard(request):
     user_projects = Project.objects.filter(users__id=request.user.id)
-    user_tickets = Ticket.objects.filter(project__in=user_projects).order_by('-last_modified_date')
+    user_tickets = Ticket.objects.filter(project__in=user_projects).order_by('-last_modified_date')[:5]
     project_paginator = Paginator(user_projects, 4)
     page = request.GET.get('page')
 
@@ -149,15 +149,16 @@ def tickets(request):
 
 @login_required
 def projects(request):
+    user_roles = [role for role in request.user.roles]
     # display all unarchived projects here if you are admin
-    if request.user.is_admin:
+    if 'Admin' in user_roles:
         user_projects = Project.objects.filter(archived=False)
     
     else:
         user_projects = Project.objects.filter(Q(users__id=request.user.id) & Q(archived=False))
 
     context = {
-        'user_roles': [role for role in request.user.roles],
+        'user_roles': user_roles,
         'user_projects': user_projects
     }
 
@@ -233,6 +234,7 @@ def edit_ticket(request, pk):
 
 
 @login_required
+@is_admin_or_manager
 def new_project(request):
     if request.method == 'POST':
         new_project_form = ProjectForm(request.POST)
@@ -318,6 +320,7 @@ def edit_roles(request, pk):
 
 
 @login_required
+@is_admin_or_manager
 def archived_projects(request):
     project_list = Project.objects.filter(archived=True).order_by('title')
 
@@ -330,6 +333,7 @@ def archived_projects(request):
 
 
 @login_required
+@is_admin_or_manager
 def archive_project(request, pk):
     project = Project.objects.get(pk=pk)
 
@@ -347,6 +351,7 @@ def archive_project(request, pk):
 
 
 @login_required
+@is_admin_or_manager
 def assign_users(request, pk):
     project = Project.objects.get(pk=pk)
     project_users = project.users.all()
