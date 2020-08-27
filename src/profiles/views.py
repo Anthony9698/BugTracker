@@ -7,7 +7,7 @@ from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm, EditProfileForm
-from profiles.decorators import is_admin, is_admin_or_manager
+from profiles.decorators import is_admin, is_admin_or_manager, ticket_exists_viewable
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from django.http import HttpResponseNotFound
@@ -187,18 +187,10 @@ def new_ticket(request):
 
 
 @login_required
+@ticket_exists_viewable
 def ticket_detail(request, pk):
-    user_roles = [role for role in request.user.roles]
-
-    try:
-        _ticket = Ticket.objects.get(pk=pk)
-    except Ticket.DoesNotExist:
-        raise Http404
-
-    if _ticket not in get_user_tickets(request, user_roles):
-        raise PermissionDenied
-    
-    ticket_comments = Comment.objects.filter(ticket=_ticket.id)
+    ticket = Ticket.objects.get(pk=pk)
+    ticket_comments = Comment.objects.filter(ticket=ticket.id)
     paginator = Paginator(ticket_comments, 2)
     page = request.GET.get('page')
 
@@ -212,12 +204,12 @@ def ticket_detail(request, pk):
         comment_posts = paginator.page(paginator.num_pages)
     
     if request.POST:
-        _ticket.delete()
+        ticket.delete()
         return redirect('tickets')
 
     context = {
-        'user_roles': user_roles,
-        'ticket': _ticket,
+        'user_roles': [role for role in request.user.roles],
+        'ticket': ticket,
         'ticket_comments': ticket_comments,
         'page': page,
         'comment_posts': comment_posts
@@ -227,8 +219,11 @@ def ticket_detail(request, pk):
 
 
 @login_required
+@ticket_exists_viewable
 def edit_ticket(request, pk):
+    user_roles = [role for role in request.user.roles]
     ticket = Ticket.objects.get(pk=pk)
+
     form = TicketForm(request.user, request.POST or None, instance=ticket)
     
     if form.is_valid():
@@ -236,7 +231,7 @@ def edit_ticket(request, pk):
         return redirect("/tickets/detail/" + str(ticket.id))
 
     context = {
-        'user_roles': [role for role in request.user.roles],
+        'user_roles': user_roles,
         'edit_ticket_form': form
     }
 
