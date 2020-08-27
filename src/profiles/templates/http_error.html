@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row error-container text-center">
+    <div class="col">
+        <h1><img src="{% static 'images/bug_tracker_logo_white.ico' %}" alt="logo" width="50" height="50"/> Bug Tracker</h1>
+        {% block error_msg %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

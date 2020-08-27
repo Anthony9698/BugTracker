@@ -14,6 +14,7 @@ from django.http import HttpResponseNotFound
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from profiles.utils import get_user_tickets
+from django.core.exceptions import PermissionDenied, ViewDoesNotExist
 
 # Create your views here.
 
@@ -187,7 +188,16 @@ def new_ticket(request):
 
 @login_required
 def ticket_detail(request, pk):
-    _ticket = Ticket.objects.get(pk=pk)
+    user_roles = [role for role in request.user.roles]
+
+    try:
+        _ticket = Ticket.objects.get(pk=pk)
+    except Ticket.DoesNotExist:
+        raise Http404
+
+    if _ticket not in get_user_tickets(request, user_roles):
+        raise PermissionDenied
+    
     ticket_comments = Comment.objects.filter(ticket=_ticket.id)
     paginator = Paginator(ticket_comments, 2)
     page = request.GET.get('page')
@@ -206,7 +216,7 @@ def ticket_detail(request, pk):
         return redirect('tickets')
 
     context = {
-        'user_roles': [role for role in request.user.roles],
+        'user_roles': user_roles,
         'ticket': _ticket,
         'ticket_comments': ticket_comments,
         'page': page,
