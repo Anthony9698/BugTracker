@@ -268,6 +268,7 @@ def project_detail(request, pk):
 
 
 @login_required
+@is_admin_or_manager
 def edit_project(request, pk):
     project = Project.objects.get(pk=pk)
     form = ProjectForm(request.POST or None, instance=project)
