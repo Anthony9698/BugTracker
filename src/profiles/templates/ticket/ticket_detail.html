@@ -144,8 +144,11 @@
                         <b>{{comment.last_modified_date}}</b>
                         <br>
                     {% endif %}
+                    {% if comment.user == user or 'Admin' in user_roles or 'Project Manager' in user_roles %}
                     <a class="btn btn-link pl-0" href="{% url 'edit_comment' comment.id %}">Edit</a> 
                     <a class="btn btn-link pl-0" href="{% url 'delete_comment' comment.id %}">Delete</a>
+                    {% endif %}
+                    
                 </div>
             </div>
             {% endfor %}

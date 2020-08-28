@@ -17,6 +17,8 @@
     </div>
 </div>
 <div class="footer">
+    {% block ticket_detail_link %}
     <a class="btn btn-link" href="{% url 'ticket_detail' ticket.id %}">Back to Ticket Details</a>
+    {% endblock %}
 </div>
 {% endblock %}
