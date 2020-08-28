@@ -7,7 +7,7 @@ from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm, EditProfileForm
-from profiles.decorators import is_admin, is_admin_or_manager, ticket_exists_viewable
+from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from django.http import HttpResponseNotFound
@@ -116,9 +116,9 @@ def dashboard(request):
     critical_tickets_dict = {}
     resolved_tickets_dict = {}
     for proj in projects:
-        project_tickets = Ticket.objects.filter(project=proj.id).count()
-        critical_tickets = Ticket.objects.filter(Q(project=proj.id) & Q(priority__exact='Critical')).count()
-        resolved_tickets = Ticket.objects.filter(Q(project=proj.id) & Q(status__exact='Resolved')).count()
+        project_tickets = get_user_tickets(request, user_roles).count()
+        critical_tickets = get_user_tickets(request, user_roles).filter(priority__exact='Critical').count()
+        resolved_tickets = get_user_tickets(request, user_roles).filter(status__exact='Resolved').count()
         project_tickets_dict[proj.id] = project_tickets
         critical_tickets_dict[proj.id] = critical_tickets
         resolved_tickets_dict[proj.id] = resolved_tickets
@@ -167,6 +167,7 @@ def projects(request):
 
 
 @login_required
+@user_has_role
 def new_ticket(request):
     if request.method == 'POST':
         form = TicketForm(request.user, request.POST, instance=None)
@@ -208,6 +209,7 @@ def ticket_detail(request, pk):
         return redirect('tickets')
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'ticket': ticket,
         'ticket_comments': ticket_comments,
@@ -223,7 +225,6 @@ def ticket_detail(request, pk):
 def edit_ticket(request, pk):
     user_roles = [role for role in request.user.roles]
     ticket = Ticket.objects.get(pk=pk)
-
     form = TicketForm(request.user, request.POST or None, instance=ticket)
     
     if form.is_valid():
@@ -259,14 +260,15 @@ def new_project(request):
 
 
 @login_required
+@project_exists_viewable
 def project_detail(request, pk):
+    user_roles = [role for role in request.user.roles]
     project = Project.objects.get(pk=pk)
-    project_tickets = Ticket.objects.filter(project=project.id)
         
     context = {
-        'user_roles': [role for role in request.user.roles],
+        'user_roles': user_roles,
         'project': project,
-        'project_tickets': project_tickets
+        'project_tickets': get_user_tickets(request, user_roles)
     }
 
     return render(request, "project/project_detail.html", context)
@@ -308,6 +310,7 @@ def admin_user_view(request):
 
 
 @login_required
+@is_admin
 def edit_roles(request, pk):
     user = UserProfile.objects.get(pk=pk)
     role_form = UserRolesForm(request.POST or None, instance=user)
@@ -391,6 +394,7 @@ def assign_users(request, pk):
 
 
 @login_required
+@is_project_manager
 def assign_ticket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
     assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.POST or None, instance=ticket)
@@ -433,6 +437,7 @@ def new_comment(request, pk):
 
 
 @login_required
+@comment_exists_editable
 def delete_comment(request, pk):
     comment = Comment.objects.get(pk=pk)
 
@@ -448,6 +453,7 @@ def delete_comment(request, pk):
 
 
 @login_required
+@comment_exists_editable
 def edit_comment(request, pk):
     comment = Comment.objects.get(pk=pk)
     edit_comment_form = CommentForm(request.POST or None, instance=comment)
@@ -464,6 +470,8 @@ def edit_comment(request, pk):
     return render(request, 'ticket/edit_comment.html', context)
 
 
+@login_required
+@ticket_exists_viewable
 def ticket_history(request, pk):
     ticket = Ticket.objects.get(pk=pk)
     audit_trail = TicketAuditTrail.objects.filter(ticket=ticket.id).order_by('-date_added')
@@ -489,6 +497,7 @@ def ticket_history(request, pk):
     return render(request, 'ticket/ticket_history.html', context)
 
 
+@login_required
 def manage_profile(request):
     context = {
         'user_roles': [role for role in request.user.roles],
@@ -498,6 +507,7 @@ def manage_profile(request):
     return render(request, 'user/profile.html', context)
 
 
+@login_required
 def edit_profile(request):
     my_profile_form = EditProfileForm(request.POST or None, instance=request.user)
 
@@ -514,6 +524,7 @@ def edit_profile(request):
     return render(request, 'user/edit_profile.html', context)
 
 
+@login_required
 def change_password(request):
     if request.method == 'POST':
         password_change_form = PasswordChangeForm(request.user, request.POST)

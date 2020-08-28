@@ -5,9 +5,11 @@
 <div class="top-heading">
     <h1>My Tickets</h1>
 </div>
+{% if user_roles|length > 0 %}
 <div class="top-link">
     <h4><a href="{% url 'new_ticket' %}">Create New</a></h4>
 </div>
+{% endif %}
 <div class="row">
     <div class="col">
         <table id="ticketTable" class="table table-dark table-hover">
@@ -37,10 +39,14 @@
                 {% endif %}
                 <td>
                     <a href="{% url 'ticket_detail' ticket.id %}">Details</a>
+                    {% if user_roles|length > 0 %}
                     <br>
                     <a href="{% url 'edit_ticket' ticket.id %}">Edit</a>
+                    {% endif %}
+                    {% if 'Project Manager' in user_roles %}
                     <br>
                     <a href="{% url 'assign_ticket' ticket.id %}">Assign</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
