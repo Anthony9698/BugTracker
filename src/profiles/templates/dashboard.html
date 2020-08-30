@@ -3,13 +3,13 @@
 {% load dashboard_extras %}
 
 {% block navbar %}
-{% include 'navbar.html' with user_roles=user_roles %}
+{% include 'navbar.html' with user_roles=user_roles user=user %}
 {% endblock %}
 
 {% block content %}
 <div class="top-heading">
     <h1>My Dashboard</h1>
-</div>
+ </div>
 <div class="second-heading">
     <h2>Recently updated tickets</h2>
 </div>

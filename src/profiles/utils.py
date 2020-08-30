@@ -14,7 +14,7 @@ def get_user_tickets(request, user_roles):
     if 'Project Manager' in user_roles:
         user_tickets = Ticket.objects.filter(project__in=user_projects) | user_tickets
 
-    if 'Admin' in user_roles:
+    if 'Admin' in user_roles or request.user.is_admin:
         user_tickets = Ticket.objects.all()
 
     return user_tickets.order_by('-last_modified_date')
