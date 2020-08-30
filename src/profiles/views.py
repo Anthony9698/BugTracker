@@ -7,7 +7,8 @@ from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm, EditProfileForm
-from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role
+from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, \
+     ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from django.http import HttpResponseNotFound
@@ -124,6 +125,7 @@ def dashboard(request):
         resolved_tickets_dict[proj.id] = resolved_tickets
 
     context = {
+        'user': request.user,
         'user_roles': user_roles,
         'user_tickets': user_tickets,
         'user_projects': user_projects,
@@ -141,6 +143,7 @@ def tickets(request):
     user_roles = [role for role in request.user.roles]
     
     context = {
+        'user': request.user,
         'user_roles': user_roles,
         'user_tickets': get_user_tickets(request, user_roles)
     }
@@ -152,13 +155,14 @@ def tickets(request):
 def projects(request):
     user_roles = [role for role in request.user.roles]
     # display all unarchived projects here if you are admin
-    if 'Admin' in user_roles:
+    if 'Admin' in user_roles or request.user.is_admin:
         user_projects = Project.objects.filter(archived=False)
     
     else:
         user_projects = Project.objects.filter(Q(users__id=request.user.id) & Q(archived=False))
 
     context = {
+        'user': request.user,
         'user_roles': user_roles,
         'user_projects': user_projects
     }
@@ -180,6 +184,7 @@ def new_ticket(request):
         form = TicketForm(request.user)
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'new_ticket_form': form
     }
@@ -232,6 +237,7 @@ def edit_ticket(request, pk):
         return redirect("/tickets/detail/" + str(ticket.id))
 
     context = {
+        'user': request.user,
         'user_roles': user_roles,
         'edit_ticket_form': form
     }
@@ -252,6 +258,7 @@ def new_project(request):
         new_project_form = ProjectForm()
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'new_project_form': new_project_form
     }
@@ -266,6 +273,7 @@ def project_detail(request, pk):
     project = Project.objects.get(pk=pk)
         
     context = {
+        'user': request.user,
         'user_roles': user_roles,
         'project': project,
         'project_tickets': get_user_tickets(request, user_roles)
@@ -284,6 +292,7 @@ def edit_project(request, pk):
         return redirect("projects")
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'edit_project_form': form
     }
@@ -301,6 +310,7 @@ def admin_user_view(request):
         user_roles_dict[user.id] = list(user.roles)
   
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'user_list': user_list,
         'user_roles_dict': user_roles_dict,
@@ -314,10 +324,10 @@ def admin_user_view(request):
 def edit_roles(request, pk):
     user = UserProfile.objects.get(pk=pk)
     role_form = UserRolesForm(request.POST or None, instance=user)
-
-    if role_form.is_valid():
-        role_form.save()
-        return redirect('admin_user_view')
+    if request.method == 'POST':
+        if role_form.is_valid():
+            role_form.save()
+            return redirect('admin_user_view')
 
     context = {
         'user_roles': [role for role in request.user.roles],
@@ -334,6 +344,7 @@ def archived_projects(request):
     project_list = Project.objects.filter(archived=True).order_by('title')
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'project_list': project_list
     }
@@ -352,6 +363,7 @@ def archive_project(request, pk):
         return redirect('projects')
     
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'project': project
     }
@@ -384,6 +396,7 @@ def assign_users(request, pk):
                     project.users.add(user)
         
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'remove_project_users_form': remove_project_users_form,
         'add_project_users_form': add_project_users_form,
@@ -404,6 +417,7 @@ def assign_ticket(request, pk):
         return redirect("/tickets/detail/" + str(ticket.id))
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'ticket': ticket,
         'assign_ticket_form': assign_ticket_form
@@ -428,6 +442,7 @@ def new_comment(request, pk):
         new_comment_form = CommentForm()
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'new_comment_form': new_comment_form,
         'ticket': ticket
@@ -446,6 +461,8 @@ def delete_comment(request, pk):
         return redirect("/tickets/detail/" + str(comment.ticket.id))
 
     context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
         'comment': comment,
     }
 
@@ -463,6 +480,8 @@ def edit_comment(request, pk):
         return redirect("/tickets/detail/" + str(comment.ticket.id))
 
     context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
         'comment': comment,
         'edit_comment_form': edit_comment_form
     }
@@ -487,6 +506,7 @@ def ticket_history(request, pk):
         ticket_audits = paginator.page(paginator.num_pages)
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'ticket': ticket,
         'ticket_audits': ticket_audits,
@@ -500,8 +520,8 @@ def ticket_history(request, pk):
 @login_required
 def manage_profile(request):
     context = {
-        'user_roles': [role for role in request.user.roles],
-        'my_user': request.user
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles]
     }
 
     return render(request, 'user/profile.html', context)
@@ -516,8 +536,8 @@ def edit_profile(request):
         return redirect('manage_profile')
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
-        'my_user': request.user,
         'my_profile_form': my_profile_form
     }
 
@@ -540,6 +560,7 @@ def change_password(request):
         password_change_form = PasswordChangeForm(request.user)
 
     context = {
+        'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'change_password_form': password_change_form
     }

@@ -1,6 +1,6 @@
 from functools import wraps
 from django.core.exceptions import PermissionDenied
-from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
+from profiles.models import UserProfile, Project, Ticket, Comment
 from django.http import *
 from profiles.utils import get_user_tickets
 
@@ -14,11 +14,12 @@ def user_has_role(function):
         raise PermissionDenied
     return wrap
 
+
 def is_admin(function):
     @wraps(function)
     def wrap(request, *args, **kwargs):
         user_roles = [role for role in request.user.roles]
-        if 'Admin' in user_roles:
+        if 'Admin' in user_roles or request.user.is_admin:
             return function(request, *args, **kwargs)
         raise PermissionDenied
     return wrap
@@ -38,7 +39,7 @@ def is_admin_or_manager(function):
     @wraps(function)
     def wrap(request, *args, **kwargs):
         user_roles = [role for role in request.user.roles]
-        if 'Admin' in user_roles or 'Project Manager' in user_roles:
+        if 'Admin' in user_roles or request.user.is_admin or 'Project Manager' in user_roles:
             return function(request, *args, **kwargs)
         raise PermissionDenied
     return wrap
@@ -83,7 +84,7 @@ def comment_exists_editable(function):
         except Comment.DoesNotExist:
             raise Http404
 
-        if request.user != comment.user and'Admin' not in user_roles and 'Project Manager' not in user_roles:
+        if request.user != comment.user and'Admin' not in user_roles and not request.user.is_admin and 'Project Manager' not in user_roles:
             raise PermissionDenied
 
         return function(request, pk, *args, **kwargs)

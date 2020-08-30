@@ -12,7 +12,7 @@
             <dt>Name: </dt><dd>{{project.title}}</dd>
             <dt>Description: </dt><dd>{{project.description}}</dd>
         </dl>
-        {% if 'Admin' in user_roles or 'Project Manager' in user_roles %}
+        {% if 'Admin' in user_roles or 'Project Manager' in user_roles or user.is_admin %}
         <a class="btn btn-link p-0" href="{% url 'edit_project' project.id %}">Edit Project Details</a>
         {% endif %}
     </div>
@@ -36,7 +36,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        {% if 'Admin' in user_roles or 'Project Manager' in user_roles %}
+        {% if 'Admin' in user_roles or 'Project Manager' in user_roles or user.is_admin %}
         <a class="btn btn-link pl-0" href="{% url 'assign_users' project.id %}">Edit Project Users</a><br>
         {% endif %}
         {% if 'Admin' in user_roles %}
@@ -47,7 +47,7 @@
 <div class="row mt-4">
     <div class="col">
         <h3>Project Tickets</h3>
-        {% if 'Admin' in user_roles or 'Project Manager' in user_roles %}
+        {% if 'Admin' in user_roles or 'Project Manager' in user_roles or user.is_admin %}
         <div class="mb-3">
             <a class="btn btn-link pl-0" href="{% url 'new_ticket' %}">Create New</a>
         </div>
