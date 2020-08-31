@@ -58,7 +58,7 @@
 </div>
 <div class="row">
     <div class="col-10 emulated-flex-gap">
-        {% for project in projects %}
+        {% for project in project_list %}
         <figure>
             <a href="{% url 'project_detail' project.id %}">
                 <img id="project_img" src="{% static 'images/folder.png' %}" alt="project">
