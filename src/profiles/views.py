@@ -1,5 +1,6 @@
-from django.http import *
-from .models import UserProfile
+from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -9,15 +10,10 @@ from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,
     CommentForm, EditProfileForm
 from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, \
      ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
-from django.http import HttpResponseNotFound
-from django.db.models import Q
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from profiles.utils import get_user_tickets
-from django.core.exceptions import PermissionDenied, ViewDoesNotExist
+from .models import UserProfile
 
-# Create your views here.
 
 def login_page(request):
     context = {}
@@ -66,7 +62,6 @@ def register_page(request):
             return redirect('dashboard')
         else:
             context['registration_form'] = form
-    
     else: # GET REQUEST
         form = RegistrationForm()
         context['registration_form'] = form
@@ -105,21 +100,23 @@ def dashboard(request):
     page = request.GET.get('page')
 
     try:
-        projects = project_paginator.page(page)
+        project_list = project_paginator.page(page)
 
     except PageNotAnInteger:
-        projects = project_paginator.page(1)
+        project_list = project_paginator.page(1)
 
     except EmptyPage:
-        projects = project_paginator.page(project_paginator.num_pages)
+        project_list = project_paginator.page(project_paginator.num_pages)
 
     project_tickets_dict = {}
     critical_tickets_dict = {}
     resolved_tickets_dict = {}
-    for proj in projects:
+    for proj in project_list:
         project_tickets = get_user_tickets(request, user_roles).count()
-        critical_tickets = get_user_tickets(request, user_roles).filter(priority__exact='Critical').count()
-        resolved_tickets = get_user_tickets(request, user_roles).filter(status__exact='Resolved').count()
+        critical_tickets = get_user_tickets(request, user_roles)\
+                           .filter(priority__exact='Critical').count()
+        resolved_tickets = get_user_tickets(request, user_roles)\
+                           .filter(status__exact='Resolved').count()
         project_tickets_dict[proj.id] = project_tickets
         critical_tickets_dict[proj.id] = critical_tickets
         resolved_tickets_dict[proj.id] = resolved_tickets
@@ -129,19 +126,18 @@ def dashboard(request):
         'user_roles': user_roles,
         'user_tickets': user_tickets,
         'user_projects': user_projects,
-        'projects': projects,
+        'project_list': project_list,
         'project_tickets_dict': project_tickets_dict,
         'critical_tickets_dict': critical_tickets_dict,
         'resolved_tickets_dict': resolved_tickets_dict
     }
-    
+
     return render(request, 'dashboard.html', context)
 
 
 @login_required
 def tickets(request):
     user_roles = [role for role in request.user.roles]
-    
     context = {
         'user': request.user,
         'user_roles': user_roles,
@@ -157,7 +153,7 @@ def projects(request):
     # display all unarchived projects here if you are admin
     if 'Admin' in user_roles or request.user.is_admin:
         user_projects = Project.objects.filter(archived=False)
-    
+
     else:
         user_projects = Project.objects.filter(Q(users__id=request.user.id) & Q(archived=False))
 
@@ -208,7 +204,7 @@ def ticket_detail(request, pk):
 
     except EmptyPage:
         comment_posts = paginator.page(paginator.num_pages)
-    
+
     if request.POST:
         ticket.delete()
         return redirect('tickets')
@@ -231,7 +227,7 @@ def edit_ticket(request, pk):
     user_roles = [role for role in request.user.roles]
     ticket = Ticket.objects.get(pk=pk)
     form = TicketForm(request.user, request.POST or None, instance=ticket)
-    
+
     if form.is_valid():
         form.save()
         return redirect("/tickets/detail/" + str(ticket.id))
@@ -271,7 +267,7 @@ def new_project(request):
 def project_detail(request, pk):
     user_roles = [role for role in request.user.roles]
     project = Project.objects.get(pk=pk)
-        
+
     context = {
         'user': request.user,
         'user_roles': user_roles,
@@ -308,7 +304,7 @@ def admin_user_view(request):
 
     for user in user_list:
         user_roles_dict[user.id] = list(user.roles)
-  
+
     context = {
         'user': request.user,
         'user_roles': [role for role in request.user.roles],
@@ -361,7 +357,7 @@ def archive_project(request, pk):
         project.archived = True
         project.save()
         return redirect('projects')
-    
+
     context = {
         'user': request.user,
         'user_roles': [role for role in request.user.roles],
@@ -387,14 +383,14 @@ def assign_users(request, pk):
             if remove_project_users_form.is_valid():
                 for user in users_to_remove:
                     project.users.remove(user)
-            
+
         elif request.POST.get("all_users"):
             selected_users = request.POST.getlist("all_users")
             users_to_add = UserProfile.objects.filter(id__in=selected_users)
             if add_project_users_form.is_valid():
                 for user in users_to_add:
                     project.users.add(user)
-        
+
     context = {
         'user': request.user,
         'user_roles': [role for role in request.user.roles],
@@ -548,7 +544,7 @@ def edit_profile(request):
 def change_password(request):
     if request.method == 'POST':
         password_change_form = PasswordChangeForm(request.user, request.POST)
-        
+
         if password_change_form.is_valid():
             user = password_change_form.save()
             update_session_auth_hash(request, user)
