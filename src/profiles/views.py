@@ -43,30 +43,41 @@ def login_page(request):
 
 
 @login_required
-def logout_request(request):
-    logout(request)
-    messages.info(request, "Logged out successfully!")
-    return redirect("login")
+@is_admin
+def admin_user_view(request):
+    user_list = UserProfile.objects.all().order_by('last_name')
+    user_roles_dict = {}
+
+    for user in user_list:
+        user_roles_dict[user.id] = list(user.roles)
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'user_list': user_list,
+        'user_roles_dict': user_roles_dict,
+    }
+
+    return render(request, "user/roles.html", context)
 
 
-def register_page(request):
-    context = {}
-    if request.POST:
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            email = form.cleaned_data.get('email')
-            raw_password = form.cleaned_data.get('password1')
-            user_profile = authenticate(email=email, password=raw_password)
-            login(request, user_profile)
-            return redirect('dashboard')
-        else:
-            context['registration_form'] = form
-    else: # GET REQUEST
-        form = RegistrationForm()
-        context['registration_form'] = form
+@login_required
+@is_admin
+def edit_roles(request, pk):
+    user = UserProfile.objects.get(pk=pk)
+    role_form = UserRolesForm(request.POST or None, instance=user)
+    if request.method == 'POST':
+        if role_form.is_valid():
+            role_form.save()
+            return redirect('admin_user_view')
 
-    return render(request, 'user/register.html', context)
+    context = {
+        'user_roles': [role for role in request.user.roles],
+        'user': user,
+        'role_form': role_form
+    }
+
+    return render(request, 'user/edit_roles.html', context)
 
 
 def demo(request):
@@ -89,6 +100,33 @@ def demo(request):
         return redirect('dashboard')
 
     return render(request, 'user/demo.html')
+
+
+def register_page(request):
+    context = {}
+    if request.POST:
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            email = form.cleaned_data.get('email')
+            raw_password = form.cleaned_data.get('password1')
+            user_profile = authenticate(email=email, password=raw_password)
+            login(request, user_profile)
+            return redirect('dashboard')
+        else:
+            context['registration_form'] = form
+    else: # GET REQUEST
+        form = RegistrationForm()
+        context['registration_form'] = form
+
+    return render(request, 'user/register.html', context)
+
+
+@login_required
+def logout_user(request):
+    logout(request)
+    messages.info(request, "Logged out successfully!")
+    return redirect("login")
 
 
 @login_required
@@ -145,25 +183,6 @@ def tickets(request):
     }
 
     return render(request, 'ticket/tickets.html', context)
-
-
-@login_required
-def projects(request):
-    user_roles = [role for role in request.user.roles]
-    # display all unarchived projects here if you are admin
-    if 'Admin' in user_roles or request.user.is_admin:
-        user_projects = Project.objects.filter(archived=False)
-
-    else:
-        user_projects = Project.objects.filter(Q(users__id=request.user.id) & Q(archived=False))
-
-    context = {
-        'user': request.user,
-        'user_roles': user_roles,
-        'user_projects': user_projects
-    }
-
-    return render(request, 'project/projects.html', context)
 
 
 @login_required
@@ -239,167 +258,6 @@ def edit_ticket(request, pk):
     }
 
     return render(request, "ticket/edit_ticket.html", context)
-
-
-@login_required
-@is_admin_or_manager
-def new_project(request):
-    if request.method == 'POST':
-        new_project_form = ProjectForm(request.POST)
-        if new_project_form.is_valid():
-            project = new_project_form.save()
-            project.users.add(request.user)
-            return redirect("projects")
-    else:
-        new_project_form = ProjectForm()
-
-    context = {
-        'user': request.user,
-        'user_roles': [role for role in request.user.roles],
-        'new_project_form': new_project_form
-    }
-
-    return render(request, "project/new_project.html", context)
-
-
-@login_required
-@project_exists_viewable
-def project_detail(request, pk):
-    user_roles = [role for role in request.user.roles]
-    project = Project.objects.get(pk=pk)
-
-    context = {
-        'user': request.user,
-        'user_roles': user_roles,
-        'project': project,
-        'project_tickets': get_user_tickets(request, user_roles)
-    }
-
-    return render(request, "project/project_detail.html", context)
-
-
-@login_required
-@is_admin_or_manager
-def edit_project(request, pk):
-    project = Project.objects.get(pk=pk)
-    form = ProjectForm(request.POST or None, instance=project)
-    if form.is_valid():
-        form.save()
-        return redirect("projects")
-
-    context = {
-        'user': request.user,
-        'user_roles': [role for role in request.user.roles],
-        'edit_project_form': form
-    }
-
-    return render(request, "project/edit_project.html", context)
-
-
-@login_required
-@is_admin
-def admin_user_view(request):
-    user_list = UserProfile.objects.all().order_by('last_name')
-    user_roles_dict = {}
-
-    for user in user_list:
-        user_roles_dict[user.id] = list(user.roles)
-
-    context = {
-        'user': request.user,
-        'user_roles': [role for role in request.user.roles],
-        'user_list': user_list,
-        'user_roles_dict': user_roles_dict,
-    }
-
-    return render(request, "user/roles.html", context)
-
-
-@login_required
-@is_admin
-def edit_roles(request, pk):
-    user = UserProfile.objects.get(pk=pk)
-    role_form = UserRolesForm(request.POST or None, instance=user)
-    if request.method == 'POST':
-        if role_form.is_valid():
-            role_form.save()
-            return redirect('admin_user_view')
-
-    context = {
-        'user_roles': [role for role in request.user.roles],
-        'user': user,
-        'role_form': role_form
-    }
-
-    return render(request, 'user/edit_roles.html', context)
-
-
-@login_required
-@is_admin_or_manager
-def archived_projects(request):
-    project_list = Project.objects.filter(archived=True).order_by('title')
-
-    context = {
-        'user': request.user,
-        'user_roles': [role for role in request.user.roles],
-        'project_list': project_list
-    }
-
-    return render(request, 'project/archived_projects.html', context)
-
-
-@login_required
-@is_admin_or_manager
-def archive_project(request, pk):
-    project = Project.objects.get(pk=pk)
-
-    if request.POST:
-        project.archived = True
-        project.save()
-        return redirect('projects')
-
-    context = {
-        'user': request.user,
-        'user_roles': [role for role in request.user.roles],
-        'project': project
-    }
-
-    return render(request, 'project/archive_project.html', context)
-
-
-@login_required
-@is_admin_or_manager
-def assign_users(request, pk):
-    project = Project.objects.get(pk=pk)
-    project_users = project.users.all()
-    all_users = UserProfile.objects.exclude(id__in=project.users.all())
-    remove_project_users_form = AddProjectUsersForm(project_users, request.POST or None)
-    add_project_users_form = RemoveProjectUsersForm(all_users, request.POST or None)
-
-    if request.method == 'POST':
-        if request.POST.get("assigned"):
-            selected_users = request.POST.getlist("assigned")
-            users_to_remove = UserProfile.objects.filter(id__in=selected_users)
-            if remove_project_users_form.is_valid():
-                for user in users_to_remove:
-                    project.users.remove(user)
-
-        elif request.POST.get("all_users"):
-            selected_users = request.POST.getlist("all_users")
-            users_to_add = UserProfile.objects.filter(id__in=selected_users)
-            if add_project_users_form.is_valid():
-                for user in users_to_add:
-                    project.users.add(user)
-
-    context = {
-        'user': request.user,
-        'user_roles': [role for role in request.user.roles],
-        'remove_project_users_form': remove_project_users_form,
-        'add_project_users_form': add_project_users_form,
-        'project': project
-    }
-
-    return render(request, 'user/assign_project_users.html', context)
 
 
 @login_required
@@ -510,7 +368,150 @@ def ticket_history(request, pk):
         'audit_trail': audit_trail,
         'first_audit': first_audit
     }
+    
     return render(request, 'ticket/ticket_history.html', context)
+
+
+@login_required
+def projects(request):
+    user_roles = [role for role in request.user.roles]
+    # display all unarchived projects here if you are admin
+    if 'Admin' in user_roles or request.user.is_admin:
+        user_projects = Project.objects.filter(archived=False)
+
+    else:
+        user_projects = Project.objects.filter(Q(users__id=request.user.id) & Q(archived=False))
+
+    context = {
+        'user': request.user,
+        'user_roles': user_roles,
+        'user_projects': user_projects
+    }
+
+    return render(request, 'project/projects.html', context)
+
+
+@login_required
+@is_admin_or_manager
+def new_project(request):
+    if request.method == 'POST':
+        new_project_form = ProjectForm(request.POST)
+        if new_project_form.is_valid():
+            project = new_project_form.save()
+            project.users.add(request.user)
+            return redirect("projects")
+    else:
+        new_project_form = ProjectForm()
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'new_project_form': new_project_form
+    }
+
+    return render(request, "project/new_project.html", context)
+
+
+@login_required
+@project_exists_viewable
+def project_detail(request, pk):
+    user_roles = [role for role in request.user.roles]
+    project = Project.objects.get(pk=pk)
+
+    context = {
+        'user': request.user,
+        'user_roles': user_roles,
+        'project': project,
+        'project_tickets': get_user_tickets(request, user_roles)
+    }
+
+    return render(request, "project/project_detail.html", context)
+
+
+@login_required
+@is_admin_or_manager
+def edit_project(request, pk):
+    project = Project.objects.get(pk=pk)
+    form = ProjectForm(request.POST or None, instance=project)
+    if form.is_valid():
+        form.save()
+        return redirect("projects")
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'edit_project_form': form
+    }
+
+    return render(request, "project/edit_project.html", context)
+
+
+@login_required
+@is_admin_or_manager
+def archived_projects(request):
+    project_list = Project.objects.filter(archived=True).order_by('title')
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'project_list': project_list
+    }
+
+    return render(request, 'project/archived_projects.html', context)
+
+
+@login_required
+@is_admin_or_manager
+def archive_project(request, pk):
+    project = Project.objects.get(pk=pk)
+
+    if request.POST:
+        project.archived = True
+        project.save()
+        return redirect('projects')
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'project': project
+    }
+
+    return render(request, 'project/archive_project.html', context)
+
+
+@login_required
+@is_admin_or_manager
+def assign_users(request, pk):
+    project = Project.objects.get(pk=pk)
+    project_users = project.users.all()
+    all_users = UserProfile.objects.exclude(id__in=project.users.all())
+    remove_project_users_form = AddProjectUsersForm(project_users, request.POST or None)
+    add_project_users_form = RemoveProjectUsersForm(all_users, request.POST or None)
+
+    if request.method == 'POST':
+        if request.POST.get("assigned"):
+            selected_users = request.POST.getlist("assigned")
+            users_to_remove = UserProfile.objects.filter(id__in=selected_users)
+            if remove_project_users_form.is_valid():
+                for user in users_to_remove:
+                    project.users.remove(user)
+
+        elif request.POST.get("all_users"):
+            selected_users = request.POST.getlist("all_users")
+            users_to_add = UserProfile.objects.filter(id__in=selected_users)
+            if add_project_users_form.is_valid():
+                for user in users_to_add:
+                    project.users.add(user)
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'remove_project_users_form': remove_project_users_form,
+        'add_project_users_form': add_project_users_form,
+        'project': project
+    }
+
+    return render(request, 'user/assign_project_users.html', context)
 
 
 @login_required
