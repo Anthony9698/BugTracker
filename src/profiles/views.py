@@ -9,11 +9,10 @@ from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm, EditProfileForm
 from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, \
-     ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role
+     ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role, not_demo_user
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from profiles.utils import get_user_tickets
 from .models import UserProfile
-import os
 
 
 def login_page(request):
@@ -72,15 +71,15 @@ def register_page(request):
 
 def demo(request):
     user = None
-
+    
     if request.GET.get('Submitter') == 'Submitter':
-        user = authenticate(email="sophiav17@gmail.com", password="AeV45954595$")
+        user = authenticate(email="sophiav21@gmail.com", password="AeV45954595$")
 
     elif request.GET.get("Developer") == 'Developer':
-        user = authenticate(email="idk123@gmail.com", password="Cheese123@")
+        user = authenticate(email="alan_guzman12@gmail.com", password="Cheese123@")
 
     elif request.GET.get("Project Manager") == 'Project Manager':
-        user = authenticate(email="meshell.campbell14@gmail.com", password="cheese123@")
+        user = authenticate(email="meshell.campbell22@gmail.com", password="cheese123@")
 
     elif request.GET.get("Admin") == 'Admin':
         user = authenticate(email="anthonyviera4@gmail.com", password="cheese123")
@@ -525,6 +524,7 @@ def manage_profile(request):
 
 
 @login_required
+@not_demo_user
 def edit_profile(request):
     my_profile_form = EditProfileForm(request.POST or None, instance=request.user)
 
@@ -542,6 +542,7 @@ def edit_profile(request):
 
 
 @login_required
+@not_demo_user
 def change_password(request):
     if request.method == 'POST':
         password_change_form = PasswordChangeForm(request.user, request.POST)

@@ -15,6 +15,21 @@ def user_has_role(function):
     return wrap
 
 
+def not_demo_user(function):
+    @wraps(function)
+    def wrap(request, *args, **kwargs):
+        submitter = UserProfile.objects.get(pk=4)
+        developer = UserProfile.objects.get(pk=3)
+        project_manager = UserProfile.objects.get(pk=2)
+        admin = UserProfile.objects.get(pk=1)
+        demo_users = [submitter, developer, project_manager, admin]
+
+        if request.user in demo_users:
+            raise PermissionDenied
+        return function(request, *args, **kwargs)
+    return wrap
+
+
 def is_admin(function):
     @wraps(function)
     def wrap(request, *args, **kwargs):
