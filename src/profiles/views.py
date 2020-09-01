@@ -13,6 +13,7 @@ from profiles.decorators import is_admin, is_project_manager, is_admin_or_manage
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from profiles.utils import get_user_tickets
 from .models import UserProfile
+import os
 
 
 def login_page(request):
