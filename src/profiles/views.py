@@ -1,3 +1,4 @@
+import os
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.forms import PasswordChangeForm
@@ -73,16 +74,16 @@ def demo(request):
     user = None
     
     if request.GET.get('Submitter') == 'Submitter':
-        user = authenticate(email="sophiav21@gmail.com", password="AeV45954595$")
+        user = authenticate(email=os.environ.get('SUB_EMAIL'), password=os.environ.get('SUB_PASSWORD'))
 
     elif request.GET.get("Developer") == 'Developer':
-        user = authenticate(email="alan_guzman12@gmail.com", password="Cheese123@")
+        user = authenticate(email=os.environ.get('DEV_EMAIL'), password=os.environ.get('DEV_PASSWORD'))
 
     elif request.GET.get("Project Manager") == 'Project Manager':
-        user = authenticate(email="meshell.campbell22@gmail.com", password="cheese123@")
+        user = authenticate(email=os.environ.get('PROJ_EMAIL'), password=os.environ.get('PROJ_PASSWORD'))
 
     elif request.GET.get("Admin") == 'Admin':
-        user = authenticate(email="anthonyviera4@gmail.com", password="cheese123")
+        user = authenticate(email=os.environ.get('ADMIN_EMAIL'), password=os.environ.get('ADMIN_PASSWORD'))
 
     if user:
         login(request, user)

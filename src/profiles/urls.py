@@ -31,9 +31,8 @@ urlpatterns = [
     path('manage', views.manage_profile, name="manage_profile"),
     path('manage/edit-settings/', views.edit_profile, name="edit_profile"),
     path('manage/change-password/', views.change_password, name="change_password"),
-    
-    path('manage/reset-password/', auth_views.PasswordResetView.as_view(), name="reset_password"),
-    path('manage/reset-password-sent/', auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
-    path('manage/reset/<uid64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path('manage/reset-password-complete/', auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
+    path('manage/reset-password/', auth_views.PasswordResetView.as_view(template_name="user/reset_password.html"), name="reset_password"),
+    path('manage/reset-password-sent/', auth_views.PasswordResetDoneView.as_view(template_name="user/reset_password_sent.html"), name="password_reset_done"),
+    path('manage/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="user/reset_password_confirm.html"), name="password_reset_confirm"),
+    path('manage/reset-password-complete/', auth_views.PasswordResetCompleteView.as_view(template_name="user/reset_password_complete.html"), name="password_reset_complete"),
 ]
