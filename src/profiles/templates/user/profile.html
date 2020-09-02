@@ -3,6 +3,9 @@
 {% block content %}
 <div class="top-heading">
     <h2>User Profile</h2>
+    {% if message %}
+    <p class="text-success">Your password has been changed.</p>
+    {% endif %}
 </div>
 
 <div class="row offset-md-2 offset-lg-2">
