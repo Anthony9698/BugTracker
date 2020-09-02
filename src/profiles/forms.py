@@ -55,11 +55,15 @@ class TicketForm(forms.ModelForm):
         except Project.DoesNotExist:
             self.initial_project = None
 
+        if self.initial_project is None:
+            self.fields['status'].widget = forms.HiddenInput()
+
     classification = forms.CharField(widget=forms.Select(
         choices=(
             ('Error report', 'Error report'),
             ('Feature request', 'Feature request'),
-            ('Service request', 'Service request'))))
+            ('Service request', 'Service request'),
+            ('Other', 'Other'))))
 
     priority = forms.CharField(widget=forms.Select(
         choices=(
