@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
@@ -515,10 +515,11 @@ def ticket_history(request, pk):
 
 
 @login_required
-def manage_profile(request):
+def manage_profile(request, *args, **kwargs):
     context = {
         'user': request.user,
-        'user_roles': [role for role in request.user.roles]
+        'user_roles': [role for role in request.user.roles],
+        'message': request.GET.get('message')
     }
 
     return render(request, 'user/profile.html', context)
@@ -552,7 +553,8 @@ def change_password(request):
             user = password_change_form.save()
             update_session_auth_hash(request, user)
             messages.success(request, 'Your password was successfully updated!')
-            return redirect('manage_profile')
+            # return redirect('manage_profile')
+            return redirect('{}?message=password-change-success'.format(reverse('manage_profile')))
         else:
             messages.error(request, 'Please correct the error below.')
     else:
