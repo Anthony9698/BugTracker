@@ -410,7 +410,9 @@ def assign_ticket(request, pk):
     assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.POST or None, instance=ticket)
 
     if assign_ticket_form.is_valid():
-        assign_ticket_form.save()
+        ticket = assign_ticket_form.save(commit=False)
+        ticket.status = 'Waiting for support'
+        ticket.save()
         return redirect("/tickets/detail/" + str(ticket.id))
 
     context = {

@@ -57,7 +57,11 @@
                 </div>
                 <div class="col-9">
                     {% if ticket.assigned_user is not None %} 
-                    <dd>{{ticket.assigned_user}}</dd>
+                    <dd>{{ticket.assigned_user}} 
+                        {% if 'Project Manager' in user_roles %}
+                        <a class="btn btn-link" href="{% url 'assign_ticket' ticket.id %}">Edit</a>
+                        {% endif %}
+                    </dd>
                     {% else %}
                     <dd>Unassigned</dd>
                     {% endif %}
