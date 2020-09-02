@@ -1,0 +1,9 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+<div class="top-heading">
+    <h2>User assigned to ticket</h2>
+    <p class="text-white mt-4">The user will receive an email of his or her assignment.</p>
+    <a class="btn btn-link pl-0" href="{% url 'tickets' %}">Back to Tickets</a>
+</div>
+{% endblock %}

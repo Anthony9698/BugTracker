@@ -14,6 +14,7 @@ from profiles.decorators import is_admin, is_project_manager, is_admin_or_manage
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
 from profiles.utils import get_user_tickets
 from .models import UserProfile
+from django.core import mail
 
 
 def login_page(request):
@@ -413,7 +414,19 @@ def assign_ticket(request, pk):
         ticket = assign_ticket_form.save(commit=False)
         ticket.status = 'Waiting for support'
         ticket.save()
-        return redirect("/tickets/detail/" + str(ticket.id))
+        
+        with mail.get_connection() as connection:
+            mail.EmailMessage(
+                "New Ticket Assignment",
+                "Hello, this message is to inform you that your project manager " + str(request.user)
+                    + " has assigned you the following ticket: " + str(ticket.title)
+                    + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
+                os.environ.get('EMAIL_HOST'),
+                [ticket.assigned_user.email],
+                connection=connection,
+            ).send()
+        
+        return redirect("confirm_assignment")
 
     context = {
         'user': request.user,
@@ -423,6 +436,11 @@ def assign_ticket(request, pk):
     }
 
     return render(request, 'ticket/assign_ticket.html', context)
+
+
+@login_required
+def confirm_assignment(request):
+    return render(request, 'ticket/confirm_assignment.html')
 
 
 @login_required
