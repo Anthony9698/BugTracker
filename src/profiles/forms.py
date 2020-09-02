@@ -55,7 +55,15 @@ class TicketForm(forms.ModelForm):
         except Project.DoesNotExist:
             self.initial_project = None
 
-        if self.initial_project is None:
+        if self.initial_project is not None:
+            self.fields['status'] = forms.CharField(widget=forms.Select(
+                choices=(
+                    ('Waiting for support', 'Waiting for support'),
+                    ('Waiting for customer', 'Waiting for customer'),
+                    ('Resolved', 'Resolved'),
+                    ('On hold', 'On hold'),
+                    ('New', 'New'))))
+        else:
             self.fields['status'].widget = forms.HiddenInput()
 
     classification = forms.CharField(widget=forms.Select(
@@ -71,14 +79,6 @@ class TicketForm(forms.ModelForm):
             ('Medium', 'Medium'),
             ('High', 'High'),
             ('Critical', 'Critical'))))
-
-    status = forms.CharField(widget=forms.Select(
-        choices=(
-            ('Waiting for support', 'Waiting for support'),
-            ('Waiting for customer', 'Waiting for customer'),
-            ('Resolved', 'Resolved'),
-            ('On hold', 'On hold'),
-            ('New', 'New'))))
 
     def save(self, commit=True):
         ticket_instance = super(TicketForm, self).save(commit=True)
@@ -186,7 +186,7 @@ class AssignTicketUserForm(forms.ModelForm):
         self.initial_assignment = self.instance.assigned_user
 
     def save(self, commit=True):
-        super(AssignTicketUserForm, self).save(commit=True)
+        ticket = super(AssignTicketUserForm, self).save(commit=True)
         
         if self.has_changed():
             TicketAuditTrail.objects.create(
@@ -195,6 +195,10 @@ class AssignTicketUserForm(forms.ModelForm):
                 entry_message="Ticket assignment changed from " + "\"" + str(self.initial_assignment) \
                                 + "\"" + " to " + "\"" + str(self.instance.assigned_user) + "\""
             )
+        
+        if commit:
+            ticket.save()
+        return ticket
 
     class Meta:
         model = Ticket
