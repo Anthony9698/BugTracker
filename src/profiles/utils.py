@@ -61,3 +61,15 @@ def send_ticket_updated_email(user, ticket):
             [ticket.assigned_user.email],
             connection=connection,
         ).send()
+
+
+def send_comment_added_email(user, ticket):
+    with mail.get_connection() as connection:
+        mail.EmailMessage(
+            "Comment Added to Ticket",
+            "Hello, this message is to inform you that " + str(user) + " left a comment on your assigned ticket "
+            + str(ticket) + "." + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
+            os.environ.get('EMAIL_HOST'),
+            [ticket.assigned_user.email],
+            connection=connection,
+        ).send()

@@ -12,7 +12,7 @@ from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,
 from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, \
      ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role, not_demo_user
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
-from profiles.utils import get_user_tickets
+from profiles.utils import get_user_tickets, send_comment_added_email
 from .models import UserProfile
 
 
@@ -442,6 +442,10 @@ def new_comment(request, pk):
             comment.user = request.user
             comment.ticket = ticket
             comment.save()
+            
+            if comment.user is not comment.ticket.assigned_user:
+                send_comment_added_email(comment.ticket.assigned_user, comment.ticket)
+
             return redirect("/tickets/detail/" + str(ticket.id))
     else:
         new_comment_form = CommentForm()
