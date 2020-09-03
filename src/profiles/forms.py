@@ -4,6 +4,8 @@ from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTr
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
 from django.db.models.query import RawQuerySet
+from profiles.utils import send_ticket_assignment_email, send_ticket_reassignment_email
+
 
 
 class RegistrationForm(UserCreationForm):
@@ -188,13 +190,17 @@ class AssignTicketUserForm(forms.ModelForm):
     def save(self, commit=True):
         ticket = super(AssignTicketUserForm, self).save(commit=True)
         
-        if self.has_changed():
+        if self.has_changed() and self.initial_assignment is not None:
             TicketAuditTrail.objects.create(
                 user=self.user,
                 ticket=self.instance,
                 entry_message="Ticket assignment changed from " + "\"" + str(self.initial_assignment) \
                                 + "\"" + " to " + "\"" + str(self.instance.assigned_user) + "\""
             )
+            send_ticket_reassignment_email(self.initial_assignment, self.instance.assigned_user, ticket)
+
+        else:
+            send_ticket_assignment_email(self.user, ticket)
         
         if commit:
             ticket.save()
