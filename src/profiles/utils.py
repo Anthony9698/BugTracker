@@ -1,3 +1,5 @@
+from django.core import mail
+import os
 from profiles.models import Project, Ticket
 
 
@@ -18,3 +20,56 @@ def get_user_tickets(request, user_roles):
         user_tickets = Ticket.objects.all()
 
     return user_tickets.order_by('-last_modified_date')
+
+
+def send_ticket_assignment_email(proj_manager, ticket):
+    with mail.get_connection() as connection:
+        mail.EmailMessage(
+            "New Ticket Assignment",
+            "Hello, this message is to inform you that your project manager " + str(proj_manager) + ","
+                + " has assigned you the following ticket: " + str(ticket.title) + "."
+                + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
+            os.environ.get('EMAIL_HOST'),
+            [ticket.assigned_user.email],
+            connection=connection,
+        ).send()
+
+
+def send_ticket_reassignment_email(proj_manager, old_user, ticket):
+    with mail.get_connection() as connection:
+        mail.EmailMessage(
+            "Ticket Reassignment",
+            "Hello, this message is to inform you that your project manager " + str(proj_manager) + ","
+                + " has reassigned your ticket: " + str(ticket.title) + " to " + str(ticket.assigned_user) + "."
+                + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
+            os.environ.get('EMAIL_HOST'),
+            [old_user.email],
+            connection=connection,
+        ).send()
+    send_ticket_assignment_email(ticket.assigned_user, ticket)
+
+
+def send_ticket_updated_email(user, ticket):
+    with mail.get_connection() as connection:
+        mail.EmailMessage(
+            "Ticket Info Updated",
+            "Hello, this message is to inform you that your assigned ticket " + str(ticket.title) + ","
+            + " was recently updated by " + str(user) + ". " + "To view the changes, please refer"
+            + " to the ticket's history page."
+            + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
+            os.environ.get('EMAIL_HOST'),
+            [ticket.assigned_user.email],
+            connection=connection,
+        ).send()
+
+
+def send_comment_added_email(user, ticket):
+    with mail.get_connection() as connection:
+        mail.EmailMessage(
+            "Comment Added to Ticket",
+            "Hello, this message is to inform you that " + str(user) + " left a comment on your assigned ticket "
+            + str(ticket) + "." + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
+            os.environ.get('EMAIL_HOST'),
+            [ticket.assigned_user.email],
+            connection=connection,
+        ).send()

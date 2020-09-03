@@ -4,6 +4,9 @@ from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTr
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
 from django.db.models.query import RawQuerySet
+from profiles.utils import send_ticket_assignment_email, send_ticket_reassignment_email, \
+    send_ticket_updated_email 
+
 
 
 class RegistrationForm(UserCreationForm):
@@ -55,11 +58,23 @@ class TicketForm(forms.ModelForm):
         except Project.DoesNotExist:
             self.initial_project = None
 
+        if self.initial_project is not None:
+            self.fields['status'] = forms.CharField(widget=forms.Select(
+                choices=(
+                    ('Waiting for support', 'Waiting for support'),
+                    ('Waiting for customer', 'Waiting for customer'),
+                    ('Resolved', 'Resolved'),
+                    ('On hold', 'On hold'),
+                    ('New', 'New'))))
+        else:
+            self.fields['status'].widget = forms.HiddenInput()
+
     classification = forms.CharField(widget=forms.Select(
         choices=(
             ('Error report', 'Error report'),
             ('Feature request', 'Feature request'),
-            ('Service request', 'Service request'))))
+            ('Service request', 'Service request'),
+            ('Other', 'Other'))))
 
     priority = forms.CharField(widget=forms.Select(
         choices=(
@@ -67,14 +82,6 @@ class TicketForm(forms.ModelForm):
             ('Medium', 'Medium'),
             ('High', 'High'),
             ('Critical', 'Critical'))))
-
-    status = forms.CharField(widget=forms.Select(
-        choices=(
-            ('Waiting for support', 'Waiting for support'),
-            ('Waiting for customer', 'Waiting for customer'),
-            ('Resolved', 'Resolved'),
-            ('On hold', 'On hold'),
-            ('New', 'New'))))
 
     def save(self, commit=True):
         ticket_instance = super(TicketForm, self).save(commit=True)
@@ -127,6 +134,9 @@ class TicketForm(forms.ModelForm):
                     )
 
         if commit:
+            if self.user is not ticket_instance.assigned_user and ticket_instance.assigned_user is not None:
+                send_ticket_updated_email(self.user, ticket_instance)
+
             ticket_instance.save()
         return ticket_instance
                 
@@ -182,15 +192,23 @@ class AssignTicketUserForm(forms.ModelForm):
         self.initial_assignment = self.instance.assigned_user
 
     def save(self, commit=True):
-        super(AssignTicketUserForm, self).save(commit=True)
+        ticket = super(AssignTicketUserForm, self).save(commit=True)
         
-        if self.has_changed():
+        if self.has_changed() and self.initial_assignment is not None:
             TicketAuditTrail.objects.create(
                 user=self.user,
                 ticket=self.instance,
                 entry_message="Ticket assignment changed from " + "\"" + str(self.initial_assignment) \
-                                + "\"" + " to " + "\"" + str(self.instance.assigned_user) + "\""
+                            + "\"" + " to " + "\"" + str(self.instance.assigned_user) + "\""
             )
+            send_ticket_reassignment_email(self.user, self.initial_assignment, ticket)
+
+        else:
+            send_ticket_assignment_email(self.user, ticket)
+        
+        if commit:
+            ticket.save()
+        return ticket
 
     class Meta:
         model = Ticket

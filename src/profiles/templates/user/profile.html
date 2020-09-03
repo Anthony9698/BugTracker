@@ -3,6 +3,9 @@
 {% block content %}
 <div class="top-heading">
     <h2>User Profile</h2>
+    {% if message %}
+    <p class="text-success">Your password has been changed.</p>
+    {% endif %}
 </div>
 
 <div class="row offset-md-2 offset-lg-2">
@@ -39,12 +42,14 @@
                 </div>
             </div>
         </dl>
+        {% if user.id != 1 and user.id != 2 and user.id != 3 and user.id != 4 %}
         <div class="row">
             <div class="col">
                 <a class="btn btn-secondary" href="{% url 'edit_profile' %}">Edit profile</a>
                 <a class="btn btn-secondary" href="{% url 'change_password' %}">Change password</a>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 <div class="footer">

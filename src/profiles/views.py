@@ -1,17 +1,18 @@
+import os
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
     CommentForm, EditProfileForm
 from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, \
-     ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role
+     ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role, not_demo_user
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
-from profiles.utils import get_user_tickets
+from profiles.utils import get_user_tickets, send_comment_added_email
 from .models import UserProfile
 
 
@@ -82,18 +83,18 @@ def edit_roles(request, pk):
 
 def demo(request):
     user = None
-
+    
     if request.GET.get('Submitter') == 'Submitter':
-        user = authenticate(email="sophiav17@gmail.com", password="AeV45954595$")
+        user = authenticate(email=os.environ.get('SUB_EMAIL'), password=os.environ.get('SUB_PASSWORD'))
 
     elif request.GET.get("Developer") == 'Developer':
-        user = authenticate(email="idk123@gmail.com", password="Cheese123@")
+        user = authenticate(email=os.environ.get('DEV_EMAIL'), password=os.environ.get('DEV_PASSWORD'))
 
     elif request.GET.get("Project Manager") == 'Project Manager':
-        user = authenticate(email="meshell.campbell14@gmail.com", password="cheese123@")
+        user = authenticate(email=os.environ.get('PROJ_EMAIL'), password=os.environ.get('PROJ_PASSWORD'))
 
     elif request.GET.get("Admin") == 'Admin':
-        user = authenticate(email="anthonyviera4@gmail.com", password="cheese123")
+        user = authenticate(email=os.environ.get('ADMIN_EMAIL'), password=os.environ.get('ADMIN_PASSWORD'))
 
     if user:
         login(request, user)
@@ -515,16 +516,141 @@ def assign_users(request, pk):
 
 
 @login_required
-def manage_profile(request):
+@is_project_manager
+def assign_ticket(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.POST or None, instance=ticket)
+
+    if assign_ticket_form.is_valid():
+        ticket = assign_ticket_form.save(commit=False)
+        ticket.status = 'Waiting for support'
+        ticket.save()
+        
+        return redirect("confirm_assignment")
+
     context = {
         'user': request.user,
-        'user_roles': [role for role in request.user.roles]
+        'user_roles': [role for role in request.user.roles],
+        'ticket': ticket,
+        'assign_ticket_form': assign_ticket_form
+    }
+
+    return render(request, 'ticket/assign_ticket.html', context)
+
+
+@login_required
+def confirm_assignment(request):
+    return render(request, 'ticket/confirm_assignment.html')
+
+
+@login_required
+def new_comment(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    if request.method == 'POST':
+        new_comment_form = CommentForm(request.POST)
+
+        if new_comment_form.is_valid():
+            comment = new_comment_form.save(commit=False)
+            comment.user = request.user
+            comment.ticket = ticket
+            comment.save()
+            
+            if comment.user is not comment.ticket.assigned_user:
+                send_comment_added_email(comment.ticket.assigned_user, comment.ticket)
+
+            return redirect("/tickets/detail/" + str(ticket.id))
+    else:
+        new_comment_form = CommentForm()
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'new_comment_form': new_comment_form,
+        'ticket': ticket
+    }
+
+    return render(request, 'ticket/new_comment.html', context)
+
+
+@login_required
+@comment_exists_editable
+def delete_comment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+
+    if request.POST:
+        comment.delete()
+        return redirect("/tickets/detail/" + str(comment.ticket.id))
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'comment': comment,
+    }
+
+    return render(request, 'ticket/delete_comment.html', context)
+
+
+@login_required
+@comment_exists_editable
+def edit_comment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    edit_comment_form = CommentForm(request.POST or None, instance=comment)
+
+    if edit_comment_form.is_valid():
+        edit_comment_form.save()
+        return redirect("/tickets/detail/" + str(comment.ticket.id))
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'comment': comment,
+        'edit_comment_form': edit_comment_form
+    }
+
+    return render(request, 'ticket/edit_comment.html', context)
+
+
+@login_required
+@ticket_exists_viewable
+def ticket_history(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    audit_trail = TicketAuditTrail.objects.filter(ticket=ticket.id).order_by('-date_added')
+    first_audit = TicketAuditTrail.objects.filter(ticket=ticket.id).earliest('date_added')
+    paginator = Paginator(audit_trail, 5)
+    page = request.GET.get('page')
+
+    try:
+        ticket_audits = paginator.page(page)
+    except PageNotAnInteger:
+        ticket_audits = paginator.page(1)
+    except EmptyPage:
+        ticket_audits = paginator.page(paginator.num_pages)
+
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'ticket': ticket,
+        'ticket_audits': ticket_audits,
+        'page': page,
+        'audit_trail': audit_trail,
+        'first_audit': first_audit
+    }
+    return render(request, 'ticket/ticket_history.html', context)
+
+
+@login_required
+def manage_profile(request, *args, **kwargs):
+    context = {
+        'user': request.user,
+        'user_roles': [role for role in request.user.roles],
+        'message': request.GET.get('message')
     }
 
     return render(request, 'user/profile.html', context)
 
 
 @login_required
+@not_demo_user
 def edit_profile(request):
     my_profile_form = EditProfileForm(request.POST or None, instance=request.user)
 
@@ -542,6 +668,7 @@ def edit_profile(request):
 
 
 @login_required
+@not_demo_user
 def change_password(request):
     if request.method == 'POST':
         password_change_form = PasswordChangeForm(request.user, request.POST)
@@ -550,7 +677,8 @@ def change_password(request):
             user = password_change_form.save()
             update_session_auth_hash(request, user)
             messages.success(request, 'Your password was successfully updated!')
-            return redirect('manage_profile')
+            # return redirect('manage_profile')
+            return redirect('{}?message=password-change-success'.format(reverse('manage_profile')))
         else:
             messages.error(request, 'Please correct the error below.')
     else:
@@ -563,3 +691,7 @@ def change_password(request):
     }
 
     return render(request, 'user/change_password.html', context)
+
+@login_required
+def about(request):
+    return render(request, 'about.html')
