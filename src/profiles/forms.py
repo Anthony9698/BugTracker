@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
 from django.db.models.query import RawQuerySet
 from profiles.utils import send_ticket_assignment_email, send_ticket_reassignment_email, \
-    send_ticket_updated_email
+    send_ticket_updated_email 
 
 
 
