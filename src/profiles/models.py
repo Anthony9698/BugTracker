@@ -65,7 +65,7 @@ class UserProfile(AbstractBaseUser):
 
 class Attachment(models.Model):
     uploader = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, default=None)
-    content = models.FileField(default=None)
+    content = models.FileField(null=True, blank=True)
     date_uploaded = models.DateField(default=now, editable=False)
 
     
@@ -75,7 +75,6 @@ class Project(models.Model):
     date_added = models.DateField(default=now, editable=False)
     archived = models.BooleanField(default=False)
     users = models.ManyToManyField(UserProfile)
-    attachment = models.ForeignKey(Attachment, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.title
@@ -84,6 +83,7 @@ class Project(models.Model):
 class Ticket(models.Model):
     owner = models.ForeignKey(UserProfile, on_delete=models.PROTECT, null=True, default=None, related_name='owner')
     assigned_user = models.ForeignKey(UserProfile, on_delete=models.PROTECT, null=True, default=None, related_name='assigned_user')
+    attachment = models.ForeignKey(Attachment, on_delete=models.PROTECT, null=True)
     title = models.CharField(max_length=64, null=False)
     description = models.TextField(default="")       
     project = models.ForeignKey(Project, default=None, on_delete=models.PROTECT)

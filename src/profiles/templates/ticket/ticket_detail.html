@@ -1,5 +1,6 @@
 {% extends 'dashboard.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="top-heading">
@@ -78,7 +79,7 @@
                     <dt>Attachments</dt>
                 </div>
                 <div class="col-9">
-                    <dd>Add later!!!</dd>
+                    <dd><a class="btn btn-secondary" href="{% url 'add_attachment' ticket.id %}">Add Attachment</a></dd>
                 </div>
             </div>
             <div class="row">

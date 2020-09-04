@@ -68,7 +68,7 @@ def send_comment_added_email(user, ticket):
         mail.EmailMessage(
             "Comment Added to Ticket",
             "Hello, this message is to inform you that " + str(user) + " left a comment on your assigned ticket "
-            + str(ticket) + "." + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
+            + str(ticket.title) + "." + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
             os.environ.get('EMAIL_HOST'),
             [ticket.assigned_user.email],
             connection=connection,

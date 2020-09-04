@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
+from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail, Attachment
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
 from django.db.models.query import RawQuerySet
@@ -230,4 +230,14 @@ class EditProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['first_name', 'last_name', 'email']
+
+
+class TicketAttachmentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TicketAttachmentForm, self).__init__(*args, **kwargs)
+        self.fields['content'].label = ""
+
+    class Meta:
+        model = Attachment
+        fields = ['content']
         

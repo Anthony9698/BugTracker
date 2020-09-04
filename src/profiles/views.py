@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,\
     UserRolesForm, AddProjectUsersForm, RemoveProjectUsersForm, AssignTicketUserForm,\
-    CommentForm, EditProfileForm
+    CommentForm, EditProfileForm, TicketAttachmentForm
 from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, \
      ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role, not_demo_user
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
@@ -215,7 +215,7 @@ def ticket_detail(request, pk):
     ticket_comments = Comment.objects.filter(ticket=ticket.id)
     paginator = Paginator(ticket_comments, 2)
     page = request.GET.get('page')
-
+    
     try:
         comment_posts = paginator.page(page)
 
@@ -224,10 +224,6 @@ def ticket_detail(request, pk):
 
     except EmptyPage:
         comment_posts = paginator.page(paginator.num_pages)
-
-    if request.POST:
-        ticket.delete()
-        return redirect('tickets')
 
     context = {
         'user': request.user,
@@ -542,6 +538,29 @@ def assign_ticket(request, pk):
 def confirm_assignment(request):
     return render(request, 'ticket/confirm_assignment.html')
 
+
+@login_required
+@ticket_exists_viewable
+def add_attachment(request, pk):
+    context = {}
+    ticket = Ticket.objects.get(pk=pk)
+    form = TicketAttachmentForm()
+
+    if request.POST:
+        form = TicketAttachmentForm(request.POST)
+
+        if form.is_valid():
+            attachment = form.save(commit=False)
+            attachment.uploader = request.user
+            attachment.save()
+
+    context = {
+        'ticket': ticket,
+        'form': form
+    }
+
+    return render(request, "ticket/add_attachment.html", context)
+    
 
 @login_required
 def new_comment(request, pk):
