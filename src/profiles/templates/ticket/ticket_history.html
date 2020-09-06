@@ -13,7 +13,7 @@
 <div class="row">
     <div class="col">
         <div class="audit_messages">
-            <pre class="mb-0"><b>{{audit.date_added}}</b></pre>
+            <pre class="mb-0"><b>{{audit.date_added|date:"n/j/y"}} {{audit.date_added|time:"g:i a"}}</b></pre>
             <pre class="mb-0">{{audit.entry_message}}</pre>
             {% if audit == first_audit %}
             <pre>Created by {{audit.user}}</pre>

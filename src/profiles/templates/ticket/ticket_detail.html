@@ -39,7 +39,7 @@
                     <dt>Created:</dt>
                 </div>
                 <div class="col-9">
-                    <dd>{{ticket.date_created}}</dd>
+                    <dd>{{ticket.date_created|date:"n/j/y"}} {{ticket.date_created|time:"g:i a"}}</dd>
                 </div>
             </div>
             <div class="row">
@@ -48,7 +48,7 @@
                 </div>
                 <div class="col-9">
                     {% if ticket.date_created|date:"d m y f A" != ticket.last_modified_date|date:"d m y f A" %}
-                    <dd>{{ticket.last_modified_date}}</dd>
+                    <dd>{{ticket.last_modified_date|date:"n/j/y"}} {{ticket.last_modified_date|time:"g:i a"}}</dd>
                     {% endif %}
                 </div>
             </div>
@@ -166,12 +166,12 @@
                     {% if comment.last_modified_date|date:"d m y f A" == comment.date_posted|date:"d m y f A" %}
                         <b>Posted by <span>{{comment.user.first_name}} {{comment.user.last_name}}</span></b>
                         <br>
-                        <b>{{comment.date_posted}}</b>
+                        <b>{{comment.date_posted|date:"n/j/y"}} {{comment.date_posted|time:"g:i a"}}</b>
                         <br>
                     {% else %}
                         <b>Edited by <span>{{comment.user.first_name}} {{comment.user.last_name}}</span></b>
                         <br>
-                        <b>{{comment.last_modified_date}}</b>
+                        <b>{{comment.last_modified_date|date:"n/j/y"}} {{comment.last_modified_date|time:"g:i a"}}</b>
                         <br>
                     {% endif %}
                     {% if comment.user == user or 'Admin' in user_roles or 'Project Manager' in user_roles or user.is_admin %}

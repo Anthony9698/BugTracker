@@ -30,7 +30,7 @@
             {% for ticket in user_tickets %}
             <tr>
                 <td><a href="{% url 'ticket_detail' ticket.id %}">{{ticket.title}}</a></td>
-                <td>{{ticket.last_modified_date}}</td>
+                <td>{{ticket.last_modified_date|date:"n/j/y"}} {{ticket.last_modified_date|time:"g:i a"}}</td>
                 <td>{{ticket.project}}</td>
                 <td>
                     {% if ticket.priority == 'Low' %}

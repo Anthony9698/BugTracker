@@ -29,7 +29,7 @@
                     <dt>Created:</dt>
                 </div>
                 <div class="col-9">
-                    <dd>{{ticket.date_created}}</dd>
+                    <dd>{{ticket.date_created|date:"n/j/y"}} {{ticket.date_created|time:"g:i a"}}</dd>
                 </div>
             </div>
             <div class="row">
@@ -37,7 +37,7 @@
                     <dt>Updated:</dt>
                 </div>
                 <div class="col-9">
-                    <dd>{{ticket.last_modified_date}}</dd>
+                    <dd>{{ticket.last_modified_date|date:"n/j/y"}} {{ticket.last_modified_date|time:"g:i a"}}</dd>
                 </div>
             </div>
             <div class="row">
