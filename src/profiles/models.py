@@ -4,6 +4,7 @@ from django.utils.timezone import now
 from multiselectfield import MultiSelectField
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
+from .validators import validate_file_extension
 
 
 class MyProfileManager(BaseUserManager):
@@ -65,8 +66,9 @@ class UserProfile(AbstractBaseUser):
 
 class Attachment(models.Model):
     uploader = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, default=None)
-    content = models.FileField(null=True, blank=True)
-    date_uploaded = models.DateField(default=now, editable=False)
+    content = models.FileField(null=True, blank=True, validators=[validate_file_extension])
+    description = models.TextField(default="")
+    date_uploaded = models.DateTimeField(default=now, editable=False)
 
     
 class Project(models.Model):
@@ -83,7 +85,7 @@ class Project(models.Model):
 class Ticket(models.Model):
     owner = models.ForeignKey(UserProfile, on_delete=models.PROTECT, null=True, default=None, related_name='owner')
     assigned_user = models.ForeignKey(UserProfile, on_delete=models.PROTECT, null=True, default=None, related_name='assigned_user')
-    attachment = models.ForeignKey(Attachment, on_delete=models.PROTECT, null=True)
+    attachments = models.ManyToManyField(Attachment)
     title = models.CharField(max_length=64, null=False)
     description = models.TextField(default="")       
     project = models.ForeignKey(Project, default=None, on_delete=models.PROTECT)

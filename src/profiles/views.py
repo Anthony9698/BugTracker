@@ -11,7 +11,7 @@ from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,
     CommentForm, EditProfileForm, TicketAttachmentForm
 from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, \
      ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role, not_demo_user
-from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail
+from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail, Attachment
 from profiles.utils import get_user_tickets, send_comment_added_email
 from .models import UserProfile
 
@@ -230,6 +230,7 @@ def ticket_detail(request, pk):
         'user_roles': [role for role in request.user.roles],
         'ticket': ticket,
         'ticket_comments': ticket_comments,
+        'ticket_attachments': ticket.attachments.all(),
         'page': page,
         'comment_posts': comment_posts
     }
@@ -544,15 +545,18 @@ def confirm_assignment(request):
 def add_attachment(request, pk):
     context = {}
     ticket = Ticket.objects.get(pk=pk)
-    form = TicketAttachmentForm()
 
-    if request.POST:
-        form = TicketAttachmentForm(request.POST)
+    if request.method == 'POST':
+        form = TicketAttachmentForm(request.POST, request.FILES)
 
         if form.is_valid():
             attachment = form.save(commit=False)
             attachment.uploader = request.user
             attachment.save()
+            ticket.attachments.add(attachment)
+            return redirect("/tickets/detail/" + str(ticket.id))
+    else:
+        form = TicketAttachmentForm() 
 
     context = {
         'ticket': ticket,

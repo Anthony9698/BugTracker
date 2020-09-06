@@ -239,5 +239,8 @@ class TicketAttachmentForm(forms.ModelForm):
 
     class Meta:
         model = Attachment
-        fields = ['content']
+        fields = ['content', 'description']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows':4, 'cols':15})
+        }
         

@@ -79,7 +79,23 @@
                     <dt>Attachments</dt>
                 </div>
                 <div class="col-9">
-                    <dd><a class="btn btn-secondary" href="{% url 'add_attachment' ticket.id %}">Add Attachment</a></dd>
+                    {% for attachment in ticket_attachments %}
+                    <div class="row mb-2">
+                        <div class="col">
+                            <a href="{{attachment.content.url}}">{{attachment.content}}</a><br>
+                            <b class="text-secondary">Added by {{attachment.uploader}}</b><br>
+                            <b class="text-secondary">
+                                {{attachment.date_uploaded|date:"n/j/y"}}
+                                {{attachment.date_uploaded|time:"g:i a"}}
+                            </b>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col">
+                            <dd><a class="btn btn-secondary mt-3" href="{% url 'add_attachment' ticket.id %}">Add Attachment</a></dd>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
