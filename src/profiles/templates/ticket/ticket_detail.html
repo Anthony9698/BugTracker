@@ -82,7 +82,10 @@
                     {% for attachment in ticket_attachments %}
                     <div class="row mb-2">
                         <div class="col">
-                            <a href="{{attachment.content.url}}">{{attachment.content}}</a><br>
+                            <a href="{{attachment.content.url}}">
+                                <img src="{% static 'images/attachment-24px.svg' %}" alt="attachment_icon">
+                                {{attachment.content}}
+                            </a><br>
                             <b class="text-secondary">Added by {{attachment.uploader}}</b><br>
                             <b class="text-secondary">
                                 {{attachment.date_uploaded|date:"n/j/y"}}
