@@ -65,7 +65,11 @@
             <tr>
                 <td><a href="{% url 'ticket_detail' ticket.id %}">{{ticket.title}}</a></td>
                 <td>{{ticket.date_created|date:"n/j/y"}} {{ticket.date_created|time:"g:i a"}}</td>
-                <td>None</td>
+                {% if ticket.assigned_user %}
+                <td>{{ticket.assigned_user}}</td>
+                {% else %}
+                <td>Unassigned</td>
+                {% endif %}
             </tr>
             {% endfor %}
             </tbody>

@@ -133,7 +133,7 @@ def logout_user(request):
 @login_required
 def dashboard(request):
     user_roles = [role for role in request.user.roles]
-    user_projects = Project.objects.filter(users__id=request.user.id)
+    user_projects = Project.objects.filter(users__id=request.user.id).order_by('-date_added')
     user_tickets = list(get_user_tickets(request, user_roles))[:5]
     project_paginator = Paginator(user_projects, 4)
     page = request.GET.get('page')
@@ -212,7 +212,7 @@ def new_ticket(request):
 @ticket_exists_viewable
 def ticket_detail(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    ticket_comments = Comment.objects.filter(ticket=ticket.id)
+    ticket_comments = Comment.objects.filter(ticket=ticket.id).order_by('-date_posted')
     paginator = Paginator(ticket_comments, 2)
     page = request.GET.get('page')
     
