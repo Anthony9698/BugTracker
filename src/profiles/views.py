@@ -190,13 +190,18 @@ def tickets(request):
 @login_required
 @user_has_role
 def new_ticket(request):
+    proj = request.GET.get('project')
     if request.method == 'POST':
         form = TicketForm(request.user, request.POST, instance=None)
+
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.owner = request.user
             ticket.save()
             return redirect("tickets")
+    elif proj:
+        form = TicketForm(request.user, initial={'project': proj})
+
     else:
         form = TicketForm(request.user)
 

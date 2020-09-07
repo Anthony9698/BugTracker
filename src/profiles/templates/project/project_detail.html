@@ -49,7 +49,7 @@
         <h3>Project Tickets</h3>
         {% if 'Admin' in user_roles or 'Project Manager' in user_roles or user.is_admin %}
         <div class="mb-3">
-            <a class="btn btn-link pl-0" href="{% url 'new_ticket' %}">Create New</a>
+            <a class="btn btn-link pl-0" href="{% url 'new_ticket' %}?project={{project.id}}">Create New</a>
         </div>
         {% endif %}
         <table id="projectTicketTable" class="table table-dark table-hover">
