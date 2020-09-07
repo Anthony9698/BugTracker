@@ -133,7 +133,7 @@ def logout_user(request):
 @login_required
 def dashboard(request):
     user_roles = [role for role in request.user.roles]
-    user_projects = Project.objects.filter(users__id=request.user.id).order_by('-date_added')
+    user_projects = Project.objects.filter(Q(users__id=request.user.id) & Q(archived=False)).order_by('-date_added')
     user_tickets = list(get_user_tickets(request, user_roles))[:5]
     project_paginator = Paginator(user_projects, 4)
     page = request.GET.get('page')
@@ -199,6 +199,7 @@ def new_ticket(request):
             ticket.owner = request.user
             ticket.save()
             return redirect("tickets")
+
     elif proj:
         form = TicketForm(request.user, initial={'project': proj})
 
