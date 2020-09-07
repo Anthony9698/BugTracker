@@ -151,11 +151,12 @@ def dashboard(request):
     critical_tickets_dict = {}
     resolved_tickets_dict = {}
     for proj in project_list:
-        project_tickets = get_user_tickets(request, user_roles).count()
+        project_tickets = get_user_tickets(request, user_roles)\
+                           .filter(project=proj.id).count()
         critical_tickets = get_user_tickets(request, user_roles)\
-                           .filter(priority__exact='Critical').count()
+                           .filter(Q(project=proj.id) & Q(priority__exact='Critical')).count()
         resolved_tickets = get_user_tickets(request, user_roles)\
-                           .filter(status__exact='Resolved').count()
+                           .filter(Q(project=proj.id) & Q(status__exact='Resolved')).count()
         project_tickets_dict[proj.id] = project_tickets
         critical_tickets_dict[proj.id] = critical_tickets
         resolved_tickets_dict[proj.id] = resolved_tickets
@@ -420,7 +421,7 @@ def project_detail(request, pk):
         'user': request.user,
         'user_roles': user_roles,
         'project': project,
-        'project_tickets': get_user_tickets(request, user_roles)
+        'project_tickets': get_user_tickets(request, user_roles).filter(project=project.id)
     }
 
     return render(request, "project/project_detail.html", context)
