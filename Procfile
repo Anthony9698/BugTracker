@@ -1,1 +1,1 @@
-web: gunicorn bugtracker.wsgi.py:application
+web gunicorn app:app
