@@ -561,6 +561,7 @@ def add_attachment(request, pk):
             attachment.uploader = request.user
             attachment.save()
             ticket.attachments.add(attachment)
+            ticket.save()
             return redirect("/tickets/detail/" + str(ticket.id))
     else:
         form = TicketAttachmentForm() 
