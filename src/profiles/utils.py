@@ -1,6 +1,8 @@
-from django.core import mail
 import os
-from profiles.models import Project, Ticket
+import boto3
+from botocore.errorfactory import ClientError
+from django.core import mail
+from profiles.models import Project, Ticket, Attachment
 
 
 def get_user_tickets(request, user_roles):
@@ -73,3 +75,19 @@ def send_comment_added_email(user, ticket):
             [ticket.assigned_user.email],
             connection=connection,
         ).send()
+
+
+def update_ticket_attachments(ticket):
+    ticket_attachments = ticket.attachments.all()
+
+    # checking to see which attachments exist in S3 bucket
+    # if it doesn't, delete reference in database
+    s3 = boto3.client('s3')
+    for attachment in ticket_attachments:
+        key = 'media/' + attachment.content.name 
+        try:
+            s3.head_object(Bucket=os.environ.get('AWS_STORAGE_BUCKET_NAME'), Key=key)
+        except ClientError:
+            # Not found
+            ticket.attachments.remove(attachment)
+            Attachment.objects.filter(id=attachment.id).delete()

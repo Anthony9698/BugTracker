@@ -12,7 +12,7 @@ from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,
 from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, \
      ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role, not_demo_user
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail, Attachment
-from profiles.utils import get_user_tickets, send_comment_added_email
+from profiles.utils import get_user_tickets, send_comment_added_email, update_ticket_attachments
 from .models import UserProfile
 
 
@@ -220,6 +220,7 @@ def new_ticket(request):
 def ticket_detail(request, pk):
     ticket = Ticket.objects.get(pk=pk)
     ticket_comments = Comment.objects.filter(ticket=ticket.id).order_by('-date_posted')
+    ticket_attachments = ticket.attachments.all().order_by('-date_uploaded')
     paginator = Paginator(ticket_comments, 2)
     page = request.GET.get('page')
     
@@ -232,12 +233,14 @@ def ticket_detail(request, pk):
     except EmptyPage:
         comment_posts = paginator.page(paginator.num_pages)
 
+    update_ticket_attachments(ticket)
+        
     context = {
         'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'ticket': ticket,
         'ticket_comments': ticket_comments,
-        'ticket_attachments': ticket.attachments.all(),
+        'ticket_attachments': ticket_attachments,
         'page': page,
         'comment_posts': comment_posts
     }
