@@ -589,7 +589,7 @@ def new_comment(request, pk):
             comment.ticket = ticket
             comment.save()
             
-            if comment.user is not comment.ticket.assigned_user:
+            if comment.ticket.assigned_user is not None and comment.user is not comment.ticket.assigned_user:
                 send_comment_added_email(comment.ticket.assigned_user, comment.ticket)
 
             return redirect("/tickets/detail/" + str(ticket.id))
