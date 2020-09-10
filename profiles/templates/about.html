@@ -1,0 +1,101 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+<div class="top-heading">
+    <h2>About Bug Tracker</h2>
+</div>
+<div class="row">
+    <div class="col" style="color: white;">
+        <p>Bug Tracker is an application to track errors in software. It was created by Anthony Viera over the summer of 2020.</p>
+        <p>
+            Through the use of a ticketing system, Bug Tracker is able to record bugs or issues in a software development project.
+            It also ensures user and role level security to ensure only authorized users can access tickets and projects. 
+        </p>
+        <p>
+            This application was built using Django MVC and Python with a Postgres server database. Development was completed with
+            Visual Studio Code 2019. Bug Tracker's webpages use HTML5 and Bootstrap 4. Static and media files are hosted by 
+            Amazon Web Service (AWS) S3 buckets.
+        </p>
+        <p>
+            <b>Roles:</b> Bug Tracker has four roles that users can be assigned to. Users can have multiple roles and are
+            automatically assigned as a Submitter upon registration.
+        </p>
+        <p>Below are brief descriptions of each role's permissions.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col" style="color: white;">
+        <b>Submitter</b>
+        <ul>
+            <li>Create new tickets for assigned projects</li>
+            <li>View and edit tickets they have submitted</li>
+        </ul>
+        <br>
+        <b>Developer</b>
+        <ul>
+            <li>View and edit tickets they have submitted</li>
+        </ul>
+        <br>
+        <b>Project Manager</b>
+        <ul>
+            <li>View and edit tickets for projects they are assigned to</li>
+            <li>Create new projects</li>
+            <li>Assign users to projects</li>
+            <li>Assign a developer to a ticket</li>
+            <li>Archive projects</li>
+        </ul>
+        <br>
+        <b>Admin</b>
+        <ul>
+            <li>Assign users to roles</li>
+            <li>View and edit all tickets</li>
+            <li>Create new projects</li>
+            <li>Assign users to projects</li>
+            <li>Archive projects</li>
+        </ul>
+        <br>
+    </div>
+</div>
+<div class="row">
+    <div class="col" style="color:white">
+        <p>For each role, users can add comments or attachments to tickets that have access to.</p>
+        <p><b>Ticket priorities:</b> A ticket can have a Low, Medium, High, or Critical priority.</p>
+        <p><b>Ticket statuses:</b> A ticket can have any of the five following statuses:</p>
+        <ul>
+            <li><b>New:</b> Automaically assigned this status on creation</li>
+            <li><b>Waiting for support:</b> Automatically assigned this status when assigned to a developer</li>
+            <li><b>Waiting for customer:</b> Ticket is waiting on a response from a third-party source</li>
+            <li><b>On hold:</b> Work on the ticket has been suspended</li>
+            <li><b>Resolved:</b> The issue raised in the ticket has been resolved</li>
+        </ul>
+        <br>
+        <p><b>Ticket types:</b> A ticket can be of type Error report, Service request, Feature request or Other.</p>
+    </div>
+</div>
+<div class="footer" style="color: white;">
+    <div class="row">
+        <div class="col">
+            <h2 style="font-weight: normal;">FAQs</h2>
+            <p><b>How do I submit a new ticket?</b></p>
+            <p>
+                Make sure you are assigned the Submitter role and have been assigned to the project. If not,
+                contact your Admin. Navigate to your Tickets page and click on the Create New link to fill out
+                the ticket details and submit the ticket. 
+            </p>
+            <p><b>When are email notifications sent out?</b></p>
+            <p>Email notifiations are sent to developers on the following events:</p>
+            <ul>
+                <li>Developer assigned to ticket</li>
+                <li>Ticket reassigned to another developer</li>
+                <li>User other than the developer edits ticket</li>
+                <li>User other than developer adds a comment or attachment</li>
+            </ul>
+            <br>
+            <p><b>Can I change my user name and password?</b></p>
+            <p>Yes, any user can edit his or her first and last name, email and/or password. Go to Settings on the top menu to change these.</p>
+            <p><b>How do I get my role changed?</b></p>
+            <p>Contact you Admin to change your role.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
