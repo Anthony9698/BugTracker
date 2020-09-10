@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'profiles',
     'crispy_forms',
     'rest_framework',
+    'storages',
+    'django_cleanup',
 ]
 
 MIDDLEWARE = [
@@ -134,28 +136,23 @@ USE_L10N = True
 
 USE_TZ = True
 
+## Redirect to login screen when @login_required decorator is used
+
+LOGIN_URL = reverse_lazy('login')
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
 
-# if DEBUG:
-#     MEDIA_URL = '/media/'
-#     STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static-only")
-#     MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media")
-#     STATICFILES_DIRS = (
-#         os.path.join(os.path.dirname(BASE_DIR), "static", "static"),
-#     )
-
-MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static-only")
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media")
-STATICFILES_DIRS = (
-    os.path.join(os.path.dirname(BASE_DIR), "static", "static"),
-)
-
-LOGIN_URL = reverse_lazy('login')
+if DEBUG:
+    MEDIA_URL = '/media/'
+    STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static-only")
+    MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media")
+    STATICFILES_DIRS = (
+        os.path.join(os.path.dirname(BASE_DIR), "static", "static"),
+    )
 
 
 # SMPT Configuration
@@ -169,3 +166,20 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+# Setting up AWS  
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_REGION_NAME = 'us-east-2'
+
+STATICFILES_LOCATION = 'static'
+STATICFILES_STORAGE = 'custom_storages.StaticStorage'
+
+MEDIAFILES_LOCATION = 'media'
+DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
