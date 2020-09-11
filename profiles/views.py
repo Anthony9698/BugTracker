@@ -90,7 +90,7 @@ def demo(request):
     elif request.GET.get("Developer") == 'Developer':
         user = authenticate(email=os.environ.get('DEV_EMAIL'), password=os.environ.get('DEV_PASSWORD'))
 
-    elif request.GET.get("Project Manager") == 'Project Manager':
+    elif request.GET.get("Project-Manager") == 'Project-Manager':
         user = authenticate(email=os.environ.get('PROJ_EMAIL'), password=os.environ.get('PROJ_PASSWORD'))
 
     elif request.GET.get("Admin") == 'Admin':
@@ -711,7 +711,6 @@ def change_password(request):
             user = password_change_form.save()
             update_session_auth_hash(request, user)
             messages.success(request, 'Your password was successfully updated!')
-            # return redirect('manage_profile')
             return redirect('{}?message=password-change-success'.format(reverse('manage_profile')))
         else:
             messages.error(request, 'Please correct the error below.')
