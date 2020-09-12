@@ -1,7 +1,6 @@
 import os
 import boto3
 from botocore.errorfactory import ClientError
-from django.core import mail
 from django.core.mail import EmailMultiAlternatives
 from profiles.models import Project, Ticket, Attachment
 
