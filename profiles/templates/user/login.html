@@ -7,6 +7,7 @@
     <div class="login-form">
         <div class="logo-container">
             <h2 class="text-center"><img src="{% static 'images/bug_tracker_logo_white.ico' %}" alt="logo" width="50" height="50"/> Bug Tracker</h2>
+            <h5 class="text-center">A complete solution to track errors in software, by <a href="https://github.com/Anthony9698">Anthony Viera</a></h4>
         </div>
         {% block form_content %}
         <form method="POST"> 
@@ -20,6 +21,9 @@
         </div>
         <div class="text-center mt-3">
             <a class="btn btn-outline-warning btn-block" href="{% url 'demo' %}">Demo</a>
+        </div>
+        <div class="text-center mt-3">
+            <a class="btn btn-outline-light btn-block" href="{% url 'about' %}">About</a>
         </div>
         {% endblock %}
     </div>

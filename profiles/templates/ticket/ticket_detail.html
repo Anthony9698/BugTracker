@@ -163,7 +163,7 @@
             </div>
             <div class="row">
                 <div class="col comment-sect">
-                    {% if comment.last_modified_date|date:"d m y u f A" == comment.date_posted|date:"d m y f u A" %}
+                    {% if comment.last_modified_date|time:"h:i:s" == comment.date_posted|time:"h:i:s" %}
                         <b>Posted by <span>{{comment.user.first_name}} {{comment.user.last_name}}</span></b>
                         <br>
                         <b>{{comment.date_posted|date:"n/j/y"}} {{comment.date_posted|time:"g:i a"}}</b>

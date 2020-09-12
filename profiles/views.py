@@ -12,7 +12,7 @@ from profiles.forms import RegistrationForm, LoginForm, ProjectForm, TicketForm,
 from profiles.decorators import is_admin, is_project_manager, is_admin_or_manager, \
      ticket_exists_viewable, project_exists_viewable, comment_exists_editable, user_has_role, not_demo_user
 from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTrail, Attachment
-from profiles.utils import get_user_tickets, send_comment_added_email
+from profiles.utils import get_user_tickets, send_comment_added_email, update_ticket_attachments
 from .models import UserProfile
 
 
@@ -90,7 +90,7 @@ def demo(request):
     elif request.GET.get("Developer") == 'Developer':
         user = authenticate(email=os.environ.get('DEV_EMAIL'), password=os.environ.get('DEV_PASSWORD'))
 
-    elif request.GET.get("Project Manager") == 'Project Manager':
+    elif request.GET.get("Project-Manager") == 'Project-Manager':
         user = authenticate(email=os.environ.get('PROJ_EMAIL'), password=os.environ.get('PROJ_PASSWORD'))
 
     elif request.GET.get("Admin") == 'Admin':
@@ -192,7 +192,7 @@ def tickets(request):
 def new_ticket(request):
     proj = request.GET.get('project')
     if request.method == 'POST':
-        form = TicketForm(request.user, request.POST, instance=None)
+        form = TicketForm(request.user, request.get_host(), request.POST, instance=None)
 
         if form.is_valid():
             ticket = form.save(commit=False)
@@ -201,10 +201,10 @@ def new_ticket(request):
             return redirect("tickets")
 
     elif proj:
-        form = TicketForm(request.user, initial={'project': proj})
+        form = TicketForm(request.user, request.get_host(), initial={'project': proj})
 
     else:
-        form = TicketForm(request.user)
+        form = TicketForm(request.user, request.get_host())
 
     context = {
         'user': request.user,
@@ -220,6 +220,7 @@ def new_ticket(request):
 def ticket_detail(request, pk):
     ticket = Ticket.objects.get(pk=pk)
     ticket_comments = Comment.objects.filter(ticket=ticket.id).order_by('-date_posted')
+    ticket_attachments = ticket.attachments.all().order_by('-date_uploaded')
     paginator = Paginator(ticket_comments, 2)
     page = request.GET.get('page')
     
@@ -232,12 +233,14 @@ def ticket_detail(request, pk):
     except EmptyPage:
         comment_posts = paginator.page(paginator.num_pages)
 
+    update_ticket_attachments(ticket)
+        
     context = {
         'user': request.user,
         'user_roles': [role for role in request.user.roles],
         'ticket': ticket,
         'ticket_comments': ticket_comments,
-        'ticket_attachments': ticket.attachments.all(),
+        'ticket_attachments': ticket_attachments,
         'page': page,
         'comment_posts': comment_posts
     }
@@ -250,7 +253,7 @@ def ticket_detail(request, pk):
 def edit_ticket(request, pk):
     user_roles = [role for role in request.user.roles]
     ticket = Ticket.objects.get(pk=pk)
-    form = TicketForm(request.user, request.POST or None, instance=ticket)
+    form = TicketForm(request.user, request.get_host(), request.POST or None, instance=ticket)
 
     if form.is_valid():
         form.save()
@@ -263,26 +266,6 @@ def edit_ticket(request, pk):
     }
 
     return render(request, "ticket/edit_ticket.html", context)
-
-
-@login_required
-@is_project_manager
-def assign_ticket(request, pk):
-    ticket = Ticket.objects.get(pk=pk)
-    assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.POST or None, instance=ticket)
-
-    if assign_ticket_form.is_valid():
-        assign_ticket_form.save()
-        return redirect("/tickets/detail/" + str(ticket.id))
-
-    context = {
-        'user': request.user,
-        'user_roles': [role for role in request.user.roles],
-        'ticket': ticket,
-        'assign_ticket_form': assign_ticket_form
-    }
-
-    return render(request, 'ticket/assign_ticket.html', context)
 
 
 @login_required
@@ -523,7 +506,7 @@ def assign_users(request, pk):
 @is_project_manager
 def assign_ticket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.POST or None, instance=ticket)
+    assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.get_host(), request.POST or None, instance=ticket)
 
     if assign_ticket_form.is_valid():
         ticket = assign_ticket_form.save(commit=False)
@@ -561,6 +544,7 @@ def add_attachment(request, pk):
             attachment.uploader = request.user
             attachment.save()
             ticket.attachments.add(attachment)
+            ticket.save()
             return redirect("/tickets/detail/" + str(ticket.id))
     else:
         form = TicketAttachmentForm() 
@@ -585,8 +569,8 @@ def new_comment(request, pk):
             comment.ticket = ticket
             comment.save()
             
-            if comment.user is not comment.ticket.assigned_user:
-                send_comment_added_email(comment.ticket.assigned_user, comment.ticket)
+            if comment.ticket.assigned_user is not None and comment.user is not comment.ticket.assigned_user:
+                send_comment_added_email(comment.ticket.assigned_user, comment.ticket, request.get_host())
 
             return redirect("/tickets/detail/" + str(ticket.id))
     else:
@@ -707,7 +691,6 @@ def change_password(request):
             user = password_change_form.save()
             update_session_auth_hash(request, user)
             messages.success(request, 'Your password was successfully updated!')
-            # return redirect('manage_profile')
             return redirect('{}?message=password-change-success'.format(reverse('manage_profile')))
         else:
             messages.error(request, 'Please correct the error below.')
@@ -722,6 +705,6 @@ def change_password(request):
 
     return render(request, 'user/change_password.html', context)
 
-@login_required
+
 def about(request):
     return render(request, 'about.html')

@@ -1,0 +1,9 @@
+{% extends 'user/login.html' %}
+
+{% block form_content %}
+<a class="btn btn-dark btn-block" href="{% url 'demo' %}?Submitter=Submitter">Submitter</a>
+<a class="btn btn-dark btn-block" href="{% url 'demo' %}?Developer=Developer">Developer</a>
+<a class="btn btn-dark btn-block" href="{% url 'demo' %}?Project-Manager=Project-Manager">Project Manager</a>
+<a class="btn btn-dark btn-block" href="{% url 'demo' %}?Admin=Admin">Admin</a>
+<a class="btn btn-link btn-block" href="{% url 'login' %}">Back to Login</a>
+{% endblock %}

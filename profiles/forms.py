@@ -4,8 +4,7 @@ from profiles.models import UserProfile, Project, Ticket, Comment, TicketAuditTr
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import authenticate
 from django.db.models.query import RawQuerySet
-from profiles.utils import send_ticket_assignment_email, send_ticket_reassignment_email, \
-    send_ticket_updated_email 
+from profiles.utils import send_ticket_assignment_email, send_ticket_reassignment_email, send_ticket_updated_email 
 
 
 
@@ -43,7 +42,7 @@ class ProjectForm(forms.ModelForm):
 
 
 class TicketForm(forms.ModelForm):
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, user, host_name, *args, **kwargs):
         super(TicketForm, self).__init__(*args, **kwargs)
         self.fields['project'].queryset = Project.objects.filter(users__id=user.id)
         self.initial_title = self.instance.title
@@ -52,6 +51,7 @@ class TicketForm(forms.ModelForm):
         self.initial_priority = self.instance.priority
         self.initial_status = self.instance.status
         self.user = user
+        self.host_name = host_name
 
         try:
             self.initial_project = self.instance.project
@@ -135,7 +135,7 @@ class TicketForm(forms.ModelForm):
 
         if commit:
             if self.user is not ticket_instance.assigned_user and ticket_instance.assigned_user is not None:
-                send_ticket_updated_email(self.user, ticket_instance)
+                send_ticket_updated_email(self.user, ticket_instance, self.host_name)
 
             ticket_instance.save()
         return ticket_instance
@@ -183,13 +183,14 @@ class RemoveProjectUsersForm(forms.Form):
 
 
 class AssignTicketUserForm(forms.ModelForm):
-    def __init__(self, user, ticket, *args, **kwargs):
+    def __init__(self, user, ticket, host_name, *args, **kwargs):
         super(AssignTicketUserForm, self).__init__(*args, **kwargs)
         project = Project.objects.get(pk=ticket.project.id)
         self.fields['assigned_user'].queryset = project.users.filter(roles__contains="Developer")
         self.fields['assigned_user'].required = False
         self.user = user
         self.initial_assignment = self.instance.assigned_user
+        self.host_name = host_name
 
     def save(self, commit=True):
         ticket = super(AssignTicketUserForm, self).save(commit=True)
@@ -201,10 +202,10 @@ class AssignTicketUserForm(forms.ModelForm):
                 entry_message="Ticket assignment changed from " + "\"" + str(self.initial_assignment) \
                             + "\"" + " to " + "\"" + str(self.instance.assigned_user) + "\""
             )
-            send_ticket_reassignment_email(self.user, self.initial_assignment, ticket)
+            send_ticket_reassignment_email(self.user, self.initial_assignment, ticket, self.host_name)
 
         else:
-            send_ticket_assignment_email(self.user, ticket)
+            send_ticket_assignment_email(self.user, ticket, self.host_name)
         
         if commit:
             ticket.save()
