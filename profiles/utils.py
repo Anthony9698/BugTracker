@@ -33,8 +33,8 @@ def send_ticket_assignment_email(proj_manager, ticket, host_name):
 
     html_content = "<p>Hello, this message is to inform you that your project manager " + str(proj_manager) + "," \
                     + " has assigned you the following ticket: <a href=\"" + str(host_name) + "/tickets/detail/" \
-                    + str(ticket.id) + "/" + "\">" + str(ticket.title) + "</a>." + "<br><br>Thank you for using our site!" \
-                    + "<br><br>The Bug Tracker team.</p>"
+                    + str(ticket.id) + "/" + "\">" + str(ticket.title) + "</a>." + "<br>Thank you for using our site!" \
+                    + "<br>The Bug Tracker team.</p>"
 
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
     msg.attach_alternative(html_content, "text/html")
