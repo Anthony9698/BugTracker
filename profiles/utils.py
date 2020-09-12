@@ -26,24 +26,15 @@ def get_user_tickets(request, user_roles):
 
 
 def send_ticket_assignment_email(proj_manager, ticket, host_name):
-    # with mail.get_connection() as connection:
-    #     mail.EmailMessage(
-    #         "New Ticket Assignment",
-    #         "Hello, this message is to inform you that your project manager " + str(proj_manager) + ","
-    #             + " has assigned you the following ticket: " + str(ticket.title) + "."
-    #             + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
-    #         os.environ.get('EMAIL_HOST'),
-    #         [ticket.assigned_user.email],
-    #         connection=connection,
-    #     ).send()
     subject, from_email, to = 'New Ticket Assignment', os.environ.get('EMAIL_HOST'), ticket.assigned_user.email
     text_content = "Hello, this message is to inform you that your project manager " + str(proj_manager) + "," \
                     + " has assigned you the following ticket: " + str(ticket.title) + "." \
                     + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team."
 
     html_content = "<p>Hello, this message is to inform you that your project manager " + str(proj_manager) + "," \
-                    + " has assigned you the following ticket: <a href=\"" + str(host_name) + "/tickets/detail/" + str(ticket.id) + "/" + "\">" + str(ticket.title) + "</a>." \
-                    + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.</p>"
+                    + " has assigned you the following ticket: <a href=\"" + str(host_name) + "/tickets/detail/" \
+                    + str(ticket.id) + "/" + "\">" + str(ticket.title) + "</a>." + "<br><br>Thank you for using our site!" \
+                    + "<br><br>The Bug Tracker team.</p>"
 
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
     msg.attach_alternative(html_content, "text/html")
