@@ -88,7 +88,7 @@ def send_comment_added_email(user, ticket, host_name):
 
     html_content = "Hello, this message is to inform you that " + str(user) + " left a comment on your assigned ticket: <a href=\"" \
                     + str(host_name) + "/tickets/detail/" + str(ticket.id) + "/\">" + str(ticket.title) + "</a>." \
-                    + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team."
+                    + "<br>Thank you for using our site!" + "<br>The Bug Tracker team."
 
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
     msg.attach_alternative(html_content, "text/html")
