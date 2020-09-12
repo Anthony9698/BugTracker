@@ -705,6 +705,6 @@ def change_password(request):
 
     return render(request, 'user/change_password.html', context)
 
-@login_required
+
 def about(request):
     return render(request, 'about.html')
