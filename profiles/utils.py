@@ -59,17 +59,6 @@ def send_ticket_reassignment_email(proj_manager, old_user, ticket, host_name):
 
 
 def send_ticket_updated_email(user, ticket, host_name):
-    # with mail.get_connection() as connection:
-    #     mail.EmailMessage(
-    #         "Ticket Info Updated",
-    #         "Hello, this message is to inform you that your assigned ticket " + str(ticket.title) + ","
-    #         + " was recently updated by " + str(user) + ". " + "To view the changes, please refer"
-    #         + " to the ticket's history page."
-    #         + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
-    #         os.environ.get('EMAIL_HOST'),
-    #         [ticket.assigned_user.email],
-    #         connection=connection,
-    #     ).send()
     subject, from_email, to = 'Ticket Info Updated', os.environ.get('EMAIL_HOST'), ticket.assigned_user.email
     text_content = "Hello, this message is to inform you that your assigned ticket: " + str(ticket.title) + "," \
                     + " was recently updated by " + str(user) + ". " + "To view the changes, please refer" \
@@ -79,7 +68,7 @@ def send_ticket_updated_email(user, ticket, host_name):
     html_content = "<p>Hello, this message is to inform you that your assigned ticket: <a href=\"" + str(host_name) \
                     + "/tickets/detail/" + str(ticket.id) + "/" + "\">" + str(ticket.title) + "</a>," \
                     + " was recently updated by " + str(user) + ". " + "To view the changes, please refer" \
-                    + " to the ticket's <a href\"" + str(host_name) + "/tickets/history/" + str(ticket.id) \
+                    + " to the ticket's <a href=\"" + str(host_name) + "/tickets/history/" + str(ticket.id) \
                     + "/\">" + "history page</a>." \
                     + "<br>Thank you for using our site!" + "<br>The Bug Tracker team.</p>"
 
