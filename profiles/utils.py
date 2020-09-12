@@ -27,6 +27,7 @@ def get_user_tickets(request, user_roles):
 
 def send_ticket_assignment_email(proj_manager, ticket, host_name):
     subject, from_email, to = 'New Ticket Assignment', os.environ.get('EMAIL_HOST'), ticket.assigned_user.email
+
     text_content = "Hello, this message is to inform you that your project manager " + str(proj_manager) + "," \
                     + " has assigned you the following ticket: " + str(ticket.title) + "." \
                     + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team."
@@ -43,6 +44,7 @@ def send_ticket_assignment_email(proj_manager, ticket, host_name):
 
 def send_ticket_reassignment_email(proj_manager, old_user, ticket, host_name):
     subject, from_email, to = 'Ticket Reassignment', os.environ.get('EMAIL_HOST'), old_user.email
+
     text_content = "Hello, this message is to inform you that your project manager " + str(proj_manager) + "," \
                     + " has reassigned your ticket: " + str(ticket.title) + " to " + str(ticket.assigned_user) + "." \
                     + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team."
@@ -60,6 +62,7 @@ def send_ticket_reassignment_email(proj_manager, old_user, ticket, host_name):
 
 def send_ticket_updated_email(user, ticket, host_name):
     subject, from_email, to = 'Ticket Info Updated', os.environ.get('EMAIL_HOST'), ticket.assigned_user.email
+
     text_content = "Hello, this message is to inform you that your assigned ticket: " + str(ticket.title) + "," \
                     + " was recently updated by " + str(user) + ". " + "To view the changes, please refer" \
                     + " to the ticket's history page." \
@@ -78,15 +81,18 @@ def send_ticket_updated_email(user, ticket, host_name):
 
 
 def send_comment_added_email(user, ticket, host_name):
-    with mail.get_connection() as connection:
-        mail.EmailMessage(
-            "Comment Added to Ticket",
-            "Hello, this message is to inform you that " + str(user) + " left a comment on your assigned ticket "
-            + str(ticket.title) + "." + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
-            os.environ.get('EMAIL_HOST'),
-            [ticket.assigned_user.email],
-            connection=connection,
-        ).send()
+    subject, from_email, to = 'Comment Added to Ticket', os.environ.get('EMAIL_HOST'), ticket.assigned_user.email
+
+    text_content = "Hello, this message is to inform you that " + str(user) + " left a comment on your assigned ticket: " \
+                    + str(ticket.title) + "." + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team."
+
+    html_content = "Hello, this message is to inform you that " + str(user) + " left a comment on your assigned ticket: <a href=\"" \
+                    + str(host_name) + "/tickets/detail/" + str(ticket.id) + "/\">" + str(ticket.title) + "</a>." \
+                    + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team."
+
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
 
 
 def update_ticket_attachments(ticket):
