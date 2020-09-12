@@ -2,6 +2,7 @@ import os
 import boto3
 from botocore.errorfactory import ClientError
 from django.core import mail
+from django.core.mail import EmailMultiAlternatives
 from profiles.models import Project, Ticket, Attachment
 
 
@@ -24,20 +25,32 @@ def get_user_tickets(request, user_roles):
     return user_tickets.order_by('-last_modified_date')
 
 
-def send_ticket_assignment_email(proj_manager, ticket):
-    with mail.get_connection() as connection:
-        mail.EmailMessage(
-            "New Ticket Assignment",
-            "Hello, this message is to inform you that your project manager " + str(proj_manager) + ","
-                + " has assigned you the following ticket: " + str(ticket.title) + "."
-                + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
-            os.environ.get('EMAIL_HOST'),
-            [ticket.assigned_user.email],
-            connection=connection,
-        ).send()
+def send_ticket_assignment_email(proj_manager, ticket, host_name):
+    # with mail.get_connection() as connection:
+    #     mail.EmailMessage(
+    #         "New Ticket Assignment",
+    #         "Hello, this message is to inform you that your project manager " + str(proj_manager) + ","
+    #             + " has assigned you the following ticket: " + str(ticket.title) + "."
+    #             + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.",
+    #         os.environ.get('EMAIL_HOST'),
+    #         [ticket.assigned_user.email],
+    #         connection=connection,
+    #     ).send()
+    subject, from_email, to = 'New Ticket Assignment', os.environ.get('EMAIL_HOST'), ticket.assigned_user.email
+    text_content = "Hello, this message is to inform you that your project manager " + str(proj_manager) + "," \
+                    + " has assigned you the following ticket: " + str(ticket.title) + "." \
+                    + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team."
+
+    html_content = "<p>Hello, this message is to inform you that your project manager " + str(proj_manager) + "," \
+                    + " has assigned you the following ticket: <a href=\"" + str(host_name) + "/tickets/detail/" + str(ticket.id) + "/" + "\">" + str(ticket.title) + "</a>." \
+                    + "\n\nThank you for using our site!" + "\n\nThe Bug Tracker team.</p>"
+
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
 
 
-def send_ticket_reassignment_email(proj_manager, old_user, ticket):
+def send_ticket_reassignment_email(proj_manager, old_user, ticket, host_name):
     with mail.get_connection() as connection:
         mail.EmailMessage(
             "Ticket Reassignment",
@@ -48,10 +61,10 @@ def send_ticket_reassignment_email(proj_manager, old_user, ticket):
             [old_user.email],
             connection=connection,
         ).send()
-    send_ticket_assignment_email(ticket.assigned_user, ticket)
+    send_ticket_assignment_email(ticket.assigned_user, ticket, host_name)
 
 
-def send_ticket_updated_email(user, ticket):
+def send_ticket_updated_email(user, ticket, host_name):
     with mail.get_connection() as connection:
         mail.EmailMessage(
             "Ticket Info Updated",
@@ -65,7 +78,7 @@ def send_ticket_updated_email(user, ticket):
         ).send()
 
 
-def send_comment_added_email(user, ticket):
+def send_comment_added_email(user, ticket, host_name):
     with mail.get_connection() as connection:
         mail.EmailMessage(
             "Comment Added to Ticket",
@@ -84,7 +97,7 @@ def update_ticket_attachments(ticket):
     # if it doesn't, delete reference in database
     s3 = boto3.client('s3')
     for attachment in ticket_attachments:
-        key = 'media/' + attachment.content.name 
+        key = 'media/' + attachment.content.name
         try:
             s3.head_object(Bucket=os.environ.get('AWS_STORAGE_BUCKET_NAME'), Key=key)
         except ClientError:

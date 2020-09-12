@@ -192,7 +192,7 @@ def tickets(request):
 def new_ticket(request):
     proj = request.GET.get('project')
     if request.method == 'POST':
-        form = TicketForm(request.user, request.POST, instance=None)
+        form = TicketForm(request.user, request.get_host(), request.POST, instance=None)
 
         if form.is_valid():
             ticket = form.save(commit=False)
@@ -201,10 +201,10 @@ def new_ticket(request):
             return redirect("tickets")
 
     elif proj:
-        form = TicketForm(request.user, initial={'project': proj})
+        form = TicketForm(request.user, request.get_host(), initial={'project': proj})
 
     else:
-        form = TicketForm(request.user)
+        form = TicketForm(request.user, request.get_host())
 
     context = {
         'user': request.user,
@@ -253,7 +253,7 @@ def ticket_detail(request, pk):
 def edit_ticket(request, pk):
     user_roles = [role for role in request.user.roles]
     ticket = Ticket.objects.get(pk=pk)
-    form = TicketForm(request.user, request.POST or None, instance=ticket)
+    form = TicketForm(request.user, request.get_host(), request.POST or None, instance=ticket)
 
     if form.is_valid():
         form.save()
@@ -266,26 +266,6 @@ def edit_ticket(request, pk):
     }
 
     return render(request, "ticket/edit_ticket.html", context)
-
-
-@login_required
-@is_project_manager
-def assign_ticket(request, pk):
-    ticket = Ticket.objects.get(pk=pk)
-    assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.POST or None, instance=ticket)
-
-    if assign_ticket_form.is_valid():
-        assign_ticket_form.save()
-        return redirect("/tickets/detail/" + str(ticket.id))
-
-    context = {
-        'user': request.user,
-        'user_roles': [role for role in request.user.roles],
-        'ticket': ticket,
-        'assign_ticket_form': assign_ticket_form
-    }
-
-    return render(request, 'ticket/assign_ticket.html', context)
 
 
 @login_required
@@ -526,7 +506,7 @@ def assign_users(request, pk):
 @is_project_manager
 def assign_ticket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.POST or None, instance=ticket)
+    assign_ticket_form = AssignTicketUserForm(request.user, ticket, request.get_host(), request.POST or None, instance=ticket)
 
     if assign_ticket_form.is_valid():
         ticket = assign_ticket_form.save(commit=False)
@@ -590,7 +570,7 @@ def new_comment(request, pk):
             comment.save()
             
             if comment.ticket.assigned_user is not None and comment.user is not comment.ticket.assigned_user:
-                send_comment_added_email(comment.ticket.assigned_user, comment.ticket)
+                send_comment_added_email(comment.ticket.assigned_user, comment.ticket, request.get_host())
 
             return redirect("/tickets/detail/" + str(ticket.id))
     else:
